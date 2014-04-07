@@ -1,0 +1,10 @@
+{
+  "name": "hexo-site",
+  "version": "2.5.2",
+  "private": true,
+  "dependencies": {
+    "hexo-renderer-pandoc": "0.0.8",
+    "hexo-tag-eval": "0.0.1",
+    "hexo-livereload": "0.0.1"
+  }
+}

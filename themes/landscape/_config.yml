@@ -1,0 +1,35 @@
+# Header
+menu:
+  Home: /
+  Archives: /archives
+rss: 
+
+# Content
+excerpt_link: Read More
+fancybox: true
+
+# Links
+links:
+  - title: OpenCV Documentation
+    url: http://docs.opencv.org/
+    intro: OpenCV documentation
+    
+  - title: My Presonal Website
+    url: http://www.skyoung.org
+    intro: My Presonal Website
+    
+
+# Sidebar
+sidebar: left
+widgets:
+- category
+- tagcloud
+- archive
+- recent_posts
+- links
+
+# Miscellaneous
+google_analytics: 'UA-40237820-2'
+favicon: /favicon.ico
+twitter:
+google_plus:
