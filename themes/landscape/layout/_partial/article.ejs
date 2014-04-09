@@ -20,7 +20,7 @@
         <% } %>
       <% } else { %>
 
-	<% if(post.toc !== false){ %>
+	<% if(post.toc == true){ %>
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
 		<%- toc(post.content, {list_number: false}) %>

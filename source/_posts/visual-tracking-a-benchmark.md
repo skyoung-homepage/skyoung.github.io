@@ -17,7 +17,7 @@ tags: [Online Visual Tracking, Benchmark]
 作者的主要贡献应该还是在评估方法上的创新，针对视频中出现的各种情况，对所有测试视频标上相应的属性标签，这些标签包括：光照变化，尺寸变化，遮挡，形变，运动模糊，快速运动，平面内的转动，平面外的转动，背景有相似目标，低分辨率。这样就可以看出算法对不同场景的处理能力。
 
 目前最常用的精度评估方法就是求重叠率，即算法得出的结果方框（tracked bounding box）与真值（ground truth bounding box）重叠的面积除以两个方框的并集的面积，
-$$S=\frac{R\_t\bigcap R\_g}{R\_t \bigcup R\_g}$$ 
+$$S=\frac{R_t\bigcap R_g}{R_t \bigcup R_g}$$ 
 但是大部分算法都是简单的求视频所有帧的重叠率的均值作为对算法的评估，而这篇paper的作者采用了更为合理的方法——AUC（Area Under Curve）。顾名思义，就是曲线下的面积大小，这里的曲线作者叫它success plot，其实就是[ROC](http://en.wikipedia.org/wiki/Receiver_operating_characteristic)（receiver operating characteristic），经常用来判定分类器性能好坏。曲线的横坐标是判定跟踪是否成功的重叠率阈值threshold，范围是[0,1]，纵坐标是对应的success rate，当然随着这个阈值threshold的增大，success rate逐渐减小，就形成了一个递减的曲线。这里如果这个曲线是向上凸，说明分类器的性能较好，如果向下凸，分类性能就会较差，反应到AUC上，就是向上凸，AUC变大，向下凸，AUC变小。所以AUC的大小正好反应了分类器性能的好坏。这种评估算法性能的方法能更综合的评估算法的鲁棒性。
 
 我们知道，有些online visual tracking的算法对于初始化的方框是非常敏感的，如果初始化方框选的不同，会很大影响算法后续的跟踪效果。所以作者提出了两个策略来评估这个问题：

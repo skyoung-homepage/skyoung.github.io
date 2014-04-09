@@ -13,7 +13,8 @@ toc: true
 ####线性同余法
 [线性同余法](http://en.wikipedia.org/wiki/Linear_congruential_generator)是一个很古老的随机数生成算法，它的数学形式如下：
 
-> $$X\_{n+1} = (aX\_n + c)(\mod{m})$$ 其中，$$m>0,0<a<m, 0<c<m$$ 
+$$X\_{n+1} = (aX\_n + c)(\mod{m})$$ 
+其中，$$m>0,0<a<m, 0<c<m$$ 
 
 <!--more-->
 
@@ -99,7 +100,7 @@ OpenCV中随机数生成器是由一个叫[RNG](http://docs.opencv.org/modules/c
 
 首先给出中心极限定理的定义，相信这个大家都还有印象吧。
 
->  设随机变量$ X_1,X_2,...,X_n $  相互独立，具有相同的分布，$ E(X_k)=\mu, D(X_k)=\sigma $，记
+设随机变量$ X_1,X_2,...,X_n $  相互独立，具有相同的分布，$ E(X_k)=\mu, D(X_k)=\sigma $，记
 $$ Y=\frac{\sum\_{k=1}^{n}X\_k-n\mu}{\sqrt{n\mu^2}}= \frac{\overline{X}-\mu}{\mu/\sqrt{n}} $$ 则
 $$\lim_{n\rightarrow \infty }Y_n \sim N(0,1)$$
 
@@ -132,12 +133,12 @@ $$ \overline{x}=\frac{\sum\_{k=1}^{n}x\_k-nE(x)}{\sqrt{nD(x)^2}}=\frac{\sum\_{k=
 ####Box-Muller算法
 [Box-Muller算法](http://en.wikipedia.org/wiki/Box-Muller_transform)可以基于服从均匀分布的随机产生服从高斯分布的随机数。基本的形式如下：
 
-> 设$U\_1，U\_2$是两个相互对立的服从均匀分布[0,1]的两个随机数，则
-> $$Z\_0=R\cos(\theta)=\sqrt{-2ln{U\_1}}\cos(2\pi U\_2)$$
-> 及 
-> $$Z\_1=R\sin(\theta)=\sqrt{-2ln{U\_1}}\sin(2\pi U\_2)$$
-> 是两个相互独立的服从高斯分布N(0,1)
-> 其$$R^2=-2ln{U\_1}, \theta=2\pi U\_2$$
+设$U\_1，U\_2$是两个相互对立的服从均匀分布[0,1]的两个随机数，则
+$$Z\_0=R\cos(\theta)=\sqrt{-2ln{U\_1}}\cos(2\pi U\_2)$$
+及 
+$$Z\_1=R\sin(\theta)=\sqrt{-2ln{U\_1}}\sin(2\pi U\_2)$$
+是两个相互独立的服从高斯分布N(0,1)
+其$$R^2=-2ln{U\_1}, \theta=2\pi U\_2$$
 
 代码如下：
 
@@ -169,8 +170,8 @@ $$ \overline{x}=\frac{\sum\_{k=1}^{n}x\_k-nE(x)}{\sqrt{nD(x)^2}}=\frac{\sum\_{k=
 [Marsaglia polar算法](http://en.wikipedia.org/wiki/Marsaglia_polar_method)的实现不需要使用三角函数的运算，其公式表示如下
 
 
-> 设$x,y$服从均匀分布[-1,1] 则，
-> $$x\sqrt{\frac{-2ln(s))}{s}} , y\sqrt{\frac{-2ln(s))}{s}}$$ 是两个服从高斯分布N(0,1)是随机数，其中$s=x^2+y^2$。
+设$x,y$服从均匀分布[-1,1] 则，
+$$x\sqrt{\frac{-2ln(s))}{s}} , y\sqrt{\frac{-2ln(s))}{s}}$$ 是两个服从高斯分布N(0,1)是随机数，其中$s=x^2+y^2$。
 
 我们可以先利用`rand()`生成[0,1]范围内的随机数，然后变换到[-1,1]范围内。设$X$服从[0,1]均匀分布，则$2X-1$服从[-1,1]均匀分布。
 

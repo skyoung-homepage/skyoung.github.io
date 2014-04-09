@@ -11,7 +11,8 @@ tags: [ruhoh, kramdown]
 促使我改用ruhoh的还有一个原因就是Jekyll Bootstrap的首页的post预览是不带格式的，即像粗体，公式啥的直接是以文本的形式展现出来，让我感觉很不爽，本来想着改一下代码的，可惜自己能力实在有限，照葫芦画瓢弄了一阵没整出来，就想着直接换ruhoh算了，ruhoh提供一个叫summary的东西可以带格式的预览，而且新版的2.0.alpha提供了Posts Paginator功能，就是index页的翻页功能。
 
 <!--more-->
-####具体安装方法
+
+###具体安装方法
 我的系统是ubuntu12.04，主要的安装方法参考[coolaj86](http://blog.coolaj86.com/)的两篇博客：[Getting started with ruhoh (static blog) ](http://blog.coolaj86.com/articles/hosting-your-blog-on-ruhoh-com.html)和[Hosting your blog on GitHub Pages](http://blog.coolaj86.com/articles/hosting-your-blog-on-github-pages.html)。github pages支持Jekyll但不支持ruhoh，所以ruhoh的理念就是用git作为代码管理，而用github的[WebHooks](https://help.github.com/articles/post-receive-hooks)功能关联http://post.ruhoh.com ，这样就可以由ruhoh提供源代码的解析任务，ruhoh1.x就是这样的，具体方法参考[这里](http://ruhoh.com/docs/1/publish/)。但是目前http://post.ruhoh.com 暂时不支持ruhoh.2.0.alpha。所以就只能先编译好源代码，然后上传到github上实现博客的构建。这也是[Hosting your blog on GitHub Pages](http://blog.coolaj86.com/articles/hosting-your-blog-on-github-pages.html)这篇博客解决的问题。
 
 首先，和ruhoh的官方要求一样，把源代码clone到本地，然后切换到2.0.alpha分支下，代码如下：
@@ -193,5 +194,5 @@ gem 'kramdown', "~> 1.0"
 ```
 剩下的一下设置基本在讲解Jekyll Bootstrap的那篇博客中有介绍，可以参考[万事开头难——我的博客折腾记](http://blog.skyoung.org/how-to/%E4%B8%87%E4%BA%8B%E5%BC%80%E5%A4%B4%E9%9A%BE-%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE%E8%AE%B0/).包括google分析，comment设置等。
 
-####总结
+###总结
 又一次折腾的结束，等到http://post.ruhoh.com 支持ruhoh2.0后，ruhoh的构建就简单了，以上只是权宜之计。

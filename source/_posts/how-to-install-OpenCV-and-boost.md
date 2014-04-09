@@ -3,6 +3,7 @@ title: ubuntu 12.04 LTS下安装OpenCV，Boost等常用库
 date: '2013-05-01'
 categories: [How to]
 tags: [OpenCV, Boost, Eigen, libconfig]
+toc: true
 
 ---
 最近在搞一个视觉的程序，要用到一些库，就想着把这些库的安装细节记录一下。其实以前也有弄过，只是一旦安装好了，时间长了就容易忘记，特别是一些小细节的设置。如果碰上换电脑或是重装系统，又得重新研究，所以这里权当是个笔记，以备以后用到时查找。这里主要介绍**OpenCV，Boost，Eigen，libconfig**这几个库的安装和设置，其实过程很类似，但考虑到以后用起来省劲，这里也不厌其烦的全部列出了。
