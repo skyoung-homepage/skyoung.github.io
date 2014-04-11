@@ -20,7 +20,7 @@ links:
     
 
 # Sidebar
-sidebar: left
+sidebar: right
 widgets:
 - category
 - tagcloud
