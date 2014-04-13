@@ -102,5 +102,5 @@ stylus:
 ## Docs: http://zespia.tw/hexo/docs/deployment.html
 deploy:
   type: github
-  repo: https://github.com/skyoung-blog/skyoung-blog.github.io.git
+  repo: https://github.com/skyoung/skyoung.github.io.git
   branch: master
