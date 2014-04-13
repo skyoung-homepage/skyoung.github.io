@@ -1,6 +1,5 @@
 ---
-title: TexMacs札记(II)
-tagline: ——输入数学公式
+title: TexMacs札记(II) ——输入数学公式
 date: '2013-04-27'
 categories: [TexMacs]
 tags: [TexMacs]

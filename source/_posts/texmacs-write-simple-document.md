@@ -1,6 +1,5 @@
 ---
-title: TexMacs札记(I)
-tagline: ——编写简单的文档
+title: TexMacs札记(I) ——编写简单的文档
 date: '2013-04-22'
 categories: [TexMacs]
 tags: [TexMacs]

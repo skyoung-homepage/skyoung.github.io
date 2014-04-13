@@ -1,6 +1,5 @@
 ---
-title: TexMacs札记(IV)
-tagline: ——插入链接、图片、目录等内容
+title: TexMacs札记(IV) ——插入链接、图片、目录等内容
 date: '2013-08-17'
 categories: [TexMacs]
 tags: [TexMacs]

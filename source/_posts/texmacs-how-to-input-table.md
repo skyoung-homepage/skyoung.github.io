@@ -1,6 +1,5 @@
 ---
-title: TexMacs札记(III)
-tagline: ——输入表格
+title: TexMacs札记(III) ——输入表格
 date: '2013-05-29'
 categories: [TexMacs]
 tags: [TexMacs]
