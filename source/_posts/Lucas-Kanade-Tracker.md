@@ -1,6 +1,6 @@
 ---
 title: 'Lucas-Kanade（LK）算法原理介绍及OpenCV代码实现分析'
-date: '2014-04-01'
+date: '2014-04-13'
 categories: [Computer Vision]
 tags: [Tracking, OpenCV]
 toc: true
