@@ -30,14 +30,14 @@ CodeBlocks支持pkg-config工具，只需要在工程的`build options`配置相
 
 1. 依次找到`Compiler settings->Other options`，输入
 
-		`pkg-config opencv --cflags`
+		`pkg-config --cflags opencv`
 如下图所示，这个命令是配置OpenCV的include路径的。
  
 	![](/media/How-to/compiler.png)
 
 2. 依次找到`Liner settings->Other linker options`, 输入
 
-		`pkg-config opencv --libs`
+		`pkg-config --libs opencv`
 如下图所示，这个命令是配置OpenCV的lib路径和连接的动态库。
 
 	![](/media/How-to/linker.png)
