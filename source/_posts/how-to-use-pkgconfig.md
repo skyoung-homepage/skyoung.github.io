@@ -64,7 +64,7 @@ categories: [Tips]
 
 	$ sudo ldconfig
 
-把boost库路径读入缓存，使系统能搜寻到库的位置。这里有个问题需要注意，你可能发现在实际使用中，比如Qt开发环境下，没有设置这些环境变量，仍然可以运行，其实这些路径的设置在pkg-config工具中已经临时设置好了，所以可以执行，但当你直接执行可执行程序时，就会出现`cannot open shared object file: No such file or directory`的报错。
+把boost库路径读入缓存，使系统能搜寻到库的位置。如果不设置环境运行程序时，就会出现`cannot open shared object file: No such file or directory`的报错。
 
 另一个很重的问题是告诉pkg-config工具你为库所写的`*.pc`文件的路径，这样pkg-config才能找到`*.pc`文件并读取库的路径链接信息。设置环境变量
 
