@@ -445,7 +445,7 @@ static void calcSharrDeriv(const cv::Mat& src, cv::Mat& dst)
 
 这个部分的实现需要注意的地方主要是subpixel的计算，因为每次计算出的位移都很小，考虑到计算的精度，必须的精确到小数位，所以需要注意如何计算一个小数位置的像素值，这个就和线性插值是类似的。如下图所示，小数位置的像素值是有四个相邻像素拟合出来的。设中间蓝色像素点的坐标为$(x_{sub},y_{sub})$，四周四个整数位置的像素点自分别为$(x_0,y_0),(x_0,y_1),(x_1,y_0),(x_1,y_1)$，中间蓝色像素离其他四个像素水平和垂直方向上的像素距离分别为$w_{00},w_{01},w_{10},w_{11}$,如图中所标。
 
-{% img /media/Computer-Vision/subpixel.png "subpixel的计算" "subpxiel的计算"%}
+{% img /media/Computer-Vision/subpixel.png 300 300 "subpixel的计算" "subpxiel的计算"%}
 
 subpxiel的计算公式为
 $$
