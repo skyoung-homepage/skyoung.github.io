@@ -28,31 +28,36 @@ $$X\_{n+1} = (aX\_n + c)(\mod{m})$$
 
 下面详细介绍下c语言下随机数生成函数的使用方法，声明在头文件`stdlib.h`（c++中建议用`cstdlib`）中的函数
 ```
-	int rand()
+int rand()
 ```
+
 提供随机数的生成，这个均匀分布的范围是[0,RAND\_MAX]， RAND_MAX的大小和系统有关。因为rand()是按照指定顺序生成随机数的，所以每次生成的随机数都是一致的。如果想每次产生的随机数不同，则需要函数 
 ```
-	void srand(unsigned seeed)
+void srand(unsigned seeed)
 ```
+
 （来自`stdlib.h`）为随机数生成器播散种子。如果在调用rand()前不执行srand()，则默认产生的种子是1，即执行srand(1)和不执行srand的结果是一样的。至于种子怎么选，一般常用的方法是利用time函数（在头文件`time.h`）来获得系统时间，它的返回值为从1970年1月1日零时零分零秒到目前为止所经过秒数，然后将time_t型数据转化为unsigned型再传给srand函数，即
 ```
-	srand((unsigned) time(NULL))
+srand((unsigned) time(NULL))
 ```
 
 里注意time函数的调用，它的函数声明如下：
 ```
-	time_t time(time_t * timer)
+time_t time(time_t * timer)
 ```
+
 既可以通过函数参数timer返回现在的时间，也可以通过函数的返回值返回现在的时间，所以这里srand用到的是返回值返回的时间，用不到参数返回时间，故使用空指针作为参数。
 
 如果想产生其他范围的随机数，例如[a,b]，则需要利用**求余运算（%）**：
 ```
-	rand()%(b-a)+a
+rand()%(b-a)+a
 ```
+
 如果是产生[0,1]范围内的浮点型随机数，则使用**除法运算（/）**:
 ```
-	(double)rand()/RAND_MAX
+(double)rand()/RAND_MAX
 ```
+
 ####梅森旋转算法
 
 [梅森旋转算法](http://en.wikipedia.org/wiki/Mersenne_twister)目前生成随机数较好的算法，他的名字来源于其周期为$2^{19937}-1$,而这数是个[梅森素数](http://en.wikipedia.org/wiki/Mersenne_prime)。常用的两个变体是32位的MT19937和，64位的MT19937-64,对于k位字长，其服从均匀分布的范围是[$2^k-1$]。
@@ -66,30 +71,31 @@ $$X\_{n+1} = (aX\_n + c)(\mod{m})$$
 OpenCV中随机数生成器是由一个叫[RNG](http://docs.opencv.org/modules/core/doc/operations_on_arrays.html?highlight=rng#RNG)的类实现的。如果要产生服从均匀分布的随机数，使用`RNG::uniform`,该函数有三个重载函数，分别针对不同数据类型：
 
 ```
-	int RNG::uniform(int a, int b)
-	float RNG::uniform(float a, float b)
-	double RNG::uniform(double a, double b)
+int RNG::uniform(int a, int b)
+float RNG::uniform(float a, float b)
+double RNG::uniform(double a, double b)
 ```
+
 其中，**a，b**是均匀分布是范围。这里范围的边界为[a,b)，即包含a，不包含b。
 
 使用的时候需要注意一些问题，下面是OpenCV文档中给出的几个实例：
 ```
-	RNG rng;
-	// 总是产生 0, 因为[0,1)之间的整数只有0
-	double a = rng.uniform(0, 1);
-	
-	// 产生 [0, 1)的double型的随机数
-	double a1 = rng.uniform((double)0, (double)1);
+RNG rng;
+// 总是产生 0, 因为[0,1)之间的整数只有0
+double a = rng.uniform(0, 1);
 
-	// 产生 [0, 1)的float型的随机数
-	double b = rng.uniform(0.f, 1.f);
+// 产生 [0, 1)的double型的随机数
+double a1 = rng.uniform((double)0, (double)1);
 
-	// 产生 [0, 1)的double型的随机数
-	double c = rng.uniform(0., 1.);
+// 产生 [0, 1)的float型的随机数
+double b = rng.uniform(0.f, 1.f);
 
-	// 造成编译器混淆，产生错误。
-	//  RNG::uniform(0, (int)0.999999)? or RNG::uniform((double)0, 0.99999)?
-	double d = rng.uniform(0, 0.999999);
+// 产生 [0, 1)的double型的随机数
+double c = rng.uniform(0., 1.);
+
+// 造成编译器混淆，产生错误。
+//  RNG::uniform(0, (int)0.999999)? or RNG::uniform((double)0, 0.99999)?
+double d = rng.uniform(0, 0.999999);
 ```
 
 ###高斯分布
@@ -116,20 +122,21 @@ $$ \overline{x}=\frac{\sum\_{k=1}^{n}x\_k-nE(x)}{\sqrt{nD(x)^2}}=\frac{\sum\_{k=
 
 代码如下：
 ```
-	double random_guassian_central_limit()
+double random_guassian_central_limit()
+{
+	const int N = 20;
+	double sum = 0;
+	for( int i = 0; i < N; i++)
 	{
-		const int N = 20;
-		double sum = 0;
-		for( int i = 0; i < N; i++)
-		{
-			sum += (double)rand()/RAND_MAX;
-		}
-		sum -= N/2.0;
-		sum /= sqrt(N/12.0);
-
-		return sum;
+	    sum += (double)rand()/RAND_MAX;
 	}
+	sum -= N/2.0;
+	sum /= sqrt(N/12.0);
+
+	return sum;
+}
 ```
+
 ####Box-Muller算法
 [Box-Muller算法](http://en.wikipedia.org/wiki/Box-Muller_transform)可以基于服从均匀分布的随机产生服从高斯分布的随机数。基本的形式如下：
 
@@ -143,28 +150,29 @@ $$Z\_1=R\sin(\theta)=\sqrt{-2ln{U\_1}}\sin(2\pi U\_2)$$
 代码如下：
 
 ```
-	#define PI 3.1415926
-	double random_guassian_box_muller()
-	{
-	    static double  U1, U2;
-	    double Z;
-	    int flag = 0;
-	    
-	    if(flag == 0)
-	    {
-			U1 = (double)rand()/RAND_MAX;
-			U2 = (double)rand()/RAND_MAX;
-			Z = sqrt(-2*log(U1))*sin(2*PI*U2);
-	    }
-	    else
-	    {
-			Z = sqrt(-2*log(U1))*cos(2*PI*U2);
-	    }
+#define PI 3.1415926
+double random_guassian_box_muller()
+{
+    static double  U1, U2;
+    double Z;
+    int flag = 0;
+    
+    if(flag == 0)
+    {
+	U1 = (double)rand()/RAND_MAX;
+	U2 = (double)rand()/RAND_MAX;
+	Z = sqrt(-2*log(U1))*sin(2*PI*U2);
+    }
+    else
+    {
+	Z = sqrt(-2*log(U1))*cos(2*PI*U2);
+    }
 
-	    flag = 1 - flag;
-	    return Z;
-	}
+    flag = 1 - flag;
+    return Z;
+}
 ```
+
 ####Marsaglia polar算法
 
 [Marsaglia polar算法](http://en.wikipedia.org/wiki/Marsaglia_polar_method)的实现不需要使用三角函数的运算，其公式表示如下
@@ -177,40 +185,42 @@ $$x\sqrt{\frac{-2ln(s))}{s}} , y\sqrt{\frac{-2ln(s))}{s}}$$ 是两个服从高�
 
 代码如下：
 ```
-	double random_guassian_marsaglia_polar()
+double random_guassian_marsaglia_polar()
+{
+    static double V1, V2, S;
+    int flag = 0;
+    double X;
+    if(flag == 0)
+    {
+	do
 	{
-	    static double V1, V2, S;
-	    int flag = 0;
-	    double X;
-	    if(flag == 0)
-	    {
-			do
-			{
-		    	double U1 = (double)rand() / RAND_MAX;
-		    	double U2 = (double)rand() / RAND_MAX;
+    	   double U1 = (double)rand() / RAND_MAX;
+    	   double U2 = (double)rand() / RAND_MAX;
 		 
-		    	V1 = 2 * U1 - 1;
-		    	V2 = 2 * U2 - 1;
-		    	S  = V1 * V1 + V2 * V2;
-			}while( S >= 1 || S ==0);
+	   V1 = 2 * U1 - 1;
+    	   V2 = 2 * U2 - 1;
+    	   S  = V1 * V1 + V2 * V2;
+	}while( S >= 1 || S ==0);
 
     	    
-			X = V1 * sqrt (-2 * log(S) / S);
-	    }
-	    else
-	    {
-			X = V2 * sqrt(-2 * log(S) / S);
-	    }
+	X = V1 * sqrt (-2 * log(S) / S);
+    }
+    else
+    {
+	X = V2 * sqrt(-2 * log(S) / S);
+    }
 
-	    flag = 1 - flag;
-	    return X;
-	}
+    flag = 1 - flag;
+    return X;
+}
 ```
+
 ####Ziggurat算法
 [Ziggurat算法](http://en.wikipedia.org/wiki/Ziggurat_algorithm)也是[George Marsaglia](http://en.wikipedia.org/wiki/George_Marsaglia)发明的一系列随机算法中的一个。OpenCV中产生服从高斯分布的随机数就是采用的这种方法。RNG类中提供`RNG::gaussian`返回一个随机数，它的函数声明如下：
 ```
-	double RNG::gaussian(double sigma)
+double RNG::gaussian(double sigma)
 ```
+
 其中，**sigma**是方差，这里期望默认为0。
 
 此外，OpenCV还提供了`fill`，`randu`和`randn`用来生成填充一个数组的随机数。`randu`是生成服从均匀分布，`randn`是生成服从高斯分布，`fill`是二者都可，取决于里面的参数。

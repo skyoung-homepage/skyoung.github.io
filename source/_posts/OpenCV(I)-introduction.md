@@ -27,11 +27,12 @@ OpenCV主要包括core，imgproc，video，cliab3d，feature2d，objdetect，hig
 目前OpenCV中有些函数名或是类的名和C++标准库中的名字是冲突的。所以为了解决这个问题，可以直接在函数或是类前面加入相应的命名标示符，比如：
 
 ```c
-		cv::Mat a(100, 100, CV_32F);
-		cv::randu(a, Scalar::all(1), Scalar::all(std::rand()));
-		cv::log(a, a);
-		a /= std::log(2.);
+cv::Mat a(100, 100, CV_32F);
+cv::randu(a, Scalar::all(1), Scalar::all(std::rand()));
+cv::log(a, a);
+a /= std::log(2.);
 ```
+
 这里，`randu`和`log`在OpenCV和C++标准库中都有实现，所以为了区分，可以在前面加上相应的命名空间，当然如果两个函数的形参不同编译器也可以通过函数的参数个数或者参数类型实现区分，但是加上相应的命名空间可以避免很多潜在的隐患。
 
 ###自动内存管理机制
@@ -40,52 +41,53 @@ OpenCV的内存分配和释放是自动的。例如对于Mat类数据，他的�
 
 举个OpenCV手册中的例子如下：
 ```
-	Mat A(1000, 1000, CV_64F);
-	//建一个矩阵头B，B和A指向同一个对象，没有复制操作
-	Mat B = A;
-	//建一个矩阵头C，指向B的第三排，也即A的第三排
-	Mat C = B.row(3);
-	//把B指向的对象，也即A的对象复制一份给D
-	Mat D = B.clone();
-	//把B指向的对象，也即A的对象的第5排拷贝一份给C，也即A的第三排
-	B.row(5).copyTo(C);
-	//A指向D指向的对象，而A原来指向的对象被B和C指向的对象不变
-	A = D;
-	//此操作只是让B指向空，而A被C指向的部分仍然存在
-	B.release();
-	//把C的内容拷贝到C，这样A被C指向的部分就没有指针指向了，就会被自动释放掉了。
-	C = C.clone();
+Mat A(1000, 1000, CV_64F);
+//建一个矩阵头B，B和A指向同一个对象，没有复制操作
+Mat B = A;
+//建一个矩阵头C，指向B的第三排，也即A的第三排
+Mat C = B.row(3);
+//把B指向的对象，也即A的对象复制一份给D
+Mat D = B.clone();
+//把B指向的对象，也即A的对象的第5排拷贝一份给C，也即A的第三排
+B.row(5).copyTo(C);
+//A指向D指向的对象，而A原来指向的对象被B和C指向的对象不变
+A = D;
+//此操作只是让B指向空，而A被C指向的部分仍然存在
+B.release();
+//把C的内容拷贝到C，这样A被C指向的部分就没有指针指向了，就会被自动释放掉了。
+C = C.clone();
 ```
+
 我们知道C++ TR1中有个智能指针`std::shared_ptr`,它的作用和普通的指针没有什么不同，但是会记录有多少个`shared_ptr`共同指向一个对象，即引用计数，一旦最后一个这样的指针被销毁后，引用计数变为0时，这个对象就会自动被释放。同样OpenCV中的数据结构也具有类似的内存管理机制。而且对于普通的指针对象，OpenCV也提供了`Ptr<>`实现智能指针。
 
 ###自动分配输出矩阵的内存
 
 OpenCV不但可以自动释放内存，而且可以为函数中输出参数自动分配内存，比如输入一个`cv::Mat`类型的矩阵，其输出矩阵会自动分配一个和输入矩阵相同尺寸和类型的矩阵。例如：
 ```
-	#include "cv.h"
-	#include "highgui.h"
+#include "cv.h"
+#include "highgui.h"
+using namespace cv;
 
-	using namespace cv;
+int main(int, char**)
+{
+   VideoCapture cap(0);
+   if(!cap.isOpened()) return -1;
 
-	int main(int, char**)
-	{
-	   VideoCapture cap(0);
-	   if(!cap.isOpened()) return -1;
-
-	   Mat frame, edges;
-	   namedWindow("edges",1);
-	   for(;;)
-	   {
-		cap >> frame;
-		cvtColor(frame, edges, CV_BGR2GRAY);
-		GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
-		Canny(edges, edges, 0, 30, 3);
-		imshow("edges", edges);
-		if(waitKey(30) >= 0) break;
-	   }
-	   return 0;
-	}
+   Mat frame, edges;
+   namedWindow("edges",1);
+   for(;;)
+   {
+	cap >> frame;
+	cvtColor(frame, edges, CV_BGR2GRAY);
+	GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
+	Canny(edges, edges, 0, 30, 3);
+	imshow("edges", edges);
+	if(waitKey(30) >= 0) break;
+   }
+   return 0;
+}
 ```
+
 `frame`没有分配内存，但是当`cap>>frame`的时候，由于`cap`以及知道图像的尺寸和深度，会自动分配一个相应图像矩阵给`frame`。还有`cvtColor(frame, edges, CV_BGR2GRAY)`的时候，`edges`会自动分配一个和输入图像`frame`相同大小的图像，`channel`取决于`CV_BGR2GRAY`，所以是1。这里内存的分配只是在循环的第一次分配，后续只有在视频的大小发生变化的时候才重新分配。
 
 这个机制的关键在于`Mat`类自带的成员函数`Mat::create`。这个函数可以根据提供的类型和尺寸分配相应的内存，如果这个矩阵已经是指定的尺寸和类型了，就什么也不做，如果不是，则释放掉原来的内存（若存在的话，当然内存的释放服从上面提到的内存管理机制），分配新的内存。而因为OpenCV的函数会自动的为输出`Mat`调用`create`，所以才会有这个自动为输出矩阵分配内存的特性。
@@ -135,15 +137,15 @@ OpenCV的矩阵元素的数据类型包括以下几种：
 
 OpenCV错误处理机制是使用了类`cv::Exception`,它其实是派生的STL中的异常处理`std::exception`，简单使用方法如下：
 ```
-	try
-	{
-	    ... // call OpenCV
-	}
-	catch( cv::Exception& e )
-	{
-	    const char* err_msg = e.what();
-	    std::cout << "exception caught: " << err_msg << std::endl;
-	}
+try
+{
+    ... // call OpenCV
+}
+catch( cv::Exception& e )
+{
+    const char* err_msg = e.what();
+    std::cout << "exception caught: " << err_msg << std::endl;
+}
 ```
 
 	

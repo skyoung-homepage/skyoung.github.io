@@ -12,6 +12,7 @@ tags: [OpenCV, Mouse Control]
 ```
 C++: void setMouseCallback(const string& winname, MouseCallback onMouse, void* userdata=0 )
 ```
+
 * **winname**是窗口的名称
 * **onMouse**是响应事件的函数
 * **userdata**可选项，是用户提供给`onMouse`响应函数的指针。
@@ -24,6 +25,7 @@ C++: void setMouseCallback(const string& winname, MouseCallback onMouse, void* u
 ```
 void onMouse(int event, int x, int y, int flag, void *param)
 ```
+
 * **event**是鼠标响应事件，分别是：
 	+ EVENT_MOUSEMOVE		滑动
 	+ EVENT_LBUTTONDOWN		左击
@@ -74,7 +76,9 @@ private:
 
 #endif // MOUSECAPTURE_H
 ```
+
 接下面列出类`MouseCapture`的具体定义，在文件`MouseCapture.cpp`中。`onMouse`定义了当鼠标左击时，记录下矩形左上角的点，当鼠标抬起时，记录下矩形的宽高，当鼠标滑动且左击拖拽的时候，记录下矩形的宽高。注意这里**flag**的使用。指针**param**是`setMouseCallBack()`调用的时候传入的**this**指针（参见50行），这个参数的传入负责把跟踪鼠标所画矩形的框的位置大小信息写入类的成员**rect**中。
+
 ```cpp MouseCapture.cpp
 #include "MouseCapture.h"
 #include <iostream>
@@ -145,7 +149,9 @@ void MouseCapture::drawRect()
     cout<<"Mark finished!"<<endl;
 }
 ```
+
 最后是主函数的调用：
+
 ```cpp main.cpp
 #include <iostream>
 #include "MouseCapture.h"
@@ -158,6 +164,7 @@ int main()
     return 0;
 }
 ```
+
 最后，对于`onMouse()`鼠标响应事件函数的声明问题还有另外一种解决方案，就是把`onMouse()`声明为类`MouseCapture`的友函数，而不把`onMouse`声明为类的成员函数。
 
 	

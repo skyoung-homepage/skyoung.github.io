@@ -12,10 +12,10 @@ tags: [TexMacs]
 
 这里标签、参考是指论文写作的时候常用的公式索引啊，或者章节索引之类的应用。像LaTex中一样，在公式或者章节处插入标签`label`，然后在索引的地方插入`reference`。注意这里标签的插入只能是在标题、公式、表格或者图片等处插入，而正文下插入label是不起作用的。具体插入方式：
 
-* 插入label：使用菜单栏`Insert->Link->Label`；也可以通过工具栏{% img inline /media/TexMacs/link.png 20 20 %}进行插入，或者直接输入`\label`按回车。最后按回车激活该操作。如下图所示,`|`后面的**section1**是label的名称，以便后面ref参考使用。
-{% img  /media/TexMacs/label.png %}
+* 插入label：使用菜单栏`Insert->Link->Label`；也可以通过工具栏{% img inline /media/TexMacs/link.png 20 20 %}进行插入，或者直接输入`\label`按回车。最后按回车激活该操作。如下图所示,`|`后面的**section1**是label的名称，以便后面ref参考使用。![](/media/TexMacs/label.png)\ 
+
 * 插入reference：使用菜单栏`Insert->Link->Reference`；也可以通过工具栏{% img inline /media/TexMacs/link.png 20 20 %}进行插入，或者直接输入`\ref`按回车。最后按回车激活该操作。如下图所示，`|`后面输入要引用的label名称      
-{% img  /media/TexMacs/ref.png %} 
+{% img /media/TexMacs/ref.png %} 
 
 <!--more-->
 

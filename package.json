@@ -1,8 +1,11 @@
 {
   "name": "hexo-site",
-  "version": "2.5.6",
+  "version": "2.7.1",
   "private": true,
   "dependencies": {
+    "hexo-renderer-ejs": "*",
+    "hexo-renderer-stylus": "*",
+    "hexo-renderer-marked": "*",
     "hexo-renderer-pandoc": "0.0.8"
   }
 }

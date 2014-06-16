@@ -23,6 +23,7 @@ $ cd blog-v2
 $ git checkout "2.0.alpha"
 $ bundle install
 ```
+
 注意这里，由于ruhoh的库里有三个分支（查看ruhoh的github库可以看到），分别是：master分支，1.0分支，2.0.alpha分支。其中，master下是 ruhohSpec v1.0；1.0分支下也是 ruhohSpec v1.0，但是从两个分支的readme中可以看出区别， master下的兼容 ruhoh gem 1.0.x.x，1.0下的兼容ruhoh gem v0.4.x。
 
 ruhoh运行需要ruby1.9.2以上版本的支持，这里简单介绍一下如何安装ruby1.9.3,其实这个网上也有很多教程，我这里记录下来以防以后链接失效，我参考的是[在ubuntu中安装ruby 1.9.3](http://blog.sina.com.cn/s/blog_565e192a01013xjp.html)这篇博客，具体方法如下：
@@ -115,11 +116,13 @@ $ git push origin blog
 $ git branch -m master masterold
 $ git checkout blog
 ```
+
 6. 建立新的分支master，删除所有的文件（.gitignoreg过的complie文件还在）
 ```
 $ git checkout --orphan master
 $ git rm -rf .
 ```
+
 7. 忽略compiled文件，push到库
 ```
 $ echo "compiled" >> .gitignore
@@ -127,23 +130,24 @@ $ git add .gitignore
 $ git commit -m "ignore the compiled directory"
 $ git push origin -u master
 ```
+
 8. 更新你页面，以后你每次发博客，都要按此步骤，更新页面。
 	```
-	#首先切换到blog分支
-	$ git checkout blog
-	#添加一些新的东西然后编译
-	$ git add .
-	$ git commmit -m "new post"
-	$ ruhoh compile
-	#切换到master分支
-	$ git checkout master
-	#同步compiled的文件到改分支下
-	$ rsync -a compiled/ ./
-	#删除compiled文件
-	$ rm -rf compiled/
-	$ git add .
-	$ git commit -m "updated compiled site"
-	$ git push origin master
+#首先切换到blog分支
+$ git checkout blog
+#添加一些新的东西然后编译
+$ git add .
+$ git commmit -m "new post"
+$ ruhoh compile
+#切换到master分支
+$ git checkout master
+#同步compiled的文件到改分支下
+$ rsync -a compiled/ ./
+#删除compiled文件
+$ rm -rf compiled/
+$ git add .
+$ git commit -m "updated compiled site"
+$ git push origin master
 	```
 
 过大约十分钟，你就可以在https://username.github.io 下看到了。
@@ -158,40 +162,45 @@ $ git commit -m "hosting an empty blog on branch master"
 $ git push origin -u master
 $ git checkout blog
 ```
+
 如果写博客的时候有公式的需要，可以把ruhoh的markdown解析器改为kramdown，ruhoh默认的解析器是Redcarpet，具体设置可以参考[ruhoh官网](http://ruhoh.com/docs/2/plugins/#toc_7)，这里简单介绍下，并说一下我遇到的问题和解决方法。
 
 kramdown的设置是利用的ruhoh的plugins的功能，在plugins文件（如果没有，就建一个）构造如下文件结构
 ```
-	|-- plugins
-	    -- converters
-	       -- kramdown.rb
+|-- plugins
+    -- converters
+       -- kramdown.rb
 ```
+
 其中，kramdown.rb中输入一下内容：
     ```
-	class Ruhoh
-	    module Converter
-		module Markdown
-		   def self.extensions
-			['.md', '.markdown']
-		   end
-		   def self.convert(content)
-			require 'kramdown'
-			Kramdown::Document.new(content).to_html
-		   end
-		end
-	    end
+class Ruhoh
+    module Converter
+	module Markdown
+	   def self.extensions
+		['.md', '.markdown']
+	   end
+	   def self.convert(content)
+		require 'kramdown'
+		Kramdown::Document.new(content).to_html
+	   end
 	end
+    end
+end
     ```
+
 我当时按照这个步骤做了，但是出现了问题，提示我kramdown.rb中的第8行`require 'kramdown'`找不到kramdown，我当时是在本地预览出错的，后来我发现是问题出在Gemfile上，Gemfile是用来指定我用到的gem的，虽然在我已经安装了kramdown，但我的Gemfile中没有指定kramdown，所以会出错。在Gemfile加入下面这行代码即可修复此问题。
 ```
 gem 'kramdown', "~> 1.0"
 ```
+
 因为kramdown的公式渲染需要MathJax，所以也需要安装这个gem。而在服务器上使用需要在theme->twitter->layouts->default.html文件下加入一下代码：
 ```
-	<script type="text/javascript"
-	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-	</script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 ```
+
 剩下的一下设置基本在讲解Jekyll Bootstrap的那篇博客中有介绍，可以参考[万事开头难——我的博客折腾记](http://blog.skyoung.org/how-to/%E4%B8%87%E4%BA%8B%E5%BC%80%E5%A4%B4%E9%9A%BE-%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE%E8%AE%B0/).包括google分析，comment设置等。
 
 ###总结

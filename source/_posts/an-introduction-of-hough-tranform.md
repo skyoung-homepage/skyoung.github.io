@@ -28,7 +28,7 @@ OpenCV中实现了两种检测直线的方法，一种是Standard Hough Transfor
 ####Standard Hough Transform
 首先介绍HoughLines函数，其C++函数声明如下：
 ```
-	void HoughLines(InputArray image, OutputArray lines, double rho, double theta, int threshold, double srn=0, double stn=0 )
+void HoughLines(InputArray image, OutputArray lines, double rho, double theta, int threshold, double srn=0, double stn=0 )
 ```
 其中
 
@@ -45,106 +45,105 @@ OpenCV中实现了两种检测直线的方法，一种是Standard Hough Transfor
 
 下面贴出OpenCV中Houghlines实现的核心源代码，并作详细的注释：
 ```
-	static void
-	icvHoughLinesStandard( const CvMat* img, float rho, float theta, int threshold, CvSeq *lines, int linesMax )
+static void
+icvHoughLinesStandard( const CvMat* img, float rho, float theta, int threshold, CvSeq *lines, int linesMax )
+{
+    //_accum是存放hough图中累积值，及对应hough图的二维矩阵
+    //_sort_buf是存放hough图局部极值用来排序的
+    cv::AutoBuffer<int> _accum, _sort_buf;
+    //这两个变量用来存放离散的sin(theta)和cos(theta)
+    cv::AutoBuffer<float> _tabSin, _tabCos;
+    //存放图像数据
+    const uchar* image;
+    //步长，宽，高
+    int step, width, height;
+    //numangle是离散的角度的个数，即hough图的高度
+    //numrho是离散的半径的个数，即hough图的宽度
+    int numangle, numrho;
+    //统计局部极值的个数
+    int total = 0;
+    int i, j;
+    float irho = 1 / rho;
+    double scale;
+
+    //判断图像是否是矩阵并且图像类型是8位单通道
+    CV_Assert( CV_IS_MAT(img) && CV_MAT_TYPE(img->type) == CV_8UC1 );
+    image = img->data.ptr;
+    step = img->step;
+    width = img->cols;
+    height = img->rows;
+    //利用theta和rho这两个分辨率，计算hough图的高宽
+    numangle = cvRound(CV_PI / theta);
+    numrho = cvRound(((width + height) * 2 + 1) / rho);
+
+    //分配内存
+    _accum.allocate((numangle+2) * (numrho+2));
+    _sort_buf.allocate(numangle * numrho);
+    _tabSin.allocate(numangle);
+    _tabCos.allocate(numangle);
+    int *accum = _accum, *sort_buf = _sort_buf;
+    float *tabSin = _tabSin, *tabCos = _tabCos;
+	
+    //内存赋值为零
+    memset( accum, 0, sizeof(accum[0]) * (numangle+2) * (numrho+2) );
+
+    //计算离散的sin(theta)和cos(theta)
+    float ang = 0;
+    for(int n = 0; n < numangle; ang += theta, n++ )
+    {
+	tabSin[n] = (float)(sin((double)ang) * irho);
+	tabCos[n] = (float)(cos((double)ang) * irho);
+    }
+
+    // stage 1. fill accumulator
+    // 重点来了，计算hough图，注意这里的theta是0到pi，计算出来的r是
+    //[-(numrho-1)/2,(numrho-1)/2]，需要转换到[1,numrho-1]
+    for( i = 0; i < height; i++ )
+	for( j = 0; j < width; j++ )
 	{
-	    //_accum是存放hough图中累积值，及对应hough图的二维矩阵
-	    //_sort_buf是存放hough图局部极值用来排序的
-	    cv::AutoBuffer<int> _accum, _sort_buf;
-	    //这两个变量用来存放离散的sin(theta)和cos(theta)
-	    cv::AutoBuffer<float> _tabSin, _tabCos;
-
-	    //存放图像数据
-	    const uchar* image;
-	    //步长，宽，高
-	    int step, width, height;
-	    //numangle是离散的角度的个数，即hough图的高度
-	    //numrho是离散的半径的个数，即hough图的宽度
-	    int numangle, numrho;
-	    //统计局部极值的个数
-	    int total = 0;
-	    int i, j;
-	    float irho = 1 / rho;
-	    double scale;
-	
-	    //判断图像是否是矩阵并且图像类型是8位单通道
-
-	    CV_Assert( CV_IS_MAT(img) && CV_MAT_TYPE(img->type) == CV_8UC1 );
-	    image = img->data.ptr;
-	    step = img->step;
-	    width = img->cols;
-	    height = img->rows;
-	    //利用theta和rho这两个分辨率，计算hough图的高宽
-	    numangle = cvRound(CV_PI / theta);
-	    numrho = cvRound(((width + height) * 2 + 1) / rho);
-	
-	    //分配内存
-	    _accum.allocate((numangle+2) * (numrho+2));
-	    _sort_buf.allocate(numangle * numrho);
-	    _tabSin.allocate(numangle);
-	    _tabCos.allocate(numangle);
-	    int *accum = _accum, *sort_buf = _sort_buf;
-	    float *tabSin = _tabSin, *tabCos = _tabCos;
-		
-	    //内存赋值为零
-	    memset( accum, 0, sizeof(accum[0]) * (numangle+2) * (numrho+2) );
-	
-	    //计算离散的sin(theta)和cos(theta)
-	    float ang = 0;
-	    for(int n = 0; n < numangle; ang += theta, n++ )
-	    {
-		tabSin[n] = (float)(sin((double)ang) * irho);
-		tabCos[n] = (float)(cos((double)ang) * irho);
-	    }
-	
-	    // stage 1. fill accumulator
-	    // 重点来了，计算hough图，注意这里的theta是0到pi，计算出来的r是
-	    //[-(numrho-1)/2,(numrho-1)/2]，需要转换到[1,numrho-1]
-	    for( i = 0; i < height; i++ )
-		for( j = 0; j < width; j++ )
+	    if( image[i * step + j] != 0 )
+		for(int n = 0; n < numangle; n++ )
 		{
-		    if( image[i * step + j] != 0 )
-			for(int n = 0; n < numangle; n++ )
-			{
-			    int r = cvRound( j * tabCos[n] + i * tabSin[n] );
-			    r += (numrho - 1) / 2;
-			    accum[(n+1) * (numrho+2) + r+1]++;
-			}
+		    int r = cvRound( j * tabCos[n] + i * tabSin[n] );
+		    r += (numrho - 1) / 2;
+		    accum[(n+1) * (numrho+2) + r+1]++;
 		}
+	}
 	
-	    // stage 2. find local maximums
-	    //寻找局部极值，同时满足累积值大于threshold
-	    for(int r = 0; r < numrho; r++ )
-	    for(int n = 0; n < numangle; n++ )
-	    {
-		int base = (n+1) * (numrho+2) + r+1;
-		if( accum[base] > threshold &&
-		    accum[base] > accum[base - 1] && accum[base] >= accum[base + 1] &&
-		    accum[base] > accum[base - numrho - 2] && 
-		    accum[base] >= accum[base + numrho + 2] )
-    	            sort_buf[total++] = base;
-	    }
-	
-	    // stage 3. sort the detected lines by accumulator value
-	    // 排序局部极值
-	    icvHoughSortDescent32s( sort_buf, total, accum );
-	
-	    // stage 4. store the first min(total,linesMax) lines to the output buffer
-	    //存储局部极值较高的参数对应的直线，通过linesMax限制直线个数的输出
-	    linesMax = MIN(linesMax, total);
-	    scale = 1./(numrho+2);
-	    for( i = 0; i < linesMax; i++ )
-	    {
-		CvLinePolar line;
-		int idx = sort_buf[i];
-		int n = cvFloor(idx*scale) - 1;
-		int r = idx - (n+1)*(numrho+2) - 1;
-		line.rho = (r - (numrho - 1)*0.5f) * rho;
-		line.angle = n * theta;
-		cvSeqPush( lines, &line );
-	    }
-	}	
+    // stage 2. find local maximums
+    //寻找局部极值，同时满足累积值大于threshold
+    for(int r = 0; r < numrho; r++ )
+    for(int n = 0; n < numangle; n++ )
+    {
+	int base = (n+1) * (numrho+2) + r+1;
+	if( accum[base] > threshold &&
+	    accum[base] > accum[base - 1] && accum[base] >= accum[base + 1] &&
+	    accum[base] > accum[base - numrho - 2] && 
+	    accum[base] >= accum[base + numrho + 2] )
+   	            sort_buf[total++] = base;
+    }
+
+    // stage 3. sort the detected lines by accumulator value
+    // 排序局部极值
+    icvHoughSortDescent32s( sort_buf, total, accum );
+
+    // stage 4. store the first min(total,linesMax) lines to the output buffer
+    //存储局部极值较高的参数对应的直线，通过linesMax限制直线个数的输出
+    linesMax = MIN(linesMax, total);
+    scale = 1./(numrho+2);
+    for( i = 0; i < linesMax; i++ )
+    {
+	CvLinePolar line;
+	int idx = sort_buf[i];
+	int n = cvFloor(idx*scale) - 1;
+	int r = idx - (n+1)*(numrho+2) - 1;
+	line.rho = (r - (numrho - 1)*0.5f) * rho;
+	line.angle = n * theta;
+	cvSeqPush( lines, &line );
+    }
+}	
 ```
+
 SHT是相对比较简单的，其核心内容是累积图像上点对hough图中参数的投票。因为在参数空间中要想表示hough图像，其参数必定是不连续的，需要离散化相应的参数，所以需要theta和rho的分辨率，这两个值越小，其参数离散的越精细，相对计算出的参数就会越准确，当然计算量也会增大。
 
 ####Probabilistic Hough Transform
@@ -163,7 +162,7 @@ PHT的原理介绍可以参考[Jiri. Matas](http://cmp.felk.cvut.cz/~matas/)的*
 
 OpenCV上的具体实现是函数HoughlinesP，其C++声明如下：
 ```
-	void HoughLinesP(InputArray image, OutputArray lines, double rho, double theta, int threshold, double minLineLength=0, double maxLineGap=0 )
+void HoughLinesP(InputArray image, OutputArray lines, double rho, double theta, int threshold, double minLineLength=0, double maxLineGap=0 )
 ```
 
 其中，
@@ -180,257 +179,257 @@ OpenCV上的具体实现是函数HoughlinesP，其C++声明如下：
 其核心代码的具体实现如下所示，下面作了详细注释：
 
 ```c
-	static void
-	icvHoughLinesProbabilistic( CvMat* image, float rho, float theta, int threshold, int lineLength, 
-	int lineGap, CvSeq *lines, int linesMax )
-	{
-	    //accum：存储hough累积图 mask：存放大于零的图像点，即二值图像
-	    cv::Mat accum, mask;
-	    //存放离散sin和cos
-	    cv::vector<float> trigtab;
-	    cv::MemStorage storage(cvCreateMemStorage(0));
+static void
+icvHoughLinesProbabilistic( CvMat* image, float rho, float theta, int threshold, int lineLength, 
+int lineGap, CvSeq *lines, int linesMax )
+{
+    //accum：存储hough累积图 mask：存放大于零的图像点，即二值图像
+    cv::Mat accum, mask;
+    //存放离散sin和cos
+    cv::vector<float> trigtab;
+    cv::MemStorage storage(cvCreateMemStorage(0));
 
-	    //存放所有的点的坐标
-	    CvSeq* seq;
-	    CvSeqWriter writer;
-	    int width, height;
-	    int numangle, numrho;
-	    float ang;
-	    int r, n, count;
-	    CvPoint pt;
-	    float irho = 1 / rho;
-	    CvRNG rng = cvRNG(-1);
-	    const float* ttab;
-	    uchar* mdata0;
+    //存放所有的点的坐标
+    CvSeq* seq;
+    CvSeqWriter writer;
+    int width, height;
+    int numangle, numrho;
+    float ang;
+    int r, n, count;
+    CvPoint pt;
+    float irho = 1 / rho;
+    CvRNG rng = cvRNG(-1);
+    const float* ttab;
+    uchar* mdata0;
+
+    CV_Assert( CV_IS_MAT(image) && CV_MAT_TYPE(image->type) == CV_8UC1 );
+
+    width = image->cols;
+    height = image->rows;
+
+    numangle = cvRound(CV_PI / theta);
+    numrho = cvRound(((width + height) * 2 + 1) / rho);
+
+    accum.create( numangle, numrho, CV_32SC1 );
+    mask.create( height, width, CV_8UC1 );
+    trigtab.resize(numangle*2);
+    accum = cv::Scalar(0);
+    //计算离散的cos和sin
+    for( ang = 0, n = 0; n < numangle; ang += theta, n++ )
+    {
+	trigtab[n*2] = (float)(cos(ang) * irho);
+	trigtab[n*2+1] = (float)(sin(ang) * irho);
+    }
+    ttab = &trigtab[0];
+    mdata0 = mask.data;
+    //把非零点坐标写入内存
+    cvStartWriteSeq( CV_32SC2, sizeof(CvSeq), sizeof(CvPoint), storage, &writer);
 	
-	    CV_Assert( CV_IS_MAT(image) && CV_MAT_TYPE(image->type) == CV_8UC1 );
-	
-	    width = image->cols;
-	    height = image->rows;
-	
-	    numangle = cvRound(CV_PI / theta);
-	    numrho = cvRound(((width + height) * 2 + 1) / rho);
-	
-	    accum.create( numangle, numrho, CV_32SC1 );
-	    mask.create( height, width, CV_8UC1 );
-	    trigtab.resize(numangle*2);
-	    accum = cv::Scalar(0);
-	    //计算离散的cos和sin
-	    for( ang = 0, n = 0; n < numangle; ang += theta, n++ )
+    // stage 1. collect non-zero image points
+    for( pt.y = 0, count = 0; pt.y < height; pt.y++ )
+    {
+	const uchar* data = image->data.ptr + pt.y*image->step;
+	uchar* mdata = mdata0 + pt.y*width;
+	for( pt.x = 0; pt.x < width; pt.x++ )
+	{
+	    if( data[pt.x] )
 	    {
-		trigtab[n*2] = (float)(cos(ang) * irho);
-		trigtab[n*2+1] = (float)(sin(ang) * irho);
+		mdata[pt.x] = (uchar)1;
+		CV_WRITE_SEQ_ELEM( pt, writer );
 	    }
-	    ttab = &trigtab[0];
-	    mdata0 = mask.data;
-	    //把非零点坐标写入内存
-	    cvStartWriteSeq( CV_32SC2, sizeof(CvSeq), sizeof(CvPoint), storage, &writer);
+	    else
+		mdata[pt.x] = 0;
+	}
+    }
+    //把非零点赋值给seq
+    seq = cvEndWriteSeq( &writer );
+    count = seq->total;
+
+    // stage 2. process all the points in random order
+    for( ; count > 0; count-- )
+    {
+	// choose random point out of the remaining ones
+	int idx = cvRandInt(&rng) % count;
+	int max_val = threshold-1, max_n = 0;
+	CvPoint* point = (CvPoint*)cvGetSeqElem( seq, idx );
+	CvPoint line_end[2] = { {0,0}, {0,0} };
+           
+	float a, b;
+	int* adata = (int*)accum.data;
+	int i, j, k, x0, y0, dx0, dy0, xflag;
+	int good_line;
+	const int shift = 16;
+
+	i = point->y;
+	j = point->x;
+
+	// "remove" it by overriding it with the last element
+	// 用最后一个元素覆盖掉被选中的点，但是这样会不会加大最后一个点被选中
+	// 的概率，以及次数？？？
+	*point = *(CvPoint*)cvGetSeqElem( seq, count-1 );
 	
-	    // stage 1. collect non-zero image points
-	    for( pt.y = 0, count = 0; pt.y < height; pt.y++ )
+	// check if it has been excluded already (i.e. belongs to some 	other line)
+	// 如果该点值为零，说明该点已经在某条直线上了，所以被删除了
+	if( !mdata0[i*width + j] )
+	    continue;
+
+	// update accumulator, find the most probable line
+	for( n = 0; n < numangle; n++, adata += numrho )
+	{
+	    r = cvRound( j * ttab[n*2] + i * ttab[n*2+1] );
+	    r += (numrho - 1) / 2;
+	    int val = ++adata[r];
+	    if( max_val < val )
 	    {
-		const uchar* data = image->data.ptr + pt.y*image->step;
-		uchar* mdata = mdata0 + pt.y*width;
-		for( pt.x = 0; pt.x < width; pt.x++ )
-		{
-		    if( data[pt.x] )
-		    {
-			mdata[pt.x] = (uchar)1;
-			CV_WRITE_SEQ_ELEM( pt, writer );
-		    }
-		    else
-			mdata[pt.x] = 0;
-		}
+		max_val = val;
+		max_n = n;
 	    }
-	    //把非零点赋值给seq
-	    seq = cvEndWriteSeq( &writer );
-	    count = seq->total;
+	}
+
+	// if it is too "weak" candidate, continue with another point
+	if( max_val < threshold )
+	    continue;
+
+	// from the current point walk in each direction
+	// along the found line and extract the line segment
+	// 当该点update累积值后，某个参数累积值大于某一值时，
+	// 以当前点为起点，沿直线两个方向搜索直线上的点
+	a = -ttab[max_n*2+1];
+	b = ttab[max_n*2];
+	x0 = j;
+	y0 = i;
+	//此处判断是考虑到离散直线的表示问题，因为沿直线方向，x坐标移动一个像
+	//素，对应的y坐标应该移动|b/a|个像素，而且|b/a|应该小于1，而当|b/a|>1
+	//的时候，我们按照y坐标移动一个像素的方式进行搜寻，对应x坐标移动|a/b|
+	//个像素，对应|a/b|<1。这种搜寻方式是为了保证在斜线方向上，离散像素的
+	//距离保持最近。
+	if( fabs(a) > fabs(b) )
+	{
+	    xflag = 1;
+	    dx0 = a > 0 ? 1 : -1;
+	    //这里以及后面的shift是考虑到dy0是int型，而b/fabs(a)是float型，
+	    //直接赋值会丢失数据，b/fabs(a)<1，直接赋值的话，dy0=0
+	    dy0 = cvRound( b*(1 << shift)/fabs(a) );
+	    y0 = (y0 << shift) + (1 << (shift-1));
+	}
+	else
+	{
+	    xflag = 0;
+	    dy0 = b > 0 ? 1 : -1;
+	    dx0 = cvRound( a*(1 << shift)/fabs(b) );
+	    x0 = (x0 << shift) + (1 << (shift-1));
+	}
+
+	for( k = 0; k < 2; k++ )
+	{
+	    int gap = 0, x = x0, y = y0, dx = dx0, dy = dy0;
+
+	    if( k > 0 )
+		dx = -dx, dy = -dy;
 	
-	    // stage 2. process all the points in random order
-	    for( ; count > 0; count-- )
+	    // walk along the line using fixed-point arithmetics,
+	    // stop at the image border or in case of too big gap
+	    //该段循环是实现线段起始点的搜寻，并且
+	    //据此判断线段的长度是否符合要求
+	    for( ;; x += dx, y += dy )
 	    {
-		// choose random point out of the remaining ones
-		int idx = cvRandInt(&rng) % count;
-		int max_val = threshold-1, max_n = 0;
-		CvPoint* point = (CvPoint*)cvGetSeqElem( seq, idx );
-		CvPoint line_end[2] = { {0,0}, {0,0} };
-            
-		float a, b;
-		int* adata = (int*)accum.data;
-		int i, j, k, x0, y0, dx0, dy0, xflag;
-		int good_line;
-		const int shift = 16;
-	
-		i = point->y;
-		j = point->x;
-	
-		// "remove" it by overriding it with the last element
-		// 用最后一个元素覆盖掉被选中的点，但是这样会不会加大最后一个点被选中
-		// 的概率，以及次数？？？
-		*point = *(CvPoint*)cvGetSeqElem( seq, count-1 );
-	
-		// check if it has been excluded already (i.e. belongs to some 	other line)
-		// 如果该点值为零，说明该点已经在某条直线上了，所以被删除了
-		if( !mdata0[i*width + j] )
-		    continue;
-	
-		// update accumulator, find the most probable line
-		for( n = 0; n < numangle; n++, adata += numrho )
+		uchar* mdata;
+		int i1, j1;
+
+		if( xflag )
 		{
-		    r = cvRound( j * ttab[n*2] + i * ttab[n*2+1] );
-		    r += (numrho - 1) / 2;
-		    int val = ++adata[r];
-		    if( max_val < val )
-		    {
-			max_val = val;
-			max_n = n;
-		    }
-		}
-	
-		// if it is too "weak" candidate, continue with another point
-		if( max_val < threshold )
-		    continue;
-	
-		// from the current point walk in each direction
-		// along the found line and extract the line segment
-		// 当该点update累积值后，某个参数累积值大于某一值时，
-		// 以当前点为起点，沿直线两个方向搜索直线上的点
-		a = -ttab[max_n*2+1];
-		b = ttab[max_n*2];
-		x0 = j;
-		y0 = i;
-		//此处判断是考虑到离散直线的表示问题，因为沿直线方向，x坐标移动一个像
-		//素，对应的y坐标应该移动|b/a|个像素，而且|b/a|应该小于1，而当|b/a|>1
-		//的时候，我们按照y坐标移动一个像素的方式进行搜寻，对应x坐标移动|a/b|
-		//个像素，对应|a/b|<1。这种搜寻方式是为了保证在斜线方向上，离散像素的
-		//距离保持最近。
-		if( fabs(a) > fabs(b) )
-		{
-		    xflag = 1;
-		    dx0 = a > 0 ? 1 : -1;
-		    //这里以及后面的shift是考虑到dy0是int型，而b/fabs(a)是float型，
-		    //直接赋值会丢失数据，b/fabs(a)<1，直接赋值的话，dy0=0
-		    dy0 = cvRound( b*(1 << shift)/fabs(a) );
-		    y0 = (y0 << shift) + (1 << (shift-1));
+		    j1 = x;
+		    i1 = y >> shift;
 		}
 		else
 		{
-		    xflag = 0;
-		    dy0 = b > 0 ? 1 : -1;
-		    dx0 = cvRound( a*(1 << shift)/fabs(b) );
-		    x0 = (x0 << shift) + (1 << (shift-1));
+		    j1 = x >> shift;
+		    i1 = y;
 		}
-	
-		for( k = 0; k < 2; k++ )
-		{
-		    int gap = 0, x = x0, y = y0, dx = dx0, dy = dy0;
-	
-		    if( k > 0 )
-			dx = -dx, dy = -dy;
-	
-		    // walk along the line using fixed-point arithmetics,
-		    // stop at the image border or in case of too big gap
-		    //该段循环是实现线段起始点的搜寻，并且
-		    //据此判断线段的长度是否符合要求
-		    for( ;; x += dx, y += dy )
-		    {
-			uchar* mdata;
-			int i1, j1;
-	
-			if( xflag )
-			{
-			    j1 = x;
-			    i1 = y >> shift;
-			}
-			else
-			{
-			    j1 = x >> shift;
-			    i1 = y;
-			}
-	
-			if( j1 < 0 || j1 >= width || i1 < 0 || i1 >= height )
-			    break;
 
-			mdata = mdata0 + i1*width + j1;
-	
-			// 对于每个非零点，更新线段的起始点，重置gap为零
-			if( *mdata )
-			{
-			    gap = 0;
-			    line_end[k].y = i1;
-			    line_end[k].x = j1;
-			}
-			else if( ++gap > lineGap )
-			    break;
-		}
-	    }
-				
-	    //判断线段的长度是否足够长
-	    good_line = abs(line_end[1].x - line_end[0].x) >= lineLength ||
-			abs(line_end[1].y - line_end[0].y) >= lineLength;
-		
-	    //该段循环和上段循环类似，但是目标不同，这里是为了清除掉
-	    //good_line对应的图像的点，即赋值为零，并且撤回这些点对
-	    //其他accum的投票；此段循环的前提是已经判断出了good_line，
-	    //而good_line是由上段循环完成的。
-	    for( k = 0; k < 2; k++ )
-	    {
-		int x = x0, y = y0, dx = dx0, dy = dy0;
-	
-		if( k > 0 )
-		    dx = -dx, dy = -dy;
-	
-		// walk along the line using fixed-point arithmetics,
-		// stop at the image border or in case of too big gap
-		for( ;; x += dx, y += dy )
-		{
-		    uchar* mdata;
-		    int i1, j1;
-	
-		    if( xflag )
-		    {
-			j1 = x;
-			i1 = y >> shift;
-		    }
-		    else
-		    {
-			j1 = x >> shift;
-			i1 = y;
-		    }
-	
-		    mdata = mdata0 + i1*width + j1;
-	
-		    //对于good_line上的每个非零点，撤销其对应accum的投票，并置零
-		    if( *mdata )
-		    {
-			if( good_line )
-			{
-			    adata = (int*)accum.data;
-			    for( n = 0; n < numangle; n++, adata += 	numrho )
-			    {
-				r = cvRound( j1 * ttab[n*2] + i1 * ttab[n*2+1] );
-				r += (numrho - 1) / 2;
-				adata[r]--;
-			    }
-			}
-			*mdata = 0;
-		    }
-	
-		    if( i1 == line_end[k].y && j1 == line_end[k].x )
+		if( j1 < 0 || j1 >= width || i1 < 0 || i1 >= height )
 		    break;
+		mdata = mdata0 + i1*width + j1;
+	
+		// 对于每个非零点，更新线段的起始点，重置gap为零
+		if( *mdata )
+		{
+		    gap = 0;
+		    line_end[k].y = i1;
+		    line_end[k].x = j1;
 		}
-	    }
-			
-	    //输出good_line
-	    if( good_line )
-	    {
-		CvRect lr = { line_end[0].x, line_end[0].y, line_end[1].x, line_end[1].y };
-		cvSeqPush( lines, &lr );
-		if( lines->total >= linesMax )
-		    return;
-	    }
+		else if( ++gap > lineGap )
+		    break;
 	}
+    }
+			
+    //判断线段的长度是否足够长
+	    good_line = abs(line_end[1].x - line_end[0].x) >= lineLength ||
+		abs(line_end[1].y - line_end[0].y) >= lineLength;
+	
+    //该段循环和上段循环类似，但是目标不同，这里是为了清除掉
+    //good_line对应的图像的点，即赋值为零，并且撤回这些点对
+    //其他accum的投票；此段循环的前提是已经判断出了good_line，
+    //而good_line是由上段循环完成的。
+    for( k = 0; k < 2; k++ )
+    {
+	int x = x0, y = y0, dx = dx0, dy = dy0;
+
+	if( k > 0 )
+	    dx = -dx, dy = -dy;
+
+	// walk along the line using fixed-point arithmetics,
+	// stop at the image border or in case of too big gap
+	for( ;; x += dx, y += dy )
+	{
+	    uchar* mdata;
+	    int i1, j1;
+
+	    if( xflag )
+	    {
+		j1 = x;
+		i1 = y >> shift;
+	    }
+	    else
+	    {
+		j1 = x >> shift;
+		i1 = y;
+	    }
+
+	    mdata = mdata0 + i1*width + j1;
+
+	    //对于good_line上的每个非零点，撤销其对应accum的投票，并置零
+	    if( *mdata )
+	    {
+		if( good_line )
+		{
+		    adata = (int*)accum.data;
+		    for( n = 0; n < numangle; n++, adata += 	numrho )
+		    {
+			r = cvRound( j1 * ttab[n*2] + i1 * ttab[n*2+1] );
+			r += (numrho - 1) / 2;
+			adata[r]--;
+		    }
+		}
+		*mdata = 0;
+	    }
+	
+	    if( i1 == line_end[k].y && j1 == line_end[k].x )
+	    break;
+	}
+    }
+			
+    //输出good_line
+    if( good_line )
+    {
+	CvRect lr = { line_end[0].x, line_end[0].y, line_end[1].x, line_end[1].y };
+	cvSeqPush( lines, &lr );
+	if( lines->total >= linesMax )
+	    return;
+    }
+}
 ```
+
 	
 整体来说，PHT的思路还是比较清晰的，代码开始比较迷惑我的地方在于沿直线的搜寻问题上，后来查阅OpenCV画直线的函数，也发现其直线上离散点的搜寻规律，从而理解了这个部分。
 

@@ -15,30 +15,33 @@ tags: [Jekyll, git]
 
 博客构建好了后，还需要别人能搜到你的网站，这样才能有读者啊，或者专业一点叫推广。这里其中一条是让别人能在搜索引擎中搜到你的网站信息，所以要设置一个叫做[google网站站长](http://www.google.cn/intl/zh-CN_cn/webmasters/)的东西,通过设置这个东西，就可以让google抓取到你的网页，这个只需要在jekyll bootstrap的_include->theme->twitter下找到default.html加入元标记就可以了，当然首先要用自己的google帐号登陆google网站站长，按照提示来就可以。还有就是设置一个叫[google分析](http://www.google.cn/intl/zh-CN/analytics/)，用来监测你的网站的访问情况，设置也比较简单，首先也是加入一些代码到default.html文件中，按照google分析的要求一步一步的做就可以，然后就是在 _config.yml中设置一下analytics下的google的tracking-id如下：
 ```
-	analytics :
-	    provider : google 
-	    google : 
-	    tracking_id : 'your id'     其中``your id``在google分析的账户中有提供。
+analytics :
+    provider : google 
+    google : 
+    tracking_id : 'your id'     其中``your id``在google分析的账户中有提供。
 ```
+
 博客的撰写是一种轻量级标记语言markdown，易于书写，而且还有一些它的扩展语言也是支持的，像[kramdown](http://kramdown.rubyforge.org/index.html),它可以支持Latex公式输入，只需要在用两个$$括起来就可以撰写Latex，但是公式的渲染需要[MathJax](http://www.mathjax.org/)的支持，利用MathJax的服务器可以实现Jekyll对kramdown的支持，只需要在default.html中加入如下代码
 ```
-	<script type="text/javascript"
-	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-	</script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 ```
+
 然后设置_config.yml文件如下：
 ```
-	markdown: kramdown
+markdown: kramdown
 ```
+
 同时Jekyll也支持[textile](http://redcloth.org/textile),比markdown语言实现的功能相对多一点，这个用什么写看个人习惯，我是用kramdown，考虑到其公式的渲染能力。
 
 有了以上的功能，基本上就可以安心写博客了，当然如果你对博客的主题还有更高的要求，可以参考[Bootstrap](http://twitter.github.io/bootstrap/index.html),调整一下自己的主题，让其符合自己的要求，或者干脆直接写个主题，Jekyll Bootstrap也支持调用自己写的主题，主题主要需要撰写的是三个布局网页default.html，post.html，page.html，更多的个人博客模板参考[这里](https://github.com/mojombo/jekyll/wiki/Sites)。如果你对JB架构的某些地方不满意，也可以重写JB的API，然后放在_include的custom文件下，然后把include JB/the-file-you-need改为include custom/the-file-you-need,同时设置 _config.yml文件下的
 ```
-	JB :
-	    tags_list :
-		provider : "custom"
-
+JB :
+    tags_list :
+	provider : "custom"
 ```
+
 最后，说一下域名申请。从github中构建的个人网页的网址形式是：``http://username.github.io``,其中``username``是你的账户名。如果你对这个域名不满意，可以注册一个自己喜欢的域名，去相关的域名注册网站很容易就可以购买到域名，一般``.com``的域名相对难购买一点，``org``的还是蛮容易的。一般的域名服务商也会提供域名的解析服务，如果不提供，可以去免费的域名解析服务器申请个账户，像[DNSPod](https://www.dnspod.cn/)。这样申请完域名，就可以把这个域名解析到自己的博客网址上了。具体方法参见[这里](https://help.github.com/articles/setting-up-a-custom-domain-with-pages)
 
 ####总结

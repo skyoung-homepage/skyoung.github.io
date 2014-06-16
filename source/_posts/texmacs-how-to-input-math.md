@@ -12,7 +12,7 @@ TexMacs提供了三种插入数学公式的方法：
 
 * 用`Insert->Mathematics->Formula`插入内联公式。还可以使用快捷键`$`，即`Shift+4`或者工具栏{% img inline /media/TexMacs/input.png 25 25%}下拉菜单选择。
 * 用`Insert->Mathematics->Equation`插入显示公式。还可以使用快捷键`Alt+$`,即`Alt+Shift+4`或工具栏{% img inline /media/TexMacs/input.png 25 25%}下拉菜单选择。使用`Ctrl+#`可以为公式编号，使用`Ctrl+Tab`可以在内联公式与显示公式之间切换。
-* 用`Insert-.Mathematics->Equations`插入多行公式。还可以是用快捷键`Alt+&`,即`Alt+Shift+7`或者工具栏{% img inline /media/TexMacs/input.png 25 25%}下拉菜单选择
+* 用`Insert->Mathematics->Equations`插入多行公式。还可以是用快捷键`Alt+&`,即`Alt+Shift+7`或者工具栏{% img inline /media/TexMacs/input.png 25 25%}下拉菜单选择
 
 <!--more-->
 

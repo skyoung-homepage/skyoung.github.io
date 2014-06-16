@@ -47,126 +47,127 @@ tags: [OpenCV, Connected Component Labeling]
 
 具体的代码也顺便贴出来，原博客中有个小bug，在进行八邻域的搜索时，没有考虑首尾相连的边界问题。
 ```
-	//定义结构体部分
+//定义结构体部分
 
-	//八邻域
-	static int NeighborDirection[8][2] = { {0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1} };
-	typedef unsigned char Byte;
+//八邻域
+static int NeighborDirection[8][2] = { {0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1} };
+typedef unsigned char Byte;
 
-	//定义队列
-	typedef struct QNode
-	{
-	    int data;
-	    struct QNode *next;
-	}QNode;
-	//采用的链式队列的结构
-	typedef struct Queue
-	{
-	    struct QNode* first;
-	    struct QNode* last;
-	}Queue;
+//定义队列
+typedef struct QNode
+{
+    int data;
+    struct QNode *next;
+}QNode;
+//采用的链式队列的结构
+typedef struct Queue
+{
+    struct QNode* first;
+    struct QNode* last;
+}Queue;
  
 
-	//主调用函数
+//主调用函数
 
-	int ConnectedComponentLabeling(Byte *binaryImage, int width, int height, int *labemap)
+int ConnectedComponentLabeling(Byte *binaryImage, int width, int height, int *labemap)
+{
+    int cx, cy, popIndex , labelIndex = 0;
+    int index;
+    Queue *queue = NULL;
+    queue = (Queue*)malloc(sizeof(Queue));
+    queue->first = NULL;
+    queue->last = NULL;
+    for(cy = 1; cy < height - 1; cy++)
+    {
+	for(cx = 1; cx < width - 1; cx++)
 	{
-	    int cx, cy, popIndex , labelIndex = 0;
-	    int index;
-	    Queue *queue = NULL;
-	    queue = (Queue*)malloc(sizeof(Queue));
-	    queue->first = NULL;
-	    queue->last = NULL;
-	    for(cy = 1; cy < height - 1; cy++)
+	    index = cy * width + cx;
+       	    if(bitmap[index] == 255 && labelmap[index] == 0)
 	    {
-		for(cx = 1; cx < width - 1; cx++)
+		labelIndex++;
+	        SearchNeighbor(bitmap, width, height, labelmap, labelIndex, index, queue);
+	        popIndex = PopQueue(queue);
+		while(popIndex > -1)
 		{
-		    index = cy * width + cx;
-	       	    if(bitmap[index] == 255 && labelmap[index] == 0)
-		    {
-			labelIndex++;
-		        SearchNeighbor(bitmap, width, height, labelmap, labelIndex, index, queue);
-		        popIndex = PopQueue(queue);
-			while(popIndex > -1)
-			{
-		            SearchNeighbor(bitmap, width, height, labelmap, labelIndex, popIndex, queue);
-			    popIndex = PopQueue(queue);
-			}
-		    }
-		}
-	    }
-	    free(queue);
-	    return labelIndex;
-	}
-
-
-	void SearchNeighbor(Byte *bitmap, int width, int height, int *labelmap, int labelIndex, int pixelIndex, Queue *queue)
-	{
-	    int searchIndex, i, length;
-	    int cx;
-	    labelmap[pixelIndex] = labelIndex;
-	    length = width * height;
-	    for(i = 0;i < 8;i++)
-	    {	
-		//此处是处理边缘像素的情况下的搜索区域
-		cx = pixelIndex%width;
-		searchIndex = pixelIndex + NeighborDirection[i][0] * width + NeighborDirection[i][1];
-		if(cx == 0 || cx == width - 1 && abs(searchIndex%width - cx) >1)
-		    continue;
-			
-		if(searchIndex > 0 && searchIndex < length && 
-		bitmap[searchIndex] == 255 && labelmap[searchIndex] == 0)
-		{
-		    labelmap[searchIndex] = labelIndex;
-		    PushQueue(queue, searchIndex);
+	            SearchNeighbor(bitmap, width, height, labelmap, labelIndex, popIndex, queue);
+		    popIndex = PopQueue(queue);
 		}
 	    }
 	}
+    }
+    free(queue);
+    return labelIndex;
+}
 
-	//推出队列
-	int PopQueue(Queue *queue)
-	{
-	    QNode *p = NULL;
-	    int data;
-	    if(queue->first == NULL)
-	    {
-		return -1;
-	    }
-	    p = queue->first;
-	    data = p->data;
-	    if(queue->first->next == NULL)
-	    {
-		queue->first = NULL;
-		queue->last = NULL;
-	    }	
-	    else
-	    {
-		queue->first = p->next;
-	    }
-	    free(p);
-	    return data；
-	}
 
-	//推入队列
-	void PushQueue(Queue *queue, int data)
+void SearchNeighbor(Byte *bitmap, int width, int height, int *labelmap, int labelIndex, int pixelIndex, Queue *queue)
+{
+    int searchIndex, i, length;
+    int cx;
+    labelmap[pixelIndex] = labelIndex;
+    length = width * height;
+    for(i = 0;i < 8;i++)
+    {	
+	//此处是处理边缘像素的情况下的搜索区域
+	cx = pixelIndex%width;
+	searchIndex = pixelIndex + NeighborDirection[i][0] * width + NeighborDirection[i][1];
+	if(cx == 0 || cx == width - 1 && abs(searchIndex%width - cx) >1)
+	    continue;
+		
+	if(searchIndex > 0 && searchIndex < length && 
+	bitmap[searchIndex] == 255 && labelmap[searchIndex] == 0)
 	{
-	    QNode *p = NULL;
-	    p = (QNode*)malloc(sizeof(QNode));
-	    p->data = data;
-	    if(queue->first == NULL)
-	    {
-		queue->first = p;
-		queue->last = p;
-		p->next = NULL;
-	    }
-	    else
-	    {
-		p->next = NULL;
-		queue->last->next = p;
-		queue->last = p;
-	    }
+	    labelmap[searchIndex] = labelIndex;
+	    PushQueue(queue, searchIndex);
 	}
+    }
+}
+
+//推出队列
+int PopQueue(Queue *queue)
+{
+    QNode *p = NULL;
+    int data;
+    if(queue->first == NULL)
+    {
+	return -1;
+    }
+    p = queue->first;
+    data = p->data;
+    if(queue->first->next == NULL)
+    {
+	queue->first = NULL;
+	queue->last = NULL;
+    }	
+    else
+    {
+	queue->first = p->next;
+    }
+    free(p);
+    return data；
+}
+
+//推入队列
+void PushQueue(Queue *queue, int data)
+{
+    QNode *p = NULL;
+    p = (QNode*)malloc(sizeof(QNode));
+    p->data = data;
+    if(queue->first == NULL)
+    {
+	queue->first = p;
+	queue->last = p;
+	p->next = NULL;
+    }
+    else
+    {
+	p->next = NULL;
+	queue->last->next = p;
+	queue->last = p;
+    }
+}
 ```
+
 ####基于轮廓跟踪的方法
 
 还有一种经典的单次扫描的的算法是由台湾的中央研究院资讯科学研究所的[张复](http://www.iis.sinica.edu.tw/pages/fchang/)提出的，源代码可以在其[实验室网站](http://ocrwks11.iis.sinica.edu.tw/~dar/Download/WebPages/Component.htm)下载到，而且OpenCV的Wiki网站还有专门一个库[cvBlobsLib](http://opencv.willowgarage.com/wiki/cvBlobsLib),就是实现的这个算法。算法的详细介绍可以参考**“A Linear-Time Component-Labeling Algorithm Using Contour Tracing Technique”**，这里作一个简单的介绍。
