@@ -19,6 +19,7 @@ typedef Point2i Point;
 typedef Point_<float> Point2f;
 typedef Point_<double> Point2d;
 ```
+
 而且，Point也重载了加减乘除等操作运算符，比如：
 ```
 Point pt1,pt2,pt3;
@@ -29,6 +30,7 @@ pt1 += pt2， pt1 -= pt2， pt1 *= a;
 double value = norm(pt); // L2 norm
 pt1 == pt2， pt1 != pt2;
 ```
+
 <!-- more -->
 对于三维空间的点有`Point3_<>`对应:
 ```
@@ -282,6 +284,7 @@ Mat M = (Mat_<double>(3,3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
 ```
 M.at<double>(i,j)
 ```
+
 2. 对于二维矩阵，可以采取逐行获取的方式：
 ```
 double sum=0;
