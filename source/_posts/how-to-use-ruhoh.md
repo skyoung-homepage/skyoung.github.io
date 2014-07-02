@@ -201,7 +201,7 @@ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorM
 </script>
 ```
 
-剩下的一下设置基本在讲解Jekyll Bootstrap的那篇博客中有介绍，可以参考[万事开头难——我的博客折腾记](http://blog.skyoung.org/how-to/%E4%B8%87%E4%BA%8B%E5%BC%80%E5%A4%B4%E9%9A%BE-%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE%E8%AE%B0/).包括google分析，comment设置等。
+剩下的一下设置基本在讲解Jekyll Bootstrap的那篇博客中有介绍，可以参考[万事开头难——我的博客折腾记](http://blog.skyoung.org/2013/04/21/it-is-the-first-step-that-is-troublesome/).包括google分析，comment设置等。
 
 ###总结
 又一次折腾的结束，等到http://post.ruhoh.com 支持ruhoh2.0后，ruhoh的构建就简单了，以上只是权宜之计。
