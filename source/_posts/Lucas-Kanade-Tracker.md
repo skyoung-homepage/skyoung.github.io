@@ -77,8 +77,8 @@ $$
 \frac{1}{2} \left [ \frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}} \right ]^T &\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\triangledown I\mathbf{d}^T \triangledown I-\delta I \triangledown I) \\
 &\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\triangledown I \triangledown I^T \mathbf{d}-\delta I  \triangledown I) \\
 &\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\begin{bmatrix}
-I^2_x & I_{xy}\\ 
-I_{xy} & I^2_y
+I^2_x & I_{x}I_{y}\\ 
+I_{x}I_{y} & I^2_y
 \end{bmatrix} \mathbf{d}-\begin{bmatrix}
 \delta II_x\\ 
 \delta II_y
@@ -91,8 +91,8 @@ $$
 $$
 \begin{align}
 G&=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}\begin{bmatrix}
-I^2_x & I_{xy}\\ 
-I_{xy} & I^2_y
+I^2_x & I_{x}I_{y}\\ 
+I_{x}I_{y} & I^2_y
 \end{bmatrix} \\
 \mathbf{b}&=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y} \begin{bmatrix}
 \delta II_x\\ 
@@ -105,7 +105,7 @@ $$
 
 $$
 \frac{1}{2} \left [ \frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}} \right ]^T 
-\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(G \mathbf{d}-\mathbf{b})
+\approx G \mathbf{d}-\mathbf{b}
 $$
 
 使上式等于0,得出位移$\mathbf{d}$为，
