@@ -100,7 +100,7 @@ categories: [Tips]
 
 以上语句相当于用`pkg-config --cflags --libs boost`替换了`-I/usr/local/boost-1.55.0/include -L/usr/local/boost-1.55.0/lib/ -lboost_filesystem -lboost_system`，其实还是g++的那些命令选项。
 
-对于支持g++编译命令选项的开发环境，使用pkg-config也是非常简单的，比如CodeBlocks和QtCreator就支持g++，gcc编译命令，具体使用方法可以参考另一篇博客[如何在CodeBlocks和Qt Creator开发环境下使用OpenCV](http://skyoung.github.io/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/)
+对于支持g++编译命令选项的开发环境，使用pkg-config也是非常简单的，比如CodeBlocks和QtCreator就支持g++，gcc编译命令，具体使用方法可以参考另一篇博客[如何在CodeBlocks和Qt Creator开发环境下使用OpenCV](http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/)
 
 
 [^1]:[Guide to pkg-config](http://people.freedesktop.org/~dbn/pkg-config-guide.html)

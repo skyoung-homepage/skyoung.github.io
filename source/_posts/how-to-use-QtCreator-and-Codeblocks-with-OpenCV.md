@@ -24,7 +24,7 @@ CodeBlocks的安装主要可以参考[官网的教程](http://www.codeblocks.org
 
 <!-- more -->
 
-关于CodeBlocks配置第三方库的方法，网上也有很多，无非是在配置include和lib路径，但这些过程实在是繁琐，这不是我想要的。因为ubuntu下有pkg-config工具，有了这个东西，配置OpenCV不再是麻烦事。OpenCV 的安装的时候，会生成一个`*.pc`文件，pkg-config通过这个文件就可以自动获取OpenCV的include和lib文件的位置，实现自动配置。具体的OpenCV安装方法可以参考我的另一篇博客[ubuntu 12.04 LTS下安装OpenCV，Boost等常用库](http://blog.skyoung.org/how-to/ubuntu-12-04-lts%E4%B8%8B%E5%AE%89%E8%A3%85opencv-boost%E7%AD%89%E5%B8%B8%E7%94%A8%E5%BA%93/)。里面讲解了在OpenCV安装完成后，如何配置pkg-config的搜寻路径。只有pkg-config工具找到opencv的`*.pc`文件，才能获取到OpenCV的头文件和库的安装位置。
+关于CodeBlocks配置第三方库的方法，网上也有很多，无非是在配置include和lib路径，但这些过程实在是繁琐，这不是我想要的。因为ubuntu下有pkg-config工具，有了这个东西，配置OpenCV不再是麻烦事。OpenCV 的安装的时候，会生成一个`*.pc`文件，pkg-config通过这个文件就可以自动获取OpenCV的include和lib文件的位置，实现自动配置。具体的OpenCV安装方法可以参考我的另一篇博客[ubuntu 12.04 LTS下安装OpenCV，Boost等常用库](http://blog.skyoung.org/2013/05/01/how-to-install-OpenCV-and-boost/)。里面讲解了在OpenCV安装完成后，如何配置pkg-config的搜寻路径。只有pkg-config工具找到opencv的`*.pc`文件，才能获取到OpenCV的头文件和库的安装位置。
 
 CodeBlocks支持pkg-config工具，只需要在工程的`build options`配置相关参数即可，以下操作参考[这里](http://aravindev.blogspot.jp/2013/06/configuring-and-installing-opencv-using.html)。
 
