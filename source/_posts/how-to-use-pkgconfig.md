@@ -72,9 +72,9 @@ categories: [Tips]
 
 加入
 
-	export PKG_CONFIG_PATH=/usr/local/Boost/pkgconfig:$PKG_CONFIG_PATH
+	export PKG_CONFIG_PATH=/usr/local/boost-1.55.0/pkgconfig:$PKG_CONFIG_PATH
 
-这里假设Boost的pkg-config文件`boost.pc`放在了`/usr/local/Boost/pkgconfig`下。
+这里假设boost-1.55.0的pkgconfig文件`boost.pc`放在了`/usr/local/boost-1.55.0/pkgconfig`下。
 
 以上所有步骤准备好了以后就可以使用pkg-config了。以上面已经写好的`boost.pc`文件文件为例，在命令行下直接输入
 
