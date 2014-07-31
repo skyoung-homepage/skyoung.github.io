@@ -1,31 +1,188 @@
-title: OpenCV系列(三)：Mat的相关操作
+title: OpenCV系列(三)：Mat详解
 date: '2014-03-26'
 categories: ['OpenCV']
 tags: [OpenCV, Mat]
-
+toc: true
 ---
 
 
-Mat类是OpenCV最基本的一个数据类型，涉及Mat的相关操作比较繁多，[上一篇博客](http://blog.skyoung.org/opencv/opencv%E7%B3%BB%E5%88%97-%E4%BA%8C-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/)结尾处有介绍Mat的构造方法和获取元素的方法，这里将详细讲解一些其他的操作。
+Mat类是OpenCV最基本的一个数据类型，它可以表示一个多维的多通道的数组。Mat常用来存储图像，包括单通道二维数组——灰度图，多通道二维数组——彩色图。当然也可以用来存储点云，直方图等等，对于高维的数组可以考虑存储在SparseMat中。对于一个Mat对象M，其数据布局是由M.step[]决定的，数据存放在M.data里面，假设M有d维，则数据的寻址方式为：
 
-###矩阵的基本操作
+$$addr(M_{i_0,...,i_{d-1}}) = M.data + i_0*M.step[0] + ... + i_{d-1}*M.step[d-1] $$
 
-OpenCV提供了矩阵常用的一些操作包括矩阵的相加，相乘，逐元素相乘，逐元素相除，求逆等。要意识到Scalar类型是矩阵Mat的元素，而一个实数可以看成是Scalar的特例，即注意矩阵的多通道问题。设为A，B为Mat类型，s是Scalar类型，a是一个实数。
+例如$Img$是一个二维三通道矩阵，则，
 
-* **矩阵加减：** A+B，A-B，A+s，A-s，s+A，s-A,-A.
-* **矩阵乘以实数：** A\*a，a\*A
-* **逐元素乘除：** A.mul(B)，A/B，a/A
-* **矩阵倒置：** A.t()
-* **矩阵的逆：** A.inv()
-* **矩阵比较：** A comp B，A comp a，a comp A。这里comp包括 >， >=，==，!=，<=，<。得出的结果是一个单通道8位的矩阵，元素的值为255或0。
-* **矩阵位操作：** A logic B， A logic s，s logic A。这里logic包括：&，|，^
-* **逐元素最大最小值：** min(A,B)，min(A,a)，max(A,B)，max(A,a)。
-* **矩阵的绝对值：** abs(A)
-* **向量的差乘和内积：** A.cross(B)，A.dot(B);
+$$addr(Img_{i_0,i_1}) = M.data + i_0*M.step[0] + i_1*M.step[1] $$
 
-关于Mat的操作，如果返回结果的话一定是Mat或者Saclar类型。矩阵相乘时，数据类型必须至少是float型才可以，否则会报错。
+这里需要说明的是各个维度的步长满足如下关系：`M.step[i] >= M.step[i+1]*M.size[i+1] `,也就是二维数组的数据的存放是一行一行的，三维数组数据存放是一面一面的。
 
 <!-- more -->
+下面给出OpenCV中Mat类的一个粗略定义如下：
+```cpp
+class CV_EXPORTS Mat
+{
+public:
+    // ... a lot of methods ...
+    ...
+
+    /*! includes several bit-fields:
+         - the magic signature
+         - continuity flag
+         - depth
+         - number of channels
+     */
+    int flags;
+    //! the array dimensionality, >= 2
+    int dims;
+    //! the number of rows and columns or (-1, -1) when the array has more than 2 dimensions
+    int rows, cols;
+    //! pointer to the data
+    uchar* data;
+
+    //! pointer to the reference counter;
+    // when array points to user-allocated data, the pointer is NULL
+    int* refcount;
+
+    // other members
+    ...
+};
+```
+
+###构造Mat的方法
+构造Mat的方式有很多种，下面把常用的方法一一列出：
+
+1. 使用构造函数` Mat(nrows, ncols, type[, fillValue])`,例如,
+```
+// 构建3×2的4通道8位矩阵，每个元素初始值为（1,2,3,4）
+Mat M(3,2,CV_8UC4,Scalar(1,2,3,4));
+```
+
+2. 使用`M.create(nrows,ncols,type)`，例如，
+```
+//构建100×100的10通道8位矩阵
+M.create(100,100,CV_8UC(10))
+```
+
+3. 构建多维的矩阵，
+```
+//构建一个100×100×100的8位三维矩阵
+int sz[] = {100,100,100}
+Mat Cube(3, sz, CV_32F, Scalar::all(0))
+```
+
+4. 使用复制构造函数或者赋值操作符
+```
+Mat A(B);
+Mat C = B;
+```
+
+5. 单独对矩阵的某一行某一列进行操作
+```
+//第4行加上第6行的3倍赋值给第4行
+M.row(3) = M.row(3) + M.row(5)*3;
+
+// 把第8列拷贝到第2列，通过 M.col(1) = M.col(7)是不起作用的，应该:
+Mat M1 = M.col(1);
+M.col(7).copyTo(M1);
+```
+
+6. 构建矩阵的ROI区域，单独操作ROI区域的值
+```
+Mat img(Size(320,240),CV_8UC3);
+Mat roi(img, Rect(10,10,100,100));
+roi = Scalar(0,255,0);
+```
+
+	确定矩阵在原矩阵中的相对位置，使用locateROI，
+	```
+Mat A = Mat::eye(10, 10, CV_32S);
+Mat B = A(Range::all(), Range(1, 3));
+Mat C = B(Range(5, 9), Range::all());
+Size size; Point ofs;
+//得出ofs为（1,5），size为（10,10），为什么是（10,10）？目前没搞清楚
+C.locateROI(size, ofs);
+	```
+
+7. 对于外部数据输入，进行初始化
+```
+//外部输入一个一维数组
+void process_video_frame(const unsigned char* pixels, int width, int height, int step)
+{
+    Mat img(height, width, CV_8UC3, pixels, step);
+    GaussianBlur(img, img, Size(7,7), 1.5, 1.5);
+}
+
+//用二维数组初始化矩阵
+double m[2][3] = { {1, 2, 3}, {4, 5, 6} };
+Mat M = Mat(2, 3, CV_64F, m);
+```
+
+8. IplImage，CvMat和Mat相互转换
+```
+IplImage* img = cvLoadImage("lena.jpg", 1);
+Mat mtx(img); // IplImage* -> Mat
+IplImage* img1 = mtx; //Mat -> IplImage*
+CvMat oldmat = mtx; // Mat -> CvMat
+Mat mtx1(oldmat);  //CvMat -> Mat
+```
+9. 类似Matlab方式和`<<`赋值
+```
+//类似Matlab中的单位矩阵等
+M = Mat::ones(10, 10, CV_64F);
+M = Mat::eye(10, 10, CV_64F);
+M = Mat::zeros(10, 10, CV_64F);
+
+//使用`Mat_`和`<<`配合
+Mat M = (Mat_<double>(3,3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
+```
+
+###获取Mat元素的方法
+构造好矩阵后，剩下一个很重要的事情就是如何快速准确的获取矩阵Mat中的元素，下面列出几种常用的获取Mat中的元素方法：
+
+1. 使用M.at<typename>(i,j)
+```
+M.at<double>(i,j)
+```
+
+2. 对于二维矩阵，可以采取逐行获取的方式：
+```
+double sum=0;
+for(int i = 0; i < M.rows; i++)
+{
+    const double* Mi = M.ptr<double>(i);
+    for(int j = 0; j < M.cols; j++)
+        sum += std::max(Mi[j], 0.);
+}
+```
+
+	对于不在乎矩阵的形状，只是简单的遍历矩阵的元素的，可以采用更快速的方法,首先检查元素排列是否连续，如果是，可以看成一个一维数组访问。
+
+	```
+double sum=0;
+int cols = M.cols, rows = M.rows;
+if(M.isContinuous())
+{
+    cols *= rows;
+    rows = 1;
+}
+for(int i = 0; i < rows; i++)
+{
+    const double* Mi = M.ptr<double>(i);
+    for(int j = 0; j < cols; j++)
+        sum += std::max(Mi[j], 0.);
+}
+	```
+
+3. 仿照STL中，使用迭代器访问：
+```
+	double sum=0;
+	MatConstIterator_<double> it = M.begin<double>(), it_end = M.end<double>();
+	for(; it != it_end; ++it)
+	    sum += std::max(*it, 0.);
+```
+
+这个矩阵的迭代器可以传给STL的算法，例如`std::sort()`。
+
 
 ###Mat提供的常用成员函数
 
@@ -37,26 +194,30 @@ OpenCV提供了矩阵常用的一些操作包括矩阵的相加，相乘，逐�
 ```
 A.row(i) = A.row(j)
 ```
-这一操作，并不能把第j行复制到第i行，因为A.row()返回的只是矩阵的头，以上操作仅仅相当于两个指针的操作，所指内存其实是没有发生变化的。如果想把第j行复制到第i行，可以
+
+	这一操作，并不能把第j行复制到第i行，因为A.row()返回的只是矩阵的头，以上操作仅仅相当于两个指针的操作，所指内存其实是没有发生变化的。如果想把第j行复制到第i行，可以
 ```
 A.row(j).copyTo(A(i))
 ```
-当右边的矩阵发生操作后，是可以赋值的，比如
+
+	当右边的矩阵发生操作后，是可以赋值的，比如
 ```
 A.row(i) = A.row(j)*a
 A.row(i) = A.row(j) + Scalar(0,0,0);
 ```
-A.diag(i)取的是矩阵的对角线，这里i=0代表最中间的对角线，i=1是偏右上一行的对角线，i=-1是左下一行的对角线，例如:
+
+	A.diag(i)取的是矩阵的对角线，这里i=0代表最中间的对角线，i=1是偏右上一行的对角线，i=-1是左下一行的对角线，例如:
 ```
 Mat A = (Mat_<float>(3,3)<< 1,9,3,
 		            7,5,0,
 		            7,3,9);
 ```
-A.diag(0)取得是{1,5,9}，A.diag(1)取得是{9,0}，A.diag(-1)取得是{7,3}。 
+
+	A.diag(0)取得是{1,5,9}，A.diag(1)取得是{9,0}，A.diag(-1)取得是{7,3}。 
 
 3. **复制函数** 
 
-```
+	```
 A.clone()//返回A的拷贝。
 A.copyTo(B)//执行把A拷贝到B矩阵中。
 A.copyTo(B,mask)//进拷贝mask对应的部分
@@ -64,35 +225,34 @@ A.copyTo(B,mask)//进拷贝mask对应的部分
 
 4. **转换矩阵元素的数据类型** 
 
-```
+	```
 A.converTo(B,tpye,scale)//把A的类型转换为type并且按照scale缩放A到B矩阵中
 assignTo(A,type)//更改A的元素数据类型
 ```
 
 5. **设定矩阵的值** 
 
-```
+	```
 A.setTo(s)//把A中所有的值赋值为s
 ```
 
 6. **更改矩阵的通道数和行数**
 
-A.reshape()改变通道数，A.resize()改变行数。其中A.reshape()这个操作不改变ros*cols*channels的个数，仅仅相当于重构这些元素，例如：
+	A.reshape()改变通道数，A.resize()改变行数。其中A.reshape()这个操作不改变ros*cols*channels的个数，仅仅相当于重构这些元素，例如：
 ```
 vector<Point> vec;//vec是N个Point
 Mat pointMat = Mat(vec); //pointMat是一个三通道的N×1的矩阵
 pointMat.reshape(1)//pointMat变为一个单通道N×3的矩阵
 ```
 
-更改矩阵的行数如下
-
+	更改矩阵的行数如下
 ```
 A.resize(sz) //A变为sz行
 ```
 
 7. **locateROI和adjustROI**
 
-这两个函数主要是对submatrix的操作，即通过A.row(),A(Range(i,j),Range::all())等操作获得的submatrix在原始矩阵中位置。例如：
+	这两个函数主要是对submatrix的操作，即通过A.row(),A(Range(i,j),Range::all())等操作获得的submatrix在原始矩阵中位置。例如：
 ```
 Mat A = (Mat_<float>(3,3)<< 1,9,3,
 		            7,5,0,
@@ -103,15 +263,16 @@ Size sz;
 Point p1;
 B.locateROI(sz, p1);
 cout<<sz<<" "<<p1<<endl;  //sz是原矩阵的大小3×3,p1是B在A中位置(1,0)
-B.adjustROI(0,1,0,0); //把B向下平移1行，最后得出B为{9,3,
-			//                        5,0，
-			//	                  3,9}
+B.adjustROI(0,1,0,0); //四个参数分别是上下左右平移的像素数，这里是把B向下平移1行，
+		      //最后得出B为{9,3,
+		      //           5,0，
+		      //    	   3,9}
 cout<<B<<endl;
 ```
 
 8. **Mat的各项属性**
 
-```
+	```
 A.total() //元素的个数
 A.elemSize() //元素的大小，如果是8UC3的话，返回3*sizeof(uchar)
 A.elemSize1() //如果是8UC3的话，返回sizeof(uchar)

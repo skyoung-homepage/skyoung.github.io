@@ -17,12 +17,12 @@ mount -t iso9660 -o ro,loop,noauto texlive2014.iso /mnt
 sudo apt-get install perl-tk
 ```
 
+<!--more-->
 然后执行，
 ```
 cd /mnt
 ./install-tl -gui
 ```
-<!--more-->
 
 出现如下图形化安装界面，
 
