@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>Category: OpenCV | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Skyoung">
+<meta property="og:url" content="http://blog.skyoung.org/categories/OpenCV/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Skyoung">
+<meta name="twitter:description">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-OpenCV(IV)-operations-on-arrays" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/" class="article-date">
+  <time datetime="2014-07-31T00:00:00.000Z" itemprop="datePublished">Jul 31 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenCV/">OpenCV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>关于矩阵的操作，异常繁多，而且OpenCV提供的函数也相对很丰富，这里作一个简单的系统介绍，主要涉及矩阵的基本运算，矩阵的属性运算和一些其他常用操作。</p>
+<h2 id="矩阵基本运算">矩阵基本运算</h2>
+<p>OpenCV提供了矩阵常用的一些操作包括矩阵的相加，相乘，逐元素相乘，逐元素相除，求逆等。</p>
+<h3 id="mat类内部实现">Mat类内部实现</h3>
+<p>设为A，B为Mat类型，s是Scalar类型，a是一个实数。下面列出关于Mat的常用运算：</p>
+<ul>
+<li><strong>矩阵加减：</strong> A+B，A-B，A+s，A-s，s+A，s-A,-A.</li>
+<li><strong>矩阵乘以实数：</strong> A*a，a*A</li>
+<li><strong>逐元素乘除：</strong> A.mul(B)，A/B，a/A</li>
+<li><strong>矩阵乘法：</strong> A*BmaxVal; Point minPos,m</li>
+<li><strong>矩阵倒置：</strong> A.t()</li>
+<li><strong>矩阵的逆：</strong> A.inv()</li>
+<li><strong>矩阵比较：</strong> A comp B，A comp a，a comp A。这里comp包括 &gt;， &gt;=，==，!=，&lt;=，&lt;。得出的结果是一个单通道8位的矩阵，元素的值为255或0。</li>
+<li><strong>矩阵位操作：</strong> A logic B， A logic s，s logic A。这里logic包括：&amp;，|，^</li>
+<li><strong>向量的差乘和内积：</strong> A.cross(B)，A.dot(B);</li>
+</ul>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/07/31/OpenCV(IV)-operations-on-arrays/" data-id="099qvkn4ue9t8nm4" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/07/31/OpenCV(IV)-operations-on-arrays/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/matrix-operation/">matrix operation</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OpenCV(III)-How-to-use-Mat" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/26/OpenCV(III)-How-to-use-Mat/" class="article-date">
+  <time datetime="2014-03-25T16:00:00.000Z" itemprop="datePublished">Mar 26 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenCV/">OpenCV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/03/26/OpenCV(III)-How-to-use-Mat/">OpenCV系列(三)：Mat详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Mat类是OpenCV最基本的一个数据类型，它可以表示一个多维的多通道的数组。Mat常用来存储图像，包括单通道二维数组——灰度图，多通道二维数组——彩色图。当然也可以用来存储点云，直方图等等，对于高维的数组可以考虑存储在SparseMat中。对于一个Mat对象M，其数据布局是由M.step[]决定的，数据存放在M.data里面，假设M有d维，则数据的寻址方式为：</p>
+<p><span class="math">\[addr(M_{i_0,...,i_{d-1}}) = M.data + i_0*M.step[0] + ... + i_{d-1}*M.step[d-1] \]</span></p>
+<p>例如<span class="math">\(Img\)</span>是一个二维三通道矩阵，则，</p>
+<p><span class="math">\[addr(Img_{i_0,i_1}) = M.data + i_0*M.step[0] + i_1*M.step[1] \]</span></p>
+<p>这里需要说明的是各个维度的步长满足如下关系：<code>M.step[i] &gt;= M.step[i+1]*M.size[i+1]</code>,也就是二维数组的数据的存放是一行一行的，三维数组数据存放是一面一面的。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/03/26/OpenCV(III)-How-to-use-Mat/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/03/26/OpenCV(III)-How-to-use-Mat/" data-id="z0m2w7eqigkz6l0l" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/03/26/OpenCV(III)-How-to-use-Mat/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mat/">Mat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OpenCV(II)-basic-structure-of-opencv" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/02/28/OpenCV(II)-basic-structure-of-opencv/" class="article-date">
+  <time datetime="2014-02-27T16:00:00.000Z" itemprop="datePublished">Feb 28 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenCV/">OpenCV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/02/28/OpenCV(II)-basic-structure-of-opencv/">OpenCV系列(二)：基本数据结构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>常用的OpenCV数据结构像Mat，Point等我们并不陌生，但最近仔细阅读OpenCV手册后发现有些数据结构的一些便捷操作以及一些新加入的功能自己并没有掌握，这里做个记录算是学习笔记。</p>
+<h3 id="众多的类模板">众多的类模板</h3>
+<p>我们平时常用的数据结构像Point，Rect其实是类模板某一数据类型的实例。比如<code>Point</code>对应<code>Point_&lt;int&gt;</code>，<code>Rect</code>对应<code>Rect_&lt;int&gt;</code>。 这里就简单罗列一下Point对应的定义： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="keyword">typedef</span> Point_&lt;<span class="keyword">int</span>&gt; Point2i;
+<span class="keyword">typedef</span> Point2i Point;
+<span class="keyword">typedef</span> Point_&lt;<span class="built_in">float</span>&gt; Point2f;
+<span class="keyword">typedef</span> Point_&lt;<span class="built_in">double</span>&gt; Point2d;
+</pre></td></tr></table></figure></p>
+<p>而且，Point也重载了加减乘除等操作运算符，比如： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>Point pt1,pt2,pt3;
+<span class="keyword">int</span> a;
+pt1 = pt2 + pt3， pt1 = pt2 - pt3;
+pt1 = pt2 * a， pt1 = a * pt2;
+pt1 += pt2， pt1 -= pt2， pt1 *= a;
+<span class="keyword">double</span> <span class="keyword">value</span> = norm(pt); <span class="comment">// L2 norm</span>
+pt1 == pt2， pt1 != pt2;
+</pre></td></tr></table></figure></p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/02/28/OpenCV(II)-basic-structure-of-opencv/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/02/28/OpenCV(II)-basic-structure-of-opencv/" data-id="9tkmfrpjuykloqk5" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/02/28/OpenCV(II)-basic-structure-of-opencv/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Basic-Sturcture/">Basic Sturcture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OpenCV(I)-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/01/10/OpenCV(I)-introduction/" class="article-date">
+  <time datetime="2014-01-09T16:00:00.000Z" itemprop="datePublished">Jan 10 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenCV/">OpenCV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/01/10/OpenCV(I)-introduction/">OpenCV系列(一)：简介</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一直都想系统全面地学习一下OpenCV，但却迟迟懒于行动，虽然平时也用OpenCV的一些东西，但毕竟没有对其没有一个全面的把握。这次借此机会打算参考OpenCV手册系统地整理一下自己的学习心得。</p>
+<h3 id="opencv主要模块">OpenCV主要模块</h3>
+<p>OpenCV主要包括core，imgproc，video，cliab3d，feature2d，objdetect，highgui，gpu等几个模块，其中</p>
+<ul>
+<li><strong>core</strong> 主要是图像的一些基本数据结构如Mat，Point，Rect等及其相应的操作;</li>
+<li><strong>imgproc</strong> 主要包括一些针对图像的基本处理，像线性或非线性的图像滤波，几何形变操作（如尺寸变化，仿射变换等）;</li>
+<li><strong>video</strong> 主要包括运动估计，背景差分法跟踪，以及一些其他目标跟踪算法;</li>
+<li><strong>calib3d</strong> 主要是多视角几何，单目相机和双目相机的参数标定，目标姿态估计，立体匹配和三维重建方面的算法;</li>
+<li><strong>feature2d</strong> 主要包括基于特征点的检测器，特征点的提取和匹配。objdetect主要包括检测目标或是特定的目标（像人脸，行人等）;</li>
+<li><strong>highgui</strong> 包括视频和图像的读写，以及一些简单的UI功能;</li>
+<li><strong>gpu</strong> 主要是一些视觉算法基于GPU加速的实现。 
+        
+          <p class="article-more-link">
+            <a href="/2014/01/10/OpenCV(I)-introduction/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/01/10/OpenCV(I)-introduction/" data-id="ogik3bejzx4hvnw2" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/01/10/OpenCV(I)-introduction/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+  
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

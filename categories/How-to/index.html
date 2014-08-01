@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>Category: How to | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Skyoung">
+<meta property="og:url" content="http://blog.skyoung.org/categories/How-to/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Skyoung">
+<meta name="twitter:description">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-how-to-install-texlive" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/07/21/how-to-install-texlive/" class="article-date">
+  <time datetime="2014-07-21T05:14:33.000Z" itemprop="datePublished">Jul 21 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近买了一本Latex方面的书，打算系统学习一下Latex，虽然以前也大概了解过LaTex，但是都是很零碎的学习，不够系统，而且现在大多也都忘记了。目前Tex的发行版主要有两种：CTex和TexLive，前者是Windows下的软件，后者则可以在多种常见系统下运行，包括Windows,MacOSX,Linux 各版本。这里仅就TexLive在ubuntu14.04下的安装做一个简单的介绍。</p>
+<p>安装TexLive的方法有：通过CD，通过在线安装，通过ISO挂载（linux）这里仅就最后一种进行介绍。首先，要去<a href="https://www.tug.org/texlive/acquire-iso.html" target="_blank" rel="external">Acquiring TeX Live as an ISO image</a>下载最新的TexLive。这里建议网络不稳定的用户采用torrent下载，支持断点，否则很容易中间断掉，笔者就悲剧的出现这种情况，最后还是使用torrent下载的。 cd到TexLive的ISO文件所在文件夹下，然后挂载到<code>/mnt</code>上 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>mount <span class="attribute">-t</span> iso9660 <span class="attribute">-o</span> ro,<span class="keyword">loop</span>,noauto texlive2014<span class="built_in">.</span>iso /mnt
+</pre></td></tr></table></figure></p>
+<p>或者直接右键<code>使用磁盘映像挂载器打开</code>，相当于挂载到<code>/media/usrname/TeXLive2014</code>下面，这里<code>usrname</code>是你的电脑用户名。因为TexLive的图形化安装界面需要Perl/Tk模块的支持，所以首先需要安装相应模块， <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>sudo apt<span class="attribute">-get</span> install perl<span class="attribute">-tk</span>
+</pre></td></tr></table></figure></p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/07/21/how-to-install-texlive/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/07/21/how-to-install-texlive/" data-id="jznhwonmo0pq4tap" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/07/21/how-to-install-texlive/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LaTex/">LaTex</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/texlive/">texlive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/texmaker/">texmaker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-how-to-use-QtCreator-and-Codeblocks-with-OpenCV" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/" class="article-date">
+  <time datetime="2014-03-05T16:00:00.000Z" itemprop="datePublished">Mar 6 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/">如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>自从切换到ubuntu系统后，就一直在寻找合适的C++开发环境。看了网上的一些介绍，大体就这么几个选择：Eclipse， <a href="">CodeBolocks</a>， <a href="">Qt Creator</a>。后来自己试用了一下CodeBlocks和Qt Creator，感觉这两个开发环境还是不错，打开速度都很快。但是由于CodeBlocks的<code>Find declaration</code>功能针对OpenCV老是不灵，这让我很不爽，所以果断换掉去尝试Qt Creator。Qt Creator给人焕然一新的感觉，界面简洁，布局合理，常用的功能在左侧排列，不会给人杂乱的感觉。</p>
+<p>因为要开发OpenCV项目，所以首先需要知道开发环境配置第三方库的方法。虽然最后没有选择CodeBlocks，但是毕竟也摸索过一段时间，这里以OpenCV为实例一并介绍其如何配置第三方库。</p>
+<h3 id="codeblocks下配置opencv">CodeBlocks下配置OpenCV</h3>
+<p>CodeBlocks的安装主要可以参考<a href="http://www.codeblocks.org/downloads" target="_blank" rel="external">官网的教程</a>。主要两种方式，一是下载源代码，自己编译安装；再就是安装别人编译好的，对于ubuntu系统参考<a href="https://launchpad.net/~pasgui/+archive/ppa/" target="_blank" rel="external">这里</a>。把这个源加入自己的系统，即执行</p>
+<pre><code>sudo add-apt-repository ppa:pasgui/ppa</code></pre>
+<p>然后执行</p>
+<pre><code>sudo apt-get install codeblocks </code></pre>
+<p>这样 就可以CodeBlocks就安装好了。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/" data-id="xecle97atz7efw8j" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CodeBlocks/">CodeBlocks</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Qt-Creator/">Qt Creator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-how-to-install-OpenCV-and-boost" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/05/01/how-to-install-OpenCV-and-boost/" class="article-date">
+  <time datetime="2013-04-30T16:00:00.000Z" itemprop="datePublished">May 1 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/05/01/how-to-install-OpenCV-and-boost/">ubuntu 12.04 LTS下安装OpenCV，Boost等常用库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在搞一个视觉的程序，要用到一些库，就想着把这些库的安装细节记录一下。其实以前也有弄过，只是一旦安装好了，时间长了就容易忘记，特别是一些小细节的设置。如果碰上换电脑或是重装系统，又得重新研究，所以这里权当是个笔记，以备以后用到时查找。这里主要介绍<strong>OpenCV，Boost，Eigen，libconfig</strong>这几个库的安装和设置，其实过程很类似，但考虑到以后用起来省劲，这里也不厌其烦的全部列出了。</p>
+<h4 id="opencv">OpenCV</h4>
+<p>OpenCV的安装在官网上有个教程，但是按照那个教程总是会出现问题，不尽如人意，这里记录一个参考<a href="http://www.samontab.com/web/2012/06/installing-opencv-2-4-1-ubuntu-12-04-lts/" target="_blank" rel="external">Installing OpenCV 2.4.1 in Ubuntu 12.04 LTS</a>这篇博文的OpenCV的安装教程备忘。我安装的是OpenCV2.4.5，其他相近的版本方法应该也是类似。我们希望OpenCV能支持一些第三方的库，如Qt，OpenGL，Python，TBB等，所以这里需要提前安装一些相应的依赖包，然后在cmake的时候做一些设置。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2013/05/01/how-to-install-OpenCV-and-boost/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/05/01/how-to-install-OpenCV-and-boost/" data-id="b5s1piq2kv709cy4" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/05/01/how-to-install-OpenCV-and-boost/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Boost/">Boost</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Eigen/">Eigen</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/libconfig/">libconfig</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-how-to-use-ruhoh" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/04/24/how-to-use-ruhoh/" class="article-date">
+  <time datetime="2013-04-23T16:00:00.000Z" itemprop="datePublished">Apr 24 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/04/24/how-to-use-ruhoh/">如何使用ruhoh2.0.alpha搭建博客</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我只能说我最近比较闲，所以没事就是瞎折腾，刚用Jekyll Bootstrap构建的博客，没玩两天，就对ruhoh又产生了兴趣。<a href="http://ruhoh.com/" target="_blank" rel="external">ruhoh</a>是Jekyll Bootstrap的作者又重写的一个博客生成器，基于前几天对Jekyll Bootstrap的了解，来看这个ruhoh,感觉还是又很多相似之处的，特别是一些设置，主要感觉ruhoh好像是把代码搞得更整洁了，模块化更明显了，Jekyll Bootstrap总给人很乱的感觉。当然ruhoh的还有很多其他的特点，总的感觉就是简单易用。而且较为美观。</p>
+<p>促使我改用ruhoh的还有一个原因就是Jekyll Bootstrap的首页的post预览是不带格式的，即像粗体，公式啥的直接是以文本的形式展现出来，让我感觉很不爽，本来想着改一下代码的，可惜自己能力实在有限，照葫芦画瓢弄了一阵没整出来，就想着直接换ruhoh算了，ruhoh提供一个叫summary的东西可以带格式的预览，而且新版的2.0.alpha提供了Posts Paginator功能，就是index页的翻页功能。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2013/04/24/how-to-use-ruhoh/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/04/24/how-to-use-ruhoh/" data-id="hllegrw439wuo6kk" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/04/24/how-to-use-ruhoh/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kramdown/">kramdown</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ruhoh/">ruhoh</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-it-is-the-first-step-that-is-troublesome" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/04/21/it-is-the-first-step-that-is-troublesome/" class="article-date">
+  <time datetime="2013-04-20T16:00:00.000Z" itemprop="datePublished">Apr 21 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/04/21/it-is-the-first-step-that-is-troublesome/">万事开头难——我的博客折腾记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="起因">起因</h4>
+<p>为什么要整个博客呢？其实这也不是我一时兴起，很久以前就想过搞个自己的个人主页，只是因为没有足够的时间而作罢了。现在临近毕业，论文基本搞定，算是终于有时间折腾一下了。感觉博客这东西既可以督促自己及时总结自己在学习心得，又可以与别人分享交流，所以整整还是不错的。好了，闲话少说，切入正题。</p>
+<h4 id="过程">过程</h4>
+<p>在讲如何构建博客之前，我需要先说明一下博客运行的原理，首先我们需要一个叫做<a href="http://baike.baidu.com/view/7383.htm" target="_blank" rel="external">虚拟主机</a>的东西，简单点说就是网络上提供一个虚拟的服务器来支撑网站的运行，提供一些基本的功能。这个东西可以在<a href="https://github.com/" target="_blank" rel="external">github</a>上申请个帐号就可以了，它提供这样一个功能。github要求构建个人主页要建一个和自己帐号名字相同的repository，且在master分支下，即如果你的帐号名是example，repository的名字就得是example.github.io；而对于项目主页则要建立一个gh-pages的分支，具体一些其他方面的细节问题可以参见<a href="https://help.github.com/categories/20/articles" target="_blank" rel="external">github help pages</a>。然后就是如何构建自己的博客页面信息等内容，这个东西就用到了<a href="http://jekyllrb.com/" target="_blank" rel="external">Jekyll</a> ,github支持Jekyll构建网页，所以我们需要做的就是用它构建好自己的博客，然后把博客上传的github上就可以了。原始的构建Jekyll还是比较麻烦的，所以就有了一些基于Jekyll的构建博客框架，比较流行的就是<a href="http://jekyllbootstrap.com/" target="_blank" rel="external">Jekyll Bootstrap</a>,从这个名字可以看出，这个东东和<a href="http://twitter.github.io/bootstrap/index.html" target="_blank" rel="external">Bootstrap</a>肯定有关系，<a href="http://twitter.github.io/bootstrap/index.html" target="_blank" rel="external">Bootstrap</a>也是一个构建网页的东西，提供了许多简单易用的功能，降低了构建网页的难度，是个很炫的东西。除此之外还有<a href="http://octopress.org/" target="_blank" rel="external">Octopress</a>也是基于Jekyll的一个博客构建框架，这个我没有具体玩过，所以不好多说。<a href="http://ruhoh.com/" target="_blank" rel="external">ruhoh</a>是<a href="http://jekyllbootstrap.com/" target="_blank" rel="external">Jekyll Bootstrap</a>作者搞的另一构建博客的东西，本来想着构建自己博客的时候用这东西的，但是不知怎么的试了几次都不成功，各种不工作，最后放弃了，还是用了<a href="http://jekyllbootstrap.com/" target="_blank" rel="external">Jekyll Bootstrap</a>。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2013/04/21/it-is-the-first-step-that-is-troublesome/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/04/21/it-is-the-first-step-that-is-troublesome/" data-id="pxmslnobs72ajgf6" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/04/21/it-is-the-first-step-that-is-troublesome/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jekyll/">Jekyll</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+  
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

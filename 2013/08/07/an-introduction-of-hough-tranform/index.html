@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>浅析霍夫变换检测直线 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="霍夫变换在检测直线，圆和椭圆等形状有着很广泛的应用，它通过一个投票过程实现对不同形状的参数的估算。这里这个投票过程是指把二值图像空间的点映射到参数空间，记录参数空间中不同参数对应的点的累积，从而实现形状上的点对参数的投票过程，然后选取局部累积最大值作为检测到的形状的参数输出。
+那为什么叫它霍夫变换，当然是和霍夫有关系的。1962年保罗.霍夫（Paul.Hough）写了一个叫Method and M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析霍夫变换检测直线">
+<meta property="og:url" content="http://blog.skyoung.org/2013/08/07/an-introduction-of-hough-tranform/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="霍夫变换在检测直线，圆和椭圆等形状有着很广泛的应用，它通过一个投票过程实现对不同形状的参数的估算。这里这个投票过程是指把二值图像空间的点映射到参数空间，记录参数空间中不同参数对应的点的累积，从而实现形状上的点对参数的投票过程，然后选取局部累积最大值作为检测到的形状的参数输出。
+那为什么叫它霍夫变换，当然是和霍夫有关系的。1962年保罗.霍夫（Paul.Hough）写了一个叫Method and M">
+<meta property="og:image" content="/media/Computer-Vision/hough-transform.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅析霍夫变换检测直线">
+<meta name="twitter:description" content="霍夫变换在检测直线，圆和椭圆等形状有着很广泛的应用，它通过一个投票过程实现对不同形状的参数的估算。这里这个投票过程是指把二值图像空间的点映射到参数空间，记录参数空间中不同参数对应的点的累积，从而实现形状上的点对参数的投票过程，然后选取局部累积最大值作为检测到的形状的参数输出。
+那为什么叫它霍夫变换，当然是和霍夫有关系的。1962年保罗.霍夫（Paul.Hough）写了一个叫Method and M">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-an-introduction-of-hough-tranform" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/07/an-introduction-of-hough-tranform/" class="article-date">
+  <time datetime="2013-08-06T16:00:00.000Z" itemprop="datePublished">Aug 7 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      浅析霍夫变换检测直线
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本原理"><span class="toc-text">基本原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#霍夫变换检测直线在opencv中的实现"><span class="toc-text">霍夫变换检测直线在OpenCV中的实现</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#standard-hough-transform"><span class="toc-text">Standard Hough Transform</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#probabilistic-hough-transform"><span class="toc-text">Probabilistic Hough Transform</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+		</div>
+		
+
+        <p>霍夫变换在检测直线，圆和椭圆等形状有着很广泛的应用，它通过一个投票过程实现对不同形状的参数的估算。这里这个投票过程是指把二值图像空间的点映射到参数空间，记录参数空间中不同参数对应的点的累积，从而实现形状上的点对参数的投票过程，然后选取局部累积最大值作为检测到的形状的参数输出。</p>
+<p>那为什么叫它霍夫变换，当然是和霍夫有关系的。1962年保罗<strong>.</strong>霍夫（Paul.Hough）写了一个叫<em>Method and Means for Recognizing Complex Patterns</em>的专利，其中有用到该方法检测粒子物理中云图中的直线和曲线。目前广泛应用的霍夫变换是1972年由 Richard Duda 和 Peter Hart 提出的<a href="http://dl.acm.org/citation.cfm?id=361242" target="_blank" rel="external">[1]</a>,该方法提出了用 <strong>angle-radius</strong> 替换 <strong>slope-intercept</strong> 作为霍夫变换的参数空间，简化了计算。后来 <a href="http://www.cs.utexas.edu/~dana/" target="_blank" rel="external">Dana H. Ballard</a>的一篇 <em>Generalizing the Hough transform to detect arbitrary shapes</em> 使得霍夫变换在计算机视觉领域开始广泛应用。</p>
+<a id="more"></a>
+
+<h3 id="基本原理">基本原理</h3>
+<div class="figure">
+<img src="/media/Computer-Vision/hough-transform.jpg">
+</div>
+<p>如上图所示，一条直线可以表示为y=kx+b，其中k是直线的斜率，b是直线的截距。在一幅图像中，我们只知道一些离散的二位点，如果想检测到这些点构成的直线的话，就需要求出直线的参数(k,b)，目前点的坐标是已知，我们把k，b看成参数空间中的两个坐标，就可以求出一个参数空间下的hough图像，图像的强度值是该参数下对应点的个数。这样由于在同一个直线的点的参数(k,b)就是一样的，所以就会在hough图上形成强点，从而求出直线的参数。这其实就是一个已知点对参数的一个投票过程(voting procedure)。</p>
+<p>上面提到直线表示方式是我们表示直线的常用方法，这种表示方式叫做“斜率-截距”(<strong>slope-intercept</strong>)的方式，其参数空间表示为(k,b)。但是这种表示方式不足的地方在于直线垂直x坐标轴时（如x=a），k变得无法表示。所以 Duda和Hart提出了用“角度-半径”(<strong>angle-radius</strong>)的参数空间表示方式，这样直线方程变为 <span class="math">\[ xcos\theta+ysin\theta=r \]</span> 其参数空间表示为<span class="math">\((\theta,r)\)</span>，当<span class="math">\(\theta\in[0,\pi)\)</span>时，<span class="math">\(r\in R\)</span>。</p>
+<h3 id="霍夫变换检测直线在opencv中的实现">霍夫变换检测直线在OpenCV中的实现</h3>
+<p>OpenCV中实现了两种检测直线的方法，一种是Standard Hough Transform(SHT)，对应OpenCV中的Houghlines函数；一种是Probabilistic Hough Transform(PHT)，对于openCV中的HoughlinesP函数。</p>
+<h4 id="standard-hough-transform">Standard Hough Transform</h4>
+<p>首先介绍HoughLines函数，其C++函数声明如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">void</span> HoughLines(InputArray image, OutputArray lines, <span class="keyword">double</span> rho, <span class="keyword">double</span> theta, <span class="keyword">int</span> threshold, <span class="keyword">double</span> srn=<span class="number">0</span>, <span class="keyword">double</span> stn=<span class="number">0</span> )
+</pre></td></tr></table></figure> 其中</p>
+<ul>
+<li><strong>image</strong>是图像输入；</li>
+<li><strong>lines</strong>是直线参数输出；</li>
+<li><strong>rho</strong>是距离r的分辨率，即每个像素对应的距离；</li>
+<li><strong>theta</strong>是角度$ $的分辨率，即每个像素对应的角度；</li>
+<li><strong>threshold</strong>是累计值的阈值，大于这个阈值输出相应的直线；</li>
+<li><strong>srn</strong>是多尺度霍夫变换中rho的分母；</li>
+<li><strong>stn</strong>是多尺度霍夫变换中的theta的分母；对于标准霍夫变换，srn和stn都设置为0。</li>
+</ul>
+<p>这里除了Standard Hough Transform，还有个Multi-scale Hough Transform，具体源代码没怎么看懂，感觉好像是针对rho和theta这两分辨率做了一些调整。</p>
+<p>下面贴出OpenCV中Houghlines实现的核心源代码，并作详细的注释： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+</pre></td><td class="code"><pre><span class="keyword">static</span> <span class="keyword">void</span>
+icvHoughLinesStandard( <span class="keyword">const</span> CvMat* img, <span class="keyword">float</span> rho, <span class="keyword">float</span> theta, <span class="keyword">int</span> threshold, CvSeq *lines, <span class="keyword">int</span> linesMax )
+{
+    <span class="comment">//_accum是存放hough图中累积值，及对应hough图的二维矩阵</span>
+    <span class="comment">//_sort_buf是存放hough图局部极值用来排序的</span>
+    cv::AutoBuffer&lt;<span class="keyword">int</span>&gt; _accum, _sort_buf;
+    <span class="comment">//这两个变量用来存放离散的sin(theta)和cos(theta)</span>
+    cv::AutoBuffer&lt;<span class="keyword">float</span>&gt; _tabSin, _tabCos;
+    <span class="comment">//存放图像数据</span>
+    <span class="keyword">const</span> uchar* image;
+    <span class="comment">//步长，宽，高</span>
+    <span class="keyword">int</span> step, width, height;
+    <span class="comment">//numangle是离散的角度的个数，即hough图的高度</span>
+    <span class="comment">//numrho是离散的半径的个数，即hough图的宽度</span>
+    <span class="keyword">int</span> numangle, numrho;
+    <span class="comment">//统计局部极值的个数</span>
+    <span class="keyword">int</span> total = <span class="number">0</span>;
+    <span class="keyword">int</span> i, j;
+    <span class="keyword">float</span> irho = <span class="number">1</span> / rho;
+    <span class="keyword">double</span> scale;
+
+    <span class="comment">//判断图像是否是矩阵并且图像类型是8位单通道</span>
+    CV_Assert( CV_IS_MAT(img) && CV_MAT_TYPE(img-&gt;type) == CV_8UC1 );
+    image = img-&gt;data.ptr;
+    step = img-&gt;step;
+    width = img-&gt;cols;
+    height = img-&gt;rows;
+    <span class="comment">//利用theta和rho这两个分辨率，计算hough图的高宽</span>
+    numangle = cvRound(CV_PI / theta);
+    numrho = cvRound(((width + height) * <span class="number">2</span> + <span class="number">1</span>) / rho);
+
+    <span class="comment">//分配内存</span>
+    _accum.allocate((numangle+<span class="number">2</span>) * (numrho+<span class="number">2</span>));
+    _sort_buf.allocate(numangle * numrho);
+    _tabSin.allocate(numangle);
+    _tabCos.allocate(numangle);
+    <span class="keyword">int</span> *accum = _accum, *sort_buf = _sort_buf;
+    <span class="keyword">float</span> *tabSin = _tabSin, *tabCos = _tabCos;
+	
+    <span class="comment">//内存赋值为零</span>
+    memset( accum, <span class="number">0</span>, <span class="keyword">sizeof</span>(accum[<span class="number">0</span>]) * (numangle+<span class="number">2</span>) * (numrho+<span class="number">2</span>) );
+
+    <span class="comment">//计算离散的sin(theta)和cos(theta)</span>
+    <span class="keyword">float</span> ang = <span class="number">0</span>;
+    <span class="keyword">for</span>(<span class="keyword">int</span> n = <span class="number">0</span>; n &lt; numangle; ang += theta, n++ )
+    {
+	tabSin[n] = (<span class="keyword">float</span>)(sin((<span class="keyword">double</span>)ang) * irho);
+	tabCos[n] = (<span class="keyword">float</span>)(cos((<span class="keyword">double</span>)ang) * irho);
+    }
+
+    <span class="comment">// stage 1. fill accumulator</span>
+    <span class="comment">// 重点来了，计算hough图，注意这里的theta是0到pi，计算出来的r是</span>
+    <span class="comment">//[-(numrho-1)/2,(numrho-1)/2]，需要转换到[1,numrho-1]</span>
+    <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; height; i++ )
+	<span class="keyword">for</span>( j = <span class="number">0</span>; j &lt; width; j++ )
+	{
+	    <span class="keyword">if</span>( image[i * step + j] != <span class="number">0</span> )
+		<span class="keyword">for</span>(<span class="keyword">int</span> n = <span class="number">0</span>; n &lt; numangle; n++ )
+		{
+		    <span class="keyword">int</span> r = cvRound( j * tabCos[n] + i * tabSin[n] );
+		    r += (numrho - <span class="number">1</span>) / <span class="number">2</span>;
+		    accum[(n+<span class="number">1</span>) * (numrho+<span class="number">2</span>) + r+<span class="number">1</span>]++;
+		}
+	}
+	
+    <span class="comment">// stage 2. find local maximums</span>
+    <span class="comment">//寻找局部极值，同时满足累积值大于threshold</span>
+    <span class="keyword">for</span>(<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; numrho; r++ )
+    <span class="keyword">for</span>(<span class="keyword">int</span> n = <span class="number">0</span>; n &lt; numangle; n++ )
+    {
+	<span class="keyword">int</span> <span class="keyword">base</span> = (n+<span class="number">1</span>) * (numrho+<span class="number">2</span>) + r+<span class="number">1</span>;
+	<span class="keyword">if</span>( accum[<span class="keyword">base</span>] &gt; threshold &&
+	    accum[<span class="keyword">base</span>] &gt; accum[<span class="keyword">base</span> - <span class="number">1</span>] && accum[<span class="keyword">base</span>] &gt;= accum[<span class="keyword">base</span> + <span class="number">1</span>] &&
+	    accum[<span class="keyword">base</span>] &gt; accum[<span class="keyword">base</span> - numrho - <span class="number">2</span>] && 
+	    accum[<span class="keyword">base</span>] &gt;= accum[<span class="keyword">base</span> + numrho + <span class="number">2</span>] )
+   	            sort_buf[total++] = <span class="keyword">base</span>;
+    }
+
+    <span class="comment">// stage 3. sort the detected lines by accumulator value</span>
+    <span class="comment">// 排序局部极值</span>
+    icvHoughSortDescent32s( sort_buf, total, accum );
+
+    <span class="comment">// stage 4. store the first min(total,linesMax) lines to the output buffer</span>
+    <span class="comment">//存储局部极值较高的参数对应的直线，通过linesMax限制直线个数的输出</span>
+    linesMax = MIN(linesMax, total);
+    scale = <span class="number">1.</span>/(numrho+<span class="number">2</span>);
+    <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; linesMax; i++ )
+    {
+	CvLinePolar line;
+	<span class="keyword">int</span> idx = sort_buf[i];
+	<span class="keyword">int</span> n = cvFloor(idx*scale) - <span class="number">1</span>;
+	<span class="keyword">int</span> r = idx - (n+<span class="number">1</span>)*(numrho+<span class="number">2</span>) - <span class="number">1</span>;
+	line.rho = (r - (numrho - <span class="number">1</span>)*<span class="number">0.5</span>f) * rho;
+	line.angle = n * theta;
+	cvSeqPush( lines, &line );
+    }
+}
+</pre></td></tr></table></figure></p>
+<p>SHT是相对比较简单的，其核心内容是累积图像上点对hough图中参数的投票。因为在参数空间中要想表示hough图像，其参数必定是不连续的，需要离散化相应的参数，所以需要theta和rho的分辨率，这两个值越小，其参数离散的越精细，相对计算出的参数就会越准确，当然计算量也会增大。</p>
+<h4 id="probabilistic-hough-transform">Probabilistic Hough Transform</h4>
+<p>PHT的原理介绍可以参考<a href="http://cmp.felk.cvut.cz/~matas/" target="_blank" rel="external">Jiri. Matas</a>的<em>Robust Detection of Lines Using the Progressive Probabilistic Hough Transform</em>，基本思想是：不断地随机选取图像中的点进行投票，直到参数空间某个点<span class="math">\((\theta,r)\)</span>的累积值达到一个设定阈值后， 搜寻该参数对应直线上的点，基于一个gap阈值（判断两个点的连通性）寻找到直线的起始点（所以PHT输出的是线段），然后删除图像上对应该直线上的点并收回这些点对其他参数点的投票。基本的算法流程如下：</p>
+<ol style="list-style-type: decimal">
+<li>检查图像是否所有像素值为零，如果是退出；</li>
+<li>随机选取一个点，更新hough图中的累积值；</li>
+<li>在图像上删除所选取的随机点；</li>
+<li>检查目前hough图上最大值是否大于阈值thr(N)，如果有，则输出该参数对应的直线，否则转到1；</li>
+<li>沿着该直线搜寻图像上的点，基于gap阈值，判断改点是否属于该线段；</li>
+<li>删除该线段对应的图像上的点；</li>
+<li>撤销该线段上点对hough图上参数的投票；</li>
+<li>如果线段的长度大于length，把该线段加入到输出列表中</li>
+<li>转到1。</li>
+</ol>
+<p>OpenCV上的具体实现是函数HoughlinesP，其C++声明如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">void</span> HoughLinesP(InputArray image, OutputArray lines, <span class="keyword">double</span> rho, <span class="keyword">double</span> theta, <span class="keyword">int</span> threshold, <span class="keyword">double</span> minLineLength=<span class="number">0</span>, <span class="keyword">double</span> maxLineGap=<span class="number">0</span> )
+</pre></td></tr></table></figure></p>
+<p>其中，</p>
+<ul>
+<li><strong>image</strong>是图像输入；</li>
+<li><strong>lines</strong>是直线参数输出；</li>
+<li><strong>rho</strong>是距离r的分辨率，即每个像素对应的距离；</li>
+<li><strong>theta</strong>是角度<span class="math">\(\theta\)</span>的分辨率，即每个像素对应的角度；</li>
+<li><strong>threshold</strong>是累计值的阈值，大于这个阈值输出相应的直线；</li>
+<li><strong>minLineLength</strong>是输出直线的最小长度阈值；</li>
+<li><strong>maxLineGap</strong>是判断直线上两个点是否连续的最大间隔阈值。</li>
+</ul>
+<p>其核心代码的具体实现如下所示，下面作了详细注释：</p>
+<p><figure class="highlight c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+</pre></td><td class="code"><pre><span class="keyword">static</span> <span class="keyword">void</span>
+icvHoughLinesProbabilistic( CvMat* image, <span class="keyword">float</span> rho, <span class="keyword">float</span> theta, <span class="keyword">int</span> threshold, <span class="keyword">int</span> lineLength, 
+<span class="keyword">int</span> lineGap, CvSeq *lines, <span class="keyword">int</span> linesMax )
+{
+    <span class="comment">//accum：存储hough累积图 mask：存放大于零的图像点，即二值图像</span>
+    cv::Mat accum, mask;
+    <span class="comment">//存放离散sin和cos</span>
+    cv::<span class="stl_container"><span class="built_in">vector</span>&lt;<span class="keyword">float</span>&gt;</span> trigtab;
+    cv::MemStorage storage(cvCreateMemStorage(<span class="number">0</span>));
+
+    <span class="comment">//存放所有的点的坐标</span>
+    CvSeq* seq;
+    CvSeqWriter writer;
+    <span class="keyword">int</span> width, height;
+    <span class="keyword">int</span> numangle, numrho;
+    <span class="keyword">float</span> ang;
+    <span class="keyword">int</span> r, n, count;
+    CvPoint pt;
+    <span class="keyword">float</span> irho = <span class="number">1</span> / rho;
+    CvRNG rng = cvRNG(-<span class="number">1</span>);
+    <span class="keyword">const</span> <span class="keyword">float</span>* ttab;
+    uchar* mdata0;
+
+    CV_Assert( CV_IS_MAT(image) && CV_MAT_TYPE(image-&gt;type) == CV_8UC1 );
+
+    width = image-&gt;cols;
+    height = image-&gt;rows;
+
+    numangle = cvRound(CV_PI / theta);
+    numrho = cvRound(((width + height) * <span class="number">2</span> + <span class="number">1</span>) / rho);
+
+    accum.create( numangle, numrho, CV_32SC1 );
+    mask.create( height, width, CV_8UC1 );
+    trigtab.resize(numangle*<span class="number">2</span>);
+    accum = cv::Scalar(<span class="number">0</span>);
+    <span class="comment">//计算离散的cos和sin</span>
+    <span class="keyword">for</span>( ang = <span class="number">0</span>, n = <span class="number">0</span>; n &lt; numangle; ang += theta, n++ )
+    {
+	trigtab[n*<span class="number">2</span>] = (<span class="keyword">float</span>)(<span class="built_in">cos</span>(ang) * irho);
+	trigtab[n*<span class="number">2</span>+<span class="number">1</span>] = (<span class="keyword">float</span>)(<span class="built_in">sin</span>(ang) * irho);
+    }
+    ttab = &trigtab[<span class="number">0</span>];
+    mdata0 = mask.data;
+    <span class="comment">//把非零点坐标写入内存</span>
+    cvStartWriteSeq( CV_32SC2, <span class="keyword">sizeof</span>(CvSeq), <span class="keyword">sizeof</span>(CvPoint), storage, &writer);
+	
+    <span class="comment">// stage 1. collect non-zero image points</span>
+    <span class="keyword">for</span>( pt.y = <span class="number">0</span>, count = <span class="number">0</span>; pt.y &lt; height; pt.y++ )
+    {
+	<span class="keyword">const</span> uchar* data = image-&gt;data.ptr + pt.y*image-&gt;step;
+	uchar* mdata = mdata0 + pt.y*width;
+	<span class="keyword">for</span>( pt.x = <span class="number">0</span>; pt.x &lt; width; pt.x++ )
+	{
+	    <span class="keyword">if</span>( data[pt.x] )
+	    {
+		mdata[pt.x] = (uchar)<span class="number">1</span>;
+		CV_WRITE_SEQ_ELEM( pt, writer );
+	    }
+	    <span class="keyword">else</span>
+		mdata[pt.x] = <span class="number">0</span>;
+	}
+    }
+    <span class="comment">//把非零点赋值给seq</span>
+    seq = cvEndWriteSeq( &writer );
+    count = seq-&gt;total;
+
+    <span class="comment">// stage 2. process all the points in random order</span>
+    <span class="keyword">for</span>( ; count &gt; <span class="number">0</span>; count-- )
+    {
+	<span class="comment">// choose random point out of the remaining ones</span>
+	<span class="keyword">int</span> idx = cvRandInt(&rng) % count;
+	<span class="keyword">int</span> max_val = threshold-<span class="number">1</span>, max_n = <span class="number">0</span>;
+	CvPoint* point = (CvPoint*)cvGetSeqElem( seq, idx );
+	CvPoint line_end[<span class="number">2</span>] = { {<span class="number">0</span>,<span class="number">0</span>}, {<span class="number">0</span>,<span class="number">0</span>} };
+           
+	<span class="keyword">float</span> a, b;
+	<span class="keyword">int</span>* adata = (<span class="keyword">int</span>*)accum.data;
+	<span class="keyword">int</span> i, j, k, x0, y0, dx0, dy0, xflag;
+	<span class="keyword">int</span> good_line;
+	<span class="keyword">const</span> <span class="keyword">int</span> shift = <span class="number">16</span>;
+
+	i = point-&gt;y;
+	j = point-&gt;x;
+
+	<span class="comment">// "remove" it by overriding it with the last element</span>
+	<span class="comment">// 用最后一个元素覆盖掉被选中的点，但是这样会不会加大最后一个点被选中</span>
+	<span class="comment">// 的概率，以及次数？？？</span>
+	*point = *(CvPoint*)cvGetSeqElem( seq, count-<span class="number">1</span> );
+	
+	<span class="comment">// check if it has been excluded already (i.e. belongs to some 	other line)</span>
+	<span class="comment">// 如果该点值为零，说明该点已经在某条直线上了，所以被删除了</span>
+	<span class="keyword">if</span>( !mdata0[i*width + j] )
+	    <span class="keyword">continue</span>;
+
+	<span class="comment">// update accumulator, find the most probable line</span>
+	<span class="keyword">for</span>( n = <span class="number">0</span>; n &lt; numangle; n++, adata += numrho )
+	{
+	    r = cvRound( j * ttab[n*<span class="number">2</span>] + i * ttab[n*<span class="number">2</span>+<span class="number">1</span>] );
+	    r += (numrho - <span class="number">1</span>) / <span class="number">2</span>;
+	    <span class="keyword">int</span> val = ++adata[r];
+	    <span class="keyword">if</span>( max_val &lt; val )
+	    {
+		max_val = val;
+		max_n = n;
+	    }
+	}
+
+	<span class="comment">// if it is too "weak" candidate, continue with another point</span>
+	<span class="keyword">if</span>( max_val &lt; threshold )
+	    <span class="keyword">continue</span>;
+
+	<span class="comment">// from the current point walk in each direction</span>
+	<span class="comment">// along the found line and extract the line segment</span>
+	<span class="comment">// 当该点update累积值后，某个参数累积值大于某一值时，</span>
+	<span class="comment">// 以当前点为起点，沿直线两个方向搜索直线上的点</span>
+	a = -ttab[max_n*<span class="number">2</span>+<span class="number">1</span>];
+	b = ttab[max_n*<span class="number">2</span>];
+	x0 = j;
+	y0 = i;
+	<span class="comment">//此处判断是考虑到离散直线的表示问题，因为沿直线方向，x坐标移动一个像</span>
+	<span class="comment">//素，对应的y坐标应该移动|b/a|个像素，而且|b/a|应该小于1，而当|b/a|&gt;1</span>
+	<span class="comment">//的时候，我们按照y坐标移动一个像素的方式进行搜寻，对应x坐标移动|a/b|</span>
+	<span class="comment">//个像素，对应|a/b|&lt;1。这种搜寻方式是为了保证在斜线方向上，离散像素的</span>
+	<span class="comment">//距离保持最近。</span>
+	<span class="keyword">if</span>( <span class="built_in">fabs</span>(a) &gt; <span class="built_in">fabs</span>(b) )
+	{
+	    xflag = <span class="number">1</span>;
+	    dx0 = a &gt; <span class="number">0</span> ? <span class="number">1</span> : -<span class="number">1</span>;
+	    <span class="comment">//这里以及后面的shift是考虑到dy0是int型，而b/fabs(a)是float型，</span>
+	    <span class="comment">//直接赋值会丢失数据，b/fabs(a)&lt;1，直接赋值的话，dy0=0</span>
+	    dy0 = cvRound( b*(<span class="number">1</span> &lt;&lt; shift)/<span class="built_in">fabs</span>(a) );
+	    y0 = (y0 &lt;&lt; shift) + (<span class="number">1</span> &lt;&lt; (shift-<span class="number">1</span>));
+	}
+	<span class="keyword">else</span>
+	{
+	    xflag = <span class="number">0</span>;
+	    dy0 = b &gt; <span class="number">0</span> ? <span class="number">1</span> : -<span class="number">1</span>;
+	    dx0 = cvRound( a*(<span class="number">1</span> &lt;&lt; shift)/<span class="built_in">fabs</span>(b) );
+	    x0 = (x0 &lt;&lt; shift) + (<span class="number">1</span> &lt;&lt; (shift-<span class="number">1</span>));
+	}
+
+	<span class="keyword">for</span>( k = <span class="number">0</span>; k &lt; <span class="number">2</span>; k++ )
+	{
+	    <span class="keyword">int</span> gap = <span class="number">0</span>, x = x0, y = y0, dx = dx0, dy = dy0;
+
+	    <span class="keyword">if</span>( k &gt; <span class="number">0</span> )
+		dx = -dx, dy = -dy;
+	
+	    <span class="comment">// walk along the line using fixed-point arithmetics,</span>
+	    <span class="comment">// stop at the image border or in case of too big gap</span>
+	    <span class="comment">//该段循环是实现线段起始点的搜寻，并且</span>
+	    <span class="comment">//据此判断线段的长度是否符合要求</span>
+	    <span class="keyword">for</span>( ;; x += dx, y += dy )
+	    {
+		uchar* mdata;
+		<span class="keyword">int</span> i1, j1;
+
+		<span class="keyword">if</span>( xflag )
+		{
+		    j1 = x;
+		    i1 = y &gt;&gt; shift;
+		}
+		<span class="keyword">else</span>
+		{
+		    j1 = x &gt;&gt; shift;
+		    i1 = y;
+		}
+
+		<span class="keyword">if</span>( j1 &lt; <span class="number">0</span> || j1 &gt;= width || i1 &lt; <span class="number">0</span> || i1 &gt;= height )
+		    <span class="keyword">break</span>;
+		mdata = mdata0 + i1*width + j1;
+	
+		<span class="comment">// 对于每个非零点，更新线段的起始点，重置gap为零</span>
+		<span class="keyword">if</span>( *mdata )
+		{
+		    gap = <span class="number">0</span>;
+		    line_end[k].y = i1;
+		    line_end[k].x = j1;
+		}
+		<span class="keyword">else</span> <span class="keyword">if</span>( ++gap &gt; lineGap )
+		    <span class="keyword">break</span>;
+	}
+    }
+			
+    <span class="comment">//判断线段的长度是否足够长</span>
+	    good_line = <span class="built_in">abs</span>(line_end[<span class="number">1</span>].x - line_end[<span class="number">0</span>].x) &gt;= lineLength ||
+		<span class="built_in">abs</span>(line_end[<span class="number">1</span>].y - line_end[<span class="number">0</span>].y) &gt;= lineLength;
+	
+    <span class="comment">//该段循环和上段循环类似，但是目标不同，这里是为了清除掉</span>
+    <span class="comment">//good_line对应的图像的点，即赋值为零，并且撤回这些点对</span>
+    <span class="comment">//其他accum的投票；此段循环的前提是已经判断出了good_line，</span>
+    <span class="comment">//而good_line是由上段循环完成的。</span>
+    <span class="keyword">for</span>( k = <span class="number">0</span>; k &lt; <span class="number">2</span>; k++ )
+    {
+	<span class="keyword">int</span> x = x0, y = y0, dx = dx0, dy = dy0;
+
+	<span class="keyword">if</span>( k &gt; <span class="number">0</span> )
+	    dx = -dx, dy = -dy;
+
+	<span class="comment">// walk along the line using fixed-point arithmetics,</span>
+	<span class="comment">// stop at the image border or in case of too big gap</span>
+	<span class="keyword">for</span>( ;; x += dx, y += dy )
+	{
+	    uchar* mdata;
+	    <span class="keyword">int</span> i1, j1;
+
+	    <span class="keyword">if</span>( xflag )
+	    {
+		j1 = x;
+		i1 = y &gt;&gt; shift;
+	    }
+	    <span class="keyword">else</span>
+	    {
+		j1 = x &gt;&gt; shift;
+		i1 = y;
+	    }
+
+	    mdata = mdata0 + i1*width + j1;
+
+	    <span class="comment">//对于good_line上的每个非零点，撤销其对应accum的投票，并置零</span>
+	    <span class="keyword">if</span>( *mdata )
+	    {
+		<span class="keyword">if</span>( good_line )
+		{
+		    adata = (<span class="keyword">int</span>*)accum.data;
+		    <span class="keyword">for</span>( n = <span class="number">0</span>; n &lt; numangle; n++, adata += 	numrho )
+		    {
+			r = cvRound( j1 * ttab[n*<span class="number">2</span>] + i1 * ttab[n*<span class="number">2</span>+<span class="number">1</span>] );
+			r += (numrho - <span class="number">1</span>) / <span class="number">2</span>;
+			adata[r]--;
+		    }
+		}
+		*mdata = <span class="number">0</span>;
+	    }
+	
+	    <span class="keyword">if</span>( i1 == line_end[k].y && j1 == line_end[k].x )
+	    <span class="keyword">break</span>;
+	}
+    }
+			
+    <span class="comment">//输出good_line</span>
+    <span class="keyword">if</span>( good_line )
+    {
+	CvRect lr = { line_end[<span class="number">0</span>].x, line_end[<span class="number">0</span>].y, line_end[<span class="number">1</span>].x, line_end[<span class="number">1</span>].y };
+	cvSeqPush( lines, &lr );
+	<span class="keyword">if</span>( lines-&gt;total &gt;= linesMax )
+	    <span class="keyword">return</span>;
+    }
+}
+</pre></td></tr></table></figure></p>
+<p>整体来说，PHT的思路还是比较清晰的，代码开始比较迷惑我的地方在于沿直线的搜寻问题上，后来查阅OpenCV画直线的函数，也发现其直线上离散点的搜寻规律，从而理解了这个部分。</p>
+<h3 id="总结">总结</h3>
+<p>STH和PTH都有着各自的优势，STH在图像中直线上点比较稀疏的情况下，检测效果较好，而PTH针对这种情况会出现同一直线分成多条段的情况，主要是由于PTH的直线搜索策略对于稀疏点效果不好，当点稍微偏离直线时就容易搜不到，这样的话，只能通过降低其累积阈值以及最小长度，从而导致一条直线分成多条线段的问题。但PTH在噪声较大的情况其计算效率相对较高，而且可以输出直线的起始点，即输出的是线段，这在边缘较为稠密的图像中检测效果较好。</p>
+<p>本来打算把圆的检测也介绍下的，但写道这看到篇幅已然很大，而且圆的检测还没有仔细研究彻底，所以决定下次再讲。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/07/an-introduction-of-hough-tranform/" data-id="ueq6616dsuzjcl02" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/07/an-introduction-of-hough-tranform/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hough-Transform/">Hough Transform</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/08/09/union-find-algorithm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          利用不相交集实现等价元素的聚类
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/05/29/texmacs-how-to-input-table/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">TexMacs札记(III) ——输入表格</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2013/08/07/an-introduction-of-hough-tranform/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

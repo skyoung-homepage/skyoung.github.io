@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>利用不相交集实现等价元素的聚类 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="说到聚类，相信大家最先想到的应该是k-means，但是我们知道k-means必须指定聚类的个数，而且聚类初始点的选取也很大影响最后聚类的效果。虽然有一些方法（如k-means++）可以设置较为合理的初始聚类点，但仍然需要指定聚类的个数，但有时我们并不知道一堆数据中有多少个类，这样就使得聚类变得没法下手。这里介绍一种利用一种树型数据结构——不相交集，实现的数据聚类方法。
+不相交集（disjoint-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用不相交集实现等价元素的聚类">
+<meta property="og:url" content="http://blog.skyoung.org/2013/08/09/union-find-algorithm/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="说到聚类，相信大家最先想到的应该是k-means，但是我们知道k-means必须指定聚类的个数，而且聚类初始点的选取也很大影响最后聚类的效果。虽然有一些方法（如k-means++）可以设置较为合理的初始聚类点，但仍然需要指定聚类的个数，但有时我们并不知道一堆数据中有多少个类，这样就使得聚类变得没法下手。这里介绍一种利用一种树型数据结构——不相交集，实现的数据聚类方法。
+不相交集（disjoint-">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用不相交集实现等价元素的聚类">
+<meta name="twitter:description" content="说到聚类，相信大家最先想到的应该是k-means，但是我们知道k-means必须指定聚类的个数，而且聚类初始点的选取也很大影响最后聚类的效果。虽然有一些方法（如k-means++）可以设置较为合理的初始聚类点，但仍然需要指定聚类的个数，但有时我们并不知道一堆数据中有多少个类，这样就使得聚类变得没法下手。这里介绍一种利用一种树型数据结构——不相交集，实现的数据聚类方法。
+不相交集（disjoint-">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-union-find-algorithm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/09/union-find-algorithm/" class="article-date">
+  <time datetime="2013-08-08T16:00:00.000Z" itemprop="datePublished">Aug 9 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      利用不相交集实现等价元素的聚类
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>说到聚类，相信大家最先想到的应该是k-means，但是我们知道k-means必须指定聚类的个数，而且聚类初始点的选取也很大影响最后聚类的效果。虽然有一些方法（如k-means++）可以设置较为合理的初始聚类点，但仍然需要指定聚类的个数，但有时我们并不知道一堆数据中有多少个类，这样就使得聚类变得没法下手。这里介绍一种利用一种树型数据结构——不相交集，实现的数据聚类方法。</p>
+<p>不相交集（<a href="http://en.wikipedia.org/wiki/Union_find" target="_blank" rel="external">disjoint-set</a>），也叫并査集（union-find）是保持一组不相交的动态集合。给定一系列数据，我们首先假设每个元素是一个集合，通过集合的查找合并实现等价元素的合并，从而实现相同类别的元素的聚类。这里两个元素等价的标准是由自己设定，取决于具体应用。例如目标检测中滑窗检测目标时用于聚合方框，其等价标准就是方框的重叠率的大小；再比如图像处理中联通区域标记的应用，其等价标准就是两个点是否联通。 <a id="more"></a> ###OpenCV中并查算法的实现</p>
+<p>OpenCV中的partition函数实现了这一数据分类的功能，具体的函数声明如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp, <span class="keyword">class</span> _EqPredicate&gt;
+<span class="keyword">int</span> partition (<span class="keyword">const</span> <span class="stl_container"><span class="built_in">vector</span>&lt; _Tp &gt;</span> &  vec, <span class="stl_container"><span class="built_in">vector</span>&lt; <span class="keyword">int</span> &gt;</span> &  labels, _EqPredicate  predicate =_EqPredicate())
+</pre></td></tr></table></figure></p>
+<p>其中，</p>
+<ul>
+<li><strong>vec</strong>是输入数据集</li>
+<li><strong>lables</strong>是每个元素对应的标记类别</li>
+<li><strong>predicate</strong>是等价标准，这是一个指向函数对象的指针，和C++中泛型算法中的谓词函数是一样，可以使用普通的bool函数做判断，也可以使用函数对象，即写个类，里面包含bool operator()(const <em>Tp&amp; a, const </em>Tp&amp; b)。</li>
+</ul>
+<p>下面做个简单的示例： 当使用bool函数的时候，调用如下，<strong><em>注意equivalence没有括号</em></strong> <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="keyword">bool</span> equivalence(<span class="keyword">const</span> <span class="keyword">int</span> &a, <span class="keyword">const</span> <span class="keyword">int</span> &b)
+{
+	<span class="keyword">return</span> a == b;
+}
+
+cv::partition(data,labels,equaliance);
+</pre></td></tr></table></figure></p>
+<p>当使用函数对象的时候，调用如下，这次<strong><em>equivalence有括号</em></strong>，如果需要传入参数的话，可以在类里面写个私有变量，传入即可。 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="code"><pre>class equivalence
+{
+<span class="keyword">public</span>:
+	<span class="keyword">bool</span> <span class="title">operator</span>()(<span class="keyword">const</span> <span class="keyword">int</span> &a, <span class="keyword">const</span> <span class="keyword">int</span> &b)
+	{
+		<span class="keyword">return</span> a == b;
+	}
+};
+
+cv::partition(data,labels,equaliance());
+</pre></td></tr></table></figure></p>
+<p>在介绍partition源代码之前，先大体讲一下不相交集数据结构的一种较快的实现方式——不相交集森林。用有根树来表示一个集合，树上的每个节点都是集合中的元素，每棵树代表一个集合。通过引入两种启发式策略，可以实现目前已知最快的并查算法。具体的介绍可以参考<a href="http://www.cs.dartmouth.edu/~thc/" target="_blank" rel="external">Thomas H. Cormen</a>等人的《算法导论》第二十一章的内容。此外除了opencv中有这个算法的实现外，<a href="http://www.boost.org/" target="_blank" rel="external">Boost</a>中也有相关的实现，可以参考<a href="http://www.boost.org/doc/libs/1_54_0/libs/disjoint_sets/disjoint_sets.html" target="_blank" rel="external">Disjoint Sets</a>。</p>
+<h4 id="两种启发式策略">两种启发式策略：</h4>
+<p><strong>按秩合并</strong>：是指两棵树在合并的时候秩小的树的根指向值大的树的根，当两棵树秩相同的时候，任选一棵树指向另一棵树，同时秩加一。这里秩是指树的高度。</p>
+<p><strong>压缩路径</strong>：是指使查找路径上的每个节点都直接指向根节点，但该操作不改变秩的大小，因为秩还要用到树的合并中。</p>
+<p>OpenCV中partition的实现在opencv_core工程下的operations.hpp文件下。下面贴出核心代码，并作了详细注释： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+</pre></td><td class="code"><pre><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp, <span class="keyword">class</span> _EqPredicate&gt;
+<span class="keyword">int</span> partition( <span class="keyword">const</span> <span class="stl_container"><span class="built_in">vector</span>&lt;_Tp&gt;</span>& _vec, <span class="stl_container"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;</span>& labels,
+          _EqPredicate predicate=_EqPredicate())
+{
+	<span class="keyword">int</span> i, j, N = (<span class="keyword">int</span>)_vec.size();
+   	<span class="keyword">const</span> _Tp* vec = &_vec[<span class="number">0</span>];
+	
+	<span class="comment">//存放每个节点的父节点位置index</span>
+   	<span class="keyword">const</span> <span class="keyword">int</span> PARENT=<span class="number">0</span>;
+	<span class="comment">//存放节点秩的index</span>
+   	<span class="keyword">const</span> <span class="keyword">int</span> RANK=<span class="number">1</span>;
+    
+	<span class="comment">//每个节点有两个元素：父节点和节点的秩</span>
+   	<span class="stl_container"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;</span> _nodes(N*<span class="number">2</span>);
+   	<span class="keyword">int</span> (*nodes)[<span class="number">2</span>] = (<span class="keyword">int</span>(*)[<span class="number">2</span>])&_nodes[<span class="number">0</span>];
+    	<span class="comment">// The first O(N) pass: create N single-vertex trees</span>
+	<span class="comment">//初始时，把每个元素看成一个集合，即一棵树</span>
+    	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N; i++)
+   	{
+	    <span class="comment">//初始时，父节点为-1，秩为0</span>
+    	    nodes[i][PARENT]=-<span class="number">1</span>;
+   	    nodes[i][RANK] = <span class="number">0</span>;
+    	}
+	
+    	<span class="comment">// The main O(N^2) pass: merge connected components</span>
+   	<span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; N; i++ )
+   	{
+   	    <span class="keyword">int</span> root = i;
+
+   	    <span class="comment">// find root</span>
+	    <span class="comment">//找的节点所在树的根节点</span>
+   	    <span class="keyword">while</span>( nodes[root][PARENT] &gt;= <span class="number">0</span> )
+   	        root = nodes[root][PARENT];
+	
+  	    <span class="keyword">for</span>( j = <span class="number">0</span>; j &lt; N; j++ )
+    	    {
+		<span class="comment">//对除i元素以外的其他元素，判断两元素是否等价</span>
+ 	        <span class="keyword">if</span>( i == j || !predicate(vec[i], vec[j]))
+   	            <span class="keyword">continue</span>;
+  	        <span class="keyword">int</span> root2 = j;
+			
+		    <span class="comment">//找到该等价元素的所在树的根节点</span>
+    	        <span class="keyword">while</span>( nodes[root2][PARENT] &gt;= <span class="number">0</span> )
+   	            root2 = nodes[root2][PARENT];
+			
+		    <span class="comment">//判断两个元素根节点是否相同，即两元素是否是同一集合</span>
+   	        <span class="keyword">if</span>( root2 != root )
+   	        {
+   	            <span class="comment">// unite both trees</span>
+		        <span class="comment">//如果不是同一集合，则按秩合并</span>
+   	            <span class="keyword">int</span> rank = nodes[root][RANK], rank2 = nodes[root2]	[RANK];
+		        <span class="comment">//秩小的树的根指向秩大的树的根</span>
+		        <span class="comment">//如果秩相等，就任意选一根指向另一根，同时秩加一</span>
+   	            <span class="keyword">if</span>( rank &gt; rank2 )
+    	                nodes[root2][PARENT] = root;
+				
+   	            <span class="keyword">else</span>
+   	            {
+   	                nodes[root][PARENT] = root2;
+   	                nodes[root2][RANK] += rank == rank2;
+	                root = root2;
+    	            }
+		        <span class="comment">//判定此时的root是树的根节点</span>
+   	            assert( nodes[root][PARENT] &lt; <span class="number">0</span> );
+	                <span class="keyword">int</span> k = j, parent;
+
+                <span class="comment">// compress the path from node2 to root</span>
+			        <span class="comment">// 压缩j处节点的路径，沿着j处的节点向上逐一指向根节点</span>
+                <span class="keyword">while</span>( (parent = nodes[k][PARENT]) &gt;= <span class="number">0</span> )
+                {
+                    nodes[k][PARENT] = root;
+                    k = parent;
+	        }
+
+                <span class="comment">// compress the path from node to root</span>
+		        <span class="comment">//压缩i处节点的路径，沿着i处节点向上逐一指向根节点</span>
+                k = i;
+                <span class="keyword">while</span>( (parent = nodes[k][PARENT]) &gt;= <span class="number">0</span> )
+                {
+                    nodes[k][PARENT] = root;
+                    k = parent;
+                }
+            }
+	}
+    }
+
+    <span class="comment">// Final O(N) pass: enumerate classes</span>
+    labels.resize(N);
+    <span class="keyword">int</span> nclasses = <span class="number">0</span>;
+
+    <span class="comment">//对每个元素找到它的根节点，然后重新利用rank，</span>
+    <span class="comment">//把rank赋值为集合的类别label</span>
+    <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; N; i++ )
+    {
+        <span class="keyword">int</span> root = i;
+	    <span class="comment">//查找根节点</span>
+        <span class="keyword">while</span>( nodes[root][PARENT] &gt;= <span class="number">0</span> )
+	         root = nodes[root][PARENT];
+        <span class="comment">// re-use the rank as the class label</span>
+        <span class="keyword">if</span>( nodes[root][RANK] &gt;= <span class="number">0</span> )
+	        <span class="comment">//此处设为负值是为了表明该节点的rank已经赋值为label了</span>
+            nodes[root][RANK] = ~nclasses++;
+	    <span class="comment">//root相同的节点赋值同样的label</span>
+        labels[i] = ~nodes[root][RANK];
+    }
+	
+    <span class="keyword">return</span> nclasses;
+}
+</pre></td></tr></table></figure></p>
+<h3 id="总结">总结</h3>
+<p>相比传统的k-means聚类方法，该方法具有不需要指定聚类个数的优势。针对要分类的数据集，如果你事先知道元素间相似性的判断准则，像重叠矩形框的聚合，那么用并查算法是比较方便的。我的理解是k-means的聚类方法不需要知道元素确切的属于同一类元素的相似性准则，而是通过该元素与每个集合的中心点的距离远近判定元素的集合归属。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/09/union-find-algorithm/" data-id="3ubpl4vn5fyxjbx9" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/09/union-find-algorithm/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Union-find/">Union find</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/08/15/connected-component-labeling/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          几种联通区域标记的算法介绍
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/08/07/an-introduction-of-hough-tranform/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">浅析霍夫变换检测直线</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2013/08/09/union-find-algorithm/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

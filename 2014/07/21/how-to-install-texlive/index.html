@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>ubuntu14.04安装TexLive2014 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近买了一本Latex方面的书，打算系统学习一下Latex，虽然以前也大概了解过LaTex，但是都是很零碎的学习，不够系统，而且现在大多也都忘记了。目前Tex的发行版主要有两种：CTex和TexLive，前者是Windows下的软件，后者则可以在多种常见系统下运行，包括Windows,MacOSX,Linux 各版本。这里仅就TexLive在ubuntu14.04下的安装做一个简单的介绍。
+安装T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ubuntu14.04安装TexLive2014">
+<meta property="og:url" content="http://blog.skyoung.org/2014/07/21/how-to-install-texlive/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="最近买了一本Latex方面的书，打算系统学习一下Latex，虽然以前也大概了解过LaTex，但是都是很零碎的学习，不够系统，而且现在大多也都忘记了。目前Tex的发行版主要有两种：CTex和TexLive，前者是Windows下的软件，后者则可以在多种常见系统下运行，包括Windows,MacOSX,Linux 各版本。这里仅就TexLive在ubuntu14.04下的安装做一个简单的介绍。
+安装T">
+<meta property="og:image" content="/media/How-to/tex1.png">
+<meta property="og:image" content="/media/How-to/tex2.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ubuntu14.04安装TexLive2014">
+<meta name="twitter:description" content="最近买了一本Latex方面的书，打算系统学习一下Latex，虽然以前也大概了解过LaTex，但是都是很零碎的学习，不够系统，而且现在大多也都忘记了。目前Tex的发行版主要有两种：CTex和TexLive，前者是Windows下的软件，后者则可以在多种常见系统下运行，包括Windows,MacOSX,Linux 各版本。这里仅就TexLive在ubuntu14.04下的安装做一个简单的介绍。
+安装T">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-how-to-install-texlive" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/07/21/how-to-install-texlive/" class="article-date">
+  <time datetime="2014-07-21T05:14:33.000Z" itemprop="datePublished">Jul 21 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ubuntu14.04安装TexLive2014
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>最近买了一本Latex方面的书，打算系统学习一下Latex，虽然以前也大概了解过LaTex，但是都是很零碎的学习，不够系统，而且现在大多也都忘记了。目前Tex的发行版主要有两种：CTex和TexLive，前者是Windows下的软件，后者则可以在多种常见系统下运行，包括Windows,MacOSX,Linux 各版本。这里仅就TexLive在ubuntu14.04下的安装做一个简单的介绍。</p>
+<p>安装TexLive的方法有：通过CD，通过在线安装，通过ISO挂载（linux）这里仅就最后一种进行介绍。首先，要去<a href="https://www.tug.org/texlive/acquire-iso.html" target="_blank" rel="external">Acquiring TeX Live as an ISO image</a>下载最新的TexLive。这里建议网络不稳定的用户采用torrent下载，支持断点，否则很容易中间断掉，笔者就悲剧的出现这种情况，最后还是使用torrent下载的。 cd到TexLive的ISO文件所在文件夹下，然后挂载到<code>/mnt</code>上 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>mount <span class="attribute">-t</span> iso9660 <span class="attribute">-o</span> ro,<span class="keyword">loop</span>,noauto texlive2014<span class="built_in">.</span>iso /mnt
+</pre></td></tr></table></figure></p>
+<p>或者直接右键<code>使用磁盘映像挂载器打开</code>，相当于挂载到<code>/media/usrname/TeXLive2014</code>下面，这里<code>usrname</code>是你的电脑用户名。因为TexLive的图形化安装界面需要Perl/Tk模块的支持，所以首先需要安装相应模块， <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>sudo apt<span class="attribute">-get</span> install perl<span class="attribute">-tk</span>
+</pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>然后执行， <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>cd /mnt
+<span class="built_in">.</span>/install<span class="attribute">-tl</span> <span class="attribute">-gui</span>
+</pre></td></tr></table></figure></p>
+<p>出现如下图形化安装界面，</p>
+<div class="figure">
+<img src="/media/How-to/tex1.png">
+</div>
+<p>接下来就很简单了，点击<code>安装TexLive</code>即可，接下来的画面是这样：</p>
+<div class="figure">
+<img src="/media/How-to/tex2.png">
+</div>
+<p>安装完成后需要设置环境变量，即在<code>～/profile</code>下加入 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="constant">PATH</span>=<span class="regexp">/usr/local</span><span class="regexp">/texlive/</span><span class="number">2014</span>/bin/x86_64-<span class="symbol">linux:</span><span class="variable">$PATH</span>; export <span class="constant">PATH</span>
+<span class="constant">MANPATH</span>=<span class="regexp">/usr/local</span><span class="regexp">/texlive/</span><span class="number">2014</span>/texmf-dist/doc/<span class="symbol">man:</span><span class="variable">$MANPATH</span>; export <span class="constant">MANPATH</span>
+<span class="constant">INFOPATH</span>=<span class="regexp">/usr/local</span><span class="regexp">/texlive/</span><span class="number">2014</span>/texmf-dist/doc/<span class="symbol">info:</span><span class="variable">$INFOPATH</span>; export <span class="constant">INFOPATH</span>
+</pre></td></tr></table></figure></p>
+<p>这里注意，第一个PATH中的<code>/x86_64-linux</code>因各个电脑不同而不同，因为笔者的电脑是64位，所以是<code>/x86_64-linux</code>，32位应该是<code>/i386-linux</code>，可以自行去相应文件夹下查询。</p>
+<p>最后需要配置一下字体，否则无法支持中文显示。</p>
+<ol style="list-style-type: decimal">
+<li><p>将<code>/usr/local/texlive/2014/texmf-var/fonts/conf</code>下的<code>texlive-fontconfig.conf</code>复制到<code>/etc/fonts/conf.d</code>目录下，并且改名为<code>09-texlive.config</code>， 也可以执行如下命令, <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>sudo <span class="keyword">cp</span> /usr/local/texlive/<span class="number">2014</span>/texmf-var/fonts/conf/texlive-fontconfig<span class="preprocessor">.conf</span> /etc/fonts/conf<span class="preprocessor">.d</span>/<span class="number">09</span>-texlive<span class="preprocessor">.conf</span>
+</pre></td></tr></table></figure></p></li>
+<li><p>刷新fontconfig的字体缓存，执行如下命令： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>sudo fc<span class="attribute">-cache</span> <span class="attribute">-fsv</span>
+</pre></td></tr></table></figure></p></li>
+</ol>
+<p>这样就为系统配置了TexLive自带的字体。</p>
+<ol start="3" style="list-style-type: decimal">
+<li>为了让pdfTex,dvipdfmx等程序能正确找到系统的安装的字体，需要设置OSFONTDIR变量，在<code>/usr/local/texlive/2014/</code>下的配置文件<code>texmf.cnf</code>中，加入如下变量 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="constant">OSFONTDIR</span> = <span class="regexp">/usr/share</span><span class="regexp">/fonts/</span><span class="regexp">/;/usr</span><span class="regexp">/local/share</span><span class="regexp">/fonts/</span><span class="regexp">/;~/</span>.fonts/<span class="regexp">/</span>
+</pre></td></tr></table></figure></li>
+</ol>
+<p>TexLive安装完成后，可以考虑安装一些针对Latex的专门编辑器，比如Texmaker，TeXstudio，TeXworks等。比如笔者的使用的就是Texmaker，感觉很方便，去官网上下载相应的软件安装就可以。这里有一个问题，安装<code>Ubuntu 14.04 Qt5 amd64 package : texmakerQT5_ubuntu_14.04_4.2_amd64.deb (Qt5)</code>这个版本，中文无法输入，所以笔者安装的是<code>Ubuntu 14.04 amd64 package : texmaker_ubuntu_14.04_4.2_amd64.deb (Qt4)</code>这个版本，中文是可以正常输入。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/07/21/how-to-install-texlive/" data-id="jznhwonmo0pq4tap" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/07/21/how-to-install-texlive/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LaTex/">LaTex</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/texlive/">texlive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/texmaker/">texmaker</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OpenCV系列(四)：矩阵操作
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/05/11/several-tips-of-using-hexo/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用hexo构建博客时几个需要注意的地方</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2014/07/21/how-to-install-texlive/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

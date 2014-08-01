@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>Category: Computer Vision | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Skyoung">
+<meta property="og:url" content="http://blog.skyoung.org/categories/Computer-Vision/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Skyoung">
+<meta name="twitter:description">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Lucas-Kanade-Tracker" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/04/13/Lucas-Kanade-Tracker/" class="article-date">
+  <time datetime="2014-04-12T16:00:00.000Z" itemprop="datePublished">Apr 13 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/04/13/Lucas-Kanade-Tracker/">Lucas-Kanade（LK）算法原理介绍及OpenCV代码实现分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Lucas-Kanade跟踪算法是视觉跟踪中一个很经典的基于点的逐帧跟踪算法。起初这个算法是用来求解stero matching<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>的，后来经过Carlo Tomasi<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>和Jianbo Shi<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>等人的发展渐趋成熟。Jianbo Shi提出了一种筛选跟踪点特征的方法，使得特征的跟踪更可靠。Jean-Yves Bouguet<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>详细阐述了如何采用金字塔方式实现LK算法以处理两帧之间特征点位移较大的情况。</p>
+<h3 id="问题阐述">问题阐述</h3>
+<p>首先我们来看一下我们要解决的问题是什么？LK算法是基于特征点的跟踪，而这里的特征点就是每个点对应的一个小窗口图像块，LK所要解决的是求解连续两帧图像相同特征点的位移问题。这里我们假设<span class="math">\(I\)</span>和<span class="math">\(J\)</span>为连续两帧图像，其<span class="math">\((x,y)\)</span>点的灰度值分别对应<span class="math">\(I(x,y), J(x,y)\)</span>。设<span class="math">\(\mathbf{u}=[u_x,u_y]^T\)</span>是图像<span class="math">\(I\)</span>上一点，LK算法的目标是在图像<span class="math">\(J\)</span>找到一点<span class="math">\(\mathbf{v}= \mathbf{u} + \mathbf{d} = [u_x+d_x,u_y+d_y]^T\)</span>使得点<span class="math">\(I(\mathbf{u})\)</span>和点<span class="math">\(J(\mathbf{v})\)</span>是同一个位置。为了求解这样的点，LK求解这两个点对应的小窗口内像素的相似度。设<span class="math">\(\omega_x\)</span>和<span class="math">\(\omega_y\)</span>分别是点左右扩展的窗口范围，这样我们可以定义如下residual function为</p>
+<p><span class="math">\[\epsilon(\mathbf{d})=\epsilon(d_x,d_y)=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(I(x,y)-J(x+d_x,y+d_y))^2\]</span></p>
+<p>窗口大小为<span class="math">\((2\omega_x+1)\times (2\omega_y+1)\)</span>,通常情况下<span class="math">\(\omega_x\)</span>和<span class="math">\(\omega_y\)</span>的值为2,3,4,5,6,7。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/04/13/Lucas-Kanade-Tracker/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/04/13/Lucas-Kanade-Tracker/" data-id="5z95dse78i6gikw2" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/04/13/Lucas-Kanade-Tracker/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tracking/">Tracking</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-visual-tracking-a-benchmark" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/08/visual-tracking-a-benchmark/" class="article-date">
+  <time datetime="2013-09-07T16:00:00.000Z" itemprop="datePublished">Sep 8 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/08/visual-tracking-a-benchmark/">一个关于visual tracking的benchmark</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>自从工作后，就很少接触visual tracking这个领域了。最近下班没事，浏览博客看到几篇CVPR2013关于visual tracking的paper，其中有一篇名为<strong>Online Object Tracking: A Benchmark</strong>的paper对目前该领域几乎大部分优秀算法做了一个分析和评估，提出了更为严谨合理的评估方法。作者是University of California at Merced的一个博士后，以前好像是自动化所的一个博士。他针对29个算法，测试了50个视频，并且标记了所有视频的groundtruth，其耐心和毅力值得敬佩。</p>
+<h3 id="分析算法特性">分析算法特性</h3>
+<p>当然，作者不是简单的罗列出所有的算法，而是针对目前的存在的算法，总结出四个模块：Representation Scheme，Search Mechanism，Model Update，Context and Fusion of Trackers。个人觉得前三个模块的确是visual tracking最重要的部分，Representation Scheme方面，算法的提出相对热闹些：基于图像原始像素值（如Lucas and Kanade稀疏点的光流法），直方图（如color histograms, histograms of oriented gradients (HOG)等），Harr-like特征，binary feature，基于sparse representation等等。Search Mechanism方面，可以用的方法相对就会比较单一。对于跟踪算法是基于最优化函数框架的算法，跟踪物体的位置通过local optimum search确定位置。而对于算法是基于binary classifier的，方法主要有两种：particle filter和dense sampling search。Model Update方面，对于binary classifier就是训练样本的更新。对于subspace-based tracking就是物体外观图像块的update。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2013/09/08/visual-tracking-a-benchmark/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/09/08/visual-tracking-a-benchmark/" data-id="lj8pyww1l2con918" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/09/08/visual-tracking-a-benchmark/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Benchmark/">Benchmark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Online-Visual-Tracking/">Online Visual Tracking</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-connected-component-labeling" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/15/connected-component-labeling/" class="article-date">
+  <time datetime="2013-08-14T16:00:00.000Z" itemprop="datePublished">Aug 15 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/08/15/connected-component-labeling/">几种联通区域标记的算法介绍</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>联通区域标记(Connected Component Labeling)是图像处理里面常用的一个技术，它是用来检测二值图像中联通的区域，在许多跟踪检测算法中充当目标区域检测的作用。常见的CCL(Connected Component Labeling)包括Two-Pass的方法和One-Pass的方法，这里pass就是扫描的遍数，Two-Pass就是扫描两遍的算法，One-Pass就是扫描一遍的算法。下面仅就这两类算法中有代表性的算法做一个简单的介绍。</p>
+<h3 id="two-pass">Two-Pass</h3>
+<h4 id="传统的two-pass">传统的Two-Pass：</h4>
+<p>关于该算法的一个形象的描述可以参考博客<a href="http://www.aishack.in/2010/03/labelling-connected-components-example/" target="_blank" rel="external">Labelling connected components – Example</a>。具体的流程是：</p>
+<ol style="list-style-type: decimal">
+<li>逐行扫描图像上的点，检查每个点是否是前景点，如果不是，继续扫描；</li>
+<li>检查该前景点的左边的点和上边的点</li>
+</ol>
+<ul>
+<li>如果有一个为前景点，则为当前扫描点标记和此点相同编号；</li>
+<li>如果两个都是前景点，则选择标号小的，为当前扫描点标记编号；这里注意如果两个都是前景点且标号不同，需要把标号小的点设为标号大的点的父节点，以方便第二遍扫描的时候用并查集算法（参考<a href="http://blog.skyoung.org/2013/08/09/union-find-algorithm/" target="_blank" rel="external">利用不相交集实现等价元素的聚类</a>）合并;</li>
+<li>如果都不是，则赋值目前标号label，label++（label初始值为零）；</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>再次扫描图像，利用并查集算法合并联通的不同的label的区域。</li>
+</ol>
+
+        
+          <p class="article-more-link">
+            <a href="/2013/08/15/connected-component-labeling/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/15/connected-component-labeling/" data-id="wq8u865rz3xbrpdf" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/15/connected-component-labeling/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Connected-Component-Labeling/">Connected Component Labeling</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-union-find-algorithm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/09/union-find-algorithm/" class="article-date">
+  <time datetime="2013-08-08T16:00:00.000Z" itemprop="datePublished">Aug 9 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/08/09/union-find-algorithm/">利用不相交集实现等价元素的聚类</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>说到聚类，相信大家最先想到的应该是k-means，但是我们知道k-means必须指定聚类的个数，而且聚类初始点的选取也很大影响最后聚类的效果。虽然有一些方法（如k-means++）可以设置较为合理的初始聚类点，但仍然需要指定聚类的个数，但有时我们并不知道一堆数据中有多少个类，这样就使得聚类变得没法下手。这里介绍一种利用一种树型数据结构——不相交集，实现的数据聚类方法。</p>
+<p>不相交集（<a href="http://en.wikipedia.org/wiki/Union_find" target="_blank" rel="external">disjoint-set</a>），也叫并査集（union-find）是保持一组不相交的动态集合。给定一系列数据，我们首先假设每个元素是一个集合，通过集合的查找合并实现等价元素的合并，从而实现相同类别的元素的聚类。这里两个元素等价的标准是由自己设定，取决于具体应用。例如目标检测中滑窗检测目标时用于聚合方框，其等价标准就是方框的重叠率的大小；再比如图像处理中联通区域标记的应用，其等价标准就是两个点是否联通。 
+        
+          <p class="article-more-link">
+            <a href="/2013/08/09/union-find-algorithm/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/09/union-find-algorithm/" data-id="3ubpl4vn5fyxjbx9" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/09/union-find-algorithm/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Union-find/">Union find</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-an-introduction-of-hough-tranform" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/07/an-introduction-of-hough-tranform/" class="article-date">
+  <time datetime="2013-08-06T16:00:00.000Z" itemprop="datePublished">Aug 7 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/08/07/an-introduction-of-hough-tranform/">浅析霍夫变换检测直线</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>霍夫变换在检测直线，圆和椭圆等形状有着很广泛的应用，它通过一个投票过程实现对不同形状的参数的估算。这里这个投票过程是指把二值图像空间的点映射到参数空间，记录参数空间中不同参数对应的点的累积，从而实现形状上的点对参数的投票过程，然后选取局部累积最大值作为检测到的形状的参数输出。</p>
+<p>那为什么叫它霍夫变换，当然是和霍夫有关系的。1962年保罗<strong>.</strong>霍夫（Paul.Hough）写了一个叫<em>Method and Means for Recognizing Complex Patterns</em>的专利，其中有用到该方法检测粒子物理中云图中的直线和曲线。目前广泛应用的霍夫变换是1972年由 Richard Duda 和 Peter Hart 提出的<a href="http://dl.acm.org/citation.cfm?id=361242" target="_blank" rel="external">[1]</a>,该方法提出了用 <strong>angle-radius</strong> 替换 <strong>slope-intercept</strong> 作为霍夫变换的参数空间，简化了计算。后来 <a href="http://www.cs.utexas.edu/~dana/" target="_blank" rel="external">Dana H. Ballard</a>的一篇 <em>Generalizing the Hough transform to detect arbitrary shapes</em> 使得霍夫变换在计算机视觉领域开始广泛应用。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2013/08/07/an-introduction-of-hough-tranform/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/07/an-introduction-of-hough-tranform/" data-id="ueq6616dsuzjcl02" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/07/an-introduction-of-hough-tranform/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hough-Transform/">Hough Transform</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+  
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

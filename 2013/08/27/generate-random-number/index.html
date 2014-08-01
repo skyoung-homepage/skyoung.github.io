@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>几种生成随机数的方法 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="随机数在很多程序中经常被用到，但每次用到的时候，由于没有系统的总结，总是得重新查阅，所以这次打算系统的介绍一下c/c++中如何产生随机数，以备以后查阅。随机数服从的分布常用的有均匀分布和高斯分布，所以这里仅介绍这两种。
+均匀分布
+这里介绍三种生成服从均匀分布随机数的方法：线性同余法，梅森旋转算法和Multiply-With-Carry算法。
+线性同余法
+线性同余法是一个很古老的随机数生成算法，它的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="几种生成随机数的方法">
+<meta property="og:url" content="http://blog.skyoung.org/2013/08/27/generate-random-number/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="随机数在很多程序中经常被用到，但每次用到的时候，由于没有系统的总结，总是得重新查阅，所以这次打算系统的介绍一下c/c++中如何产生随机数，以备以后查阅。随机数服从的分布常用的有均匀分布和高斯分布，所以这里仅介绍这两种。
+均匀分布
+这里介绍三种生成服从均匀分布随机数的方法：线性同余法，梅森旋转算法和Multiply-With-Carry算法。
+线性同余法
+线性同余法是一个很古老的随机数生成算法，它的">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="几种生成随机数的方法">
+<meta name="twitter:description" content="随机数在很多程序中经常被用到，但每次用到的时候，由于没有系统的总结，总是得重新查阅，所以这次打算系统的介绍一下c/c++中如何产生随机数，以备以后查阅。随机数服从的分布常用的有均匀分布和高斯分布，所以这里仅介绍这两种。
+均匀分布
+这里介绍三种生成服从均匀分布随机数的方法：线性同余法，梅森旋转算法和Multiply-With-Carry算法。
+线性同余法
+线性同余法是一个很古老的随机数生成算法，它的">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-generate-random-number" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/27/generate-random-number/" class="article-date">
+  <time datetime="2013-08-26T16:00:00.000Z" itemprop="datePublished">Aug 27 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tips/">Tips</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      几种生成随机数的方法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#均匀分布"><span class="toc-text">均匀分布</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#线性同余法"><span class="toc-text">线性同余法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#梅森旋转算法"><span class="toc-text">梅森旋转算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#multiply-with-carry算法"><span class="toc-text">Multiply-With-Carry算法</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#高斯分布"><span class="toc-text">高斯分布</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#中心极限定理法"><span class="toc-text">中心极限定理法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#box-muller算法"><span class="toc-text">Box-Muller算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#marsaglia-polar算法"><span class="toc-text">Marsaglia polar算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ziggurat算法"><span class="toc-text">Ziggurat算法</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+		</div>
+		
+
+        <p>随机数在很多程序中经常被用到，但每次用到的时候，由于没有系统的总结，总是得重新查阅，所以这次打算系统的介绍一下c/c++中如何产生随机数，以备以后查阅。随机数服从的分布常用的有均匀分布和高斯分布，所以这里仅介绍这两种。</p>
+<h3 id="均匀分布">均匀分布</h3>
+<p>这里介绍三种生成服从均匀分布随机数的方法：线性同余法，梅森旋转算法和Multiply-With-Carry算法。</p>
+<h4 id="线性同余法">线性同余法</h4>
+<p><a href="http://en.wikipedia.org/wiki/Linear_congruential_generator" target="_blank" rel="external">线性同余法</a>是一个很古老的随机数生成算法，它的数学形式如下：</p>
+<p><span class="math">\[X\_{n+1} = (aX\_n + c)(\mod{m})\]</span> 其中，<span class="math">\[m&gt;0,0&lt;a&lt;m, 0&lt;c&lt;m\]</span></p>
+<a id="more"></a>
+
+<p>这里<span class="math">\({X\_n}\)</span>这个序列生成一系列的随机数，<span class="math">\(X\_0\)</span>是种子。随机数产生的质量与m，a，c三个参数的选取有很大关系。这些随机数并不是真正的随机，而是满足在某一周期内随机分布，这个周期的最长为m。根据Hull-Dobell Theorem，当且仅当：</p>
+<ol style="list-style-type: decimal">
+<li>c和m互素;</li>
+<li>a-1可被所有m的质因数整除;</li>
+<li>当m是4的整数倍，a-1也是4的整数倍</li>
+</ol>
+<p>时，周期为m。所以m一般都设置的很大。c语言标准库就是采用的这个方法实现随机数生成的，其中各个参数的设置如下：<span class="math">\[m=2^{31}, a=1103515245, c=12345\]</span> 这个算法的优势在计算速度快，内存消耗少。但是，对于随机数质量要求高的应用，像基于蒙塔卡罗思想的算法粒子滤波器等就不适合用这种方法，因为相邻的随机数并不独立，序列关联性较大。</p>
+<p>下面详细介绍下c语言下随机数生成函数的使用方法，声明在头文件<code>stdlib.h</code>（c++中建议用<code>cstdlib</code>）中的函数 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">int</span> <span class="keyword">rand</span>()
+</pre></td></tr></table></figure></p>
+<p>提供随机数的生成，这个均匀分布的范围是[0,RAND_MAX]， RAND_MAX的大小和系统有关。因为rand()是按照指定顺序生成随机数的，所以每次生成的随机数都是一致的。如果想每次产生的随机数不同，则需要函数 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">void</span> srand(<span class="keyword">unsigned</span> seeed)
+</pre></td></tr></table></figure></p>
+<p>（来自<code>stdlib.h</code>）为随机数生成器播散种子。如果在调用rand()前不执行srand()，则默认产生的种子是1，即执行srand(1)和不执行srand的结果是一样的。至于种子怎么选，一般常用的方法是利用time函数（在头文件<code>time.h</code>）来获得系统时间，它的返回值为从1970年1月1日零时零分零秒到目前为止所经过秒数，然后将time_t型数据转化为unsigned型再传给srand函数，即 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>srand((<span class="typename">unsigned</span>) <span class="typename">time</span>(<span class="keyword">NULL</span>))
+</pre></td></tr></table></figure></p>
+<p>里注意time函数的调用，它的函数声明如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>time_t <span class="built_in">time</span>(time_t * <span class="built_in">timer</span>)
+</pre></td></tr></table></figure></p>
+<p>既可以通过函数参数timer返回现在的时间，也可以通过函数的返回值返回现在的时间，所以这里srand用到的是返回值返回的时间，用不到参数返回时间，故使用空指针作为参数。</p>
+<p>如果想产生其他范围的随机数，例如[a,b]，则需要利用<strong>求余运算（%）</strong>： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="function"><span class="title">rand</span><span class="params">()</span>%<span class="params">(b-a)</span>+<span class="title">a</span></span>
+</pre></td></tr></table></figure></p>
+<p>如果是产生[0,1]范围内的浮点型随机数，则使用<strong>除法运算（/）</strong>: <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>(<span class="keyword">double</span>)rand()/RAND_MAX
+</pre></td></tr></table></figure></p>
+<h4 id="梅森旋转算法">梅森旋转算法</h4>
+<p><a href="http://en.wikipedia.org/wiki/Mersenne_twister" target="_blank" rel="external">梅森旋转算法</a>目前生成随机数较好的算法，他的名字来源于其周期为<span class="math">\(2^{19937}-1\)</span>,而这数是个<a href="http://en.wikipedia.org/wiki/Mersenne_prime" target="_blank" rel="external">梅森素数</a>。常用的两个变体是32位的MT19937和，64位的MT19937-64,对于k位字长，其服从均匀分布的范围是[<span class="math">\(2^k-1\)</span>]。 梅森旋转算法适合基于蒙塔卡罗思想的算法，而且周期很长（<span class="math">\(2^{19937}-1\)</span>）远高于线性同余算法(一般为<span class="math">\(2^{31}\)</span>或<span class="math">\(2^{32}\)</span>)。目前Python，Ruby，Matlab（<a href="http://www.mathworks.com/matlabcentral/fileexchange/6614" target="_blank" rel="external">Mersenne Twister</a>）,最新的C++11（<a href="http://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine" target="_blank" rel="external">std::mersenne_twister_engine</a>）以及Boost库（<a href="http://www.boost.org/doc/libs/1_49_0/boost/random/mersenne_twister.hpp" target="_blank" rel="external">boost random/mersenne_twister</a>）中都有这个算法的实现。此外，还有一个不错的实现在一个叫<a href="http://randomlib.sourceforge.net/" target="_blank" rel="external">RandomLib</a>的库中。</p>
+<h4 id="multiply-with-carry算法">Multiply-With-Carry算法</h4>
+<p><a href="http://en.wikipedia.org/wiki/Multiply-with-carry" target="_blank" rel="external">Multiply-With-Carry算法</a>是<a href="http://en.wikipedia.org/wiki/George_Marsaglia" target="_blank" rel="external">George Marsaglia</a>发明的一系列随机算法中的一个。其特点在于计算速度快，周期长，OpenCV中均匀分布的随机数产生器就是用的这个方法。下面详细介绍下OpenCV中随机数产生器的使用。</p>
+<p>OpenCV中随机数生成器是由一个叫<a href="http://docs.opencv.org/modules/core/doc/operations_on_arrays.html?highlight=rng#RNG" target="_blank" rel="external">RNG</a>的类实现的。如果要产生服从均匀分布的随机数，使用<code>RNG::uniform</code>,该函数有三个重载函数，分别针对不同数据类型：</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">int</span> RNG::<span class="keyword">uniform</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b)
+<span class="keyword">float</span> RNG::<span class="keyword">uniform</span>(<span class="keyword">float</span> a, <span class="keyword">float</span> b)
+<span class="keyword">double</span> RNG::<span class="keyword">uniform</span>(<span class="keyword">double</span> a, <span class="keyword">double</span> b)
+</pre></td></tr></table></figure></p>
+<p>其中，<strong>a，b</strong>是均匀分布是范围。这里范围的边界为[a,b)，即包含a，不包含b。</p>
+<p>使用的时候需要注意一些问题，下面是OpenCV文档中给出的几个实例： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre>RNG rng;
+<span class="comment">// 总是产生 0, 因为[0,1)之间的整数只有0</span>
+<span class="keyword">double</span> a = rng.<span class="keyword">uniform</span>(<span class="number">0</span>, <span class="number">1</span>);
+
+<span class="comment">// 产生 [0, 1)的double型的随机数</span>
+<span class="keyword">double</span> a1 = rng.<span class="keyword">uniform</span>((<span class="keyword">double</span>)<span class="number">0</span>, (<span class="keyword">double</span>)<span class="number">1</span>);
+
+<span class="comment">// 产生 [0, 1)的float型的随机数</span>
+<span class="keyword">double</span> b = rng.<span class="keyword">uniform</span>(<span class="number">0.</span>f, <span class="number">1.</span>f);
+
+<span class="comment">// 产生 [0, 1)的double型的随机数</span>
+<span class="keyword">double</span> c = rng.<span class="keyword">uniform</span>(<span class="number">0.</span>, <span class="number">1.</span>);
+
+<span class="comment">// 造成编译器混淆，产生错误。</span>
+<span class="comment">//  RNG::uniform(0, (int)0.999999)? or RNG::uniform((double)0, 0.99999)?</span>
+<span class="keyword">double</span> d = rng.<span class="keyword">uniform</span>(<span class="number">0</span>, <span class="number">0.999999</span>);
+</pre></td></tr></table></figure></p>
+<h3 id="高斯分布">高斯分布</h3>
+<p>产生服从高斯的分布的随机数方法主要有四种，具体可以参考<a href="http://blog.chinaunix.net/uid-22666248-id-357093.html" target="_blank" rel="external">这里</a>：中心极限定理法，Box-Muller算法，Marsaglia polar算法以及Ziggurat算法。这四种算法都是基于给定均匀分布的前提下实现的。</p>
+<h4 id="中心极限定理法">中心极限定理法</h4>
+<p>首先给出中心极限定理的定义，相信这个大家都还有印象吧。</p>
+<p>设随机变量$ X_1,X_2,…,X_n $ 相互独立，具有相同的分布，$ E(X_k)=, D(X_k)=<span class="math">\(，记 \)</span>$ Y==  <span class="math">\[ 则
+\]</span><em>{n}Y</em>n N(0,1)$$</p>
+<p>因为c语言已经提供了生成服从均匀分布随机数的函数<code>rand()</code>，那么我们就可以利用服从均匀分布的随机数生成服从高斯分布的随机数。这里首先回顾一下什么是均匀分布，均匀分布概率密度函数为：</p>
+<p><span class="math">\[f(x)=1/(b-a), x\in [a,b]\]</span></p>
+<p>其期望为：<span class="math">\(E(x)=(a+b)/2\)</span>，方差为：<span class="math">\(D(x)^2=(b-a)^2/12\)</span>。</p>
+<p>首先，我们选取n个[0,1]范围内的随机数，设为$ x_1,x_2,…x_n <span class="math">\(， 则该均匀分布的期望为 \)</span>E(x)=1/2,$ 方差为 <span class="math">\(D(x)^2=1/12\)</span>。这样当n足够大的时候， <span class="math">\[ \overline{x}=\frac{\sum\_{k=1}^{n}x\_k-nE(x)}{\sqrt{nD(x)^2}}=\frac{\sum\_{k=1}^{n}x\_k-n/2}{\sqrt{n/12}} \sim N(0,1) \]</span></p>
+<p>代码如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="keyword">double</span> random_guassian_central_limit()
+{
+	const <span class="keyword">int</span> N = <span class="number">20</span>;
+	<span class="keyword">double</span> <span class="keyword">sum</span> = <span class="number">0</span>;
+	<span class="keyword">for</span>( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)
+	{
+	    <span class="keyword">sum</span> += (<span class="keyword">double</span>)rand()/RAND_MAX;
+	}
+	<span class="keyword">sum</span> -= N/<span class="number">2.0</span>;
+	<span class="keyword">sum</span> /= sqrt(N/<span class="number">12.0</span>);
+
+	<span class="keyword">return</span> <span class="keyword">sum</span>;
+}
+</pre></td></tr></table></figure></p>
+<h4 id="box-muller算法">Box-Muller算法</h4>
+<p><a href="http://en.wikipedia.org/wiki/Box-Muller_transform" target="_blank" rel="external">Box-Muller算法</a>可以基于服从均匀分布的随机产生服从高斯分布的随机数。基本的形式如下：</p>
+<p>设<span class="math">\(U\_1，U\_2\)</span>是两个相互对立的服从均匀分布[0,1]的两个随机数，则 <span class="math">\[Z\_0=R\cos(\theta)=\sqrt{-2ln{U\_1}}\cos(2\pi U\_2)\]</span> 及 <span class="math">\[Z\_1=R\sin(\theta)=\sqrt{-2ln{U\_1}}\sin(2\pi U\_2)\]</span> 是两个相互独立的服从高斯分布N(0,1) 其<span class="math">\[R^2=-2ln{U\_1}, \theta=2\pi U\_2\]</span></p>
+<p>代码如下：</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="code"><pre><span class="comment">#define PI 3.1415926</span>
+double random_guassian_box_muller()
+{
+    static double  U1, U2;
+    double Z;
+    <span class="keyword">int</span> flag = <span class="number">0</span>;
+    
+    <span class="keyword">if</span>(flag == <span class="number">0</span>)
+    {
+	U1 = (double)<span class="keyword">rand</span>()/RAND_MAX;
+	U2 = (double)<span class="keyword">rand</span>()/RAND_MAX;
+	Z = <span class="keyword">sqrt</span>(-<span class="number">2</span><span class="variable">*log</span>(U1))<span class="variable">*sin</span>(<span class="number">2</span><span class="variable">*PI</span><span class="variable">*U2</span>);
+    }
+    <span class="keyword">else</span>
+    {
+	Z = <span class="keyword">sqrt</span>(-<span class="number">2</span><span class="variable">*log</span>(U1))<span class="variable">*cos</span>(<span class="number">2</span><span class="variable">*PI</span><span class="variable">*U2</span>);
+    }
+
+    flag = <span class="number">1</span> - flag;
+    <span class="keyword">return</span> Z;
+}
+</pre></td></tr></table></figure></p>
+<h4 id="marsaglia-polar算法">Marsaglia polar算法</h4>
+<p><a href="http://en.wikipedia.org/wiki/Marsaglia_polar_method" target="_blank" rel="external">Marsaglia polar算法</a>的实现不需要使用三角函数的运算，其公式表示如下</p>
+<p>设<span class="math">\(x,y\)</span>服从均匀分布[-1,1] 则， <span class="math">\[x\sqrt{\frac{-2ln(s))}{s}} , y\sqrt{\frac{-2ln(s))}{s}}\]</span> 是两个服从高斯分布N(0,1)是随机数，其中<span class="math">\(s=x^2+y^2\)</span>。</p>
+<p>我们可以先利用<code>rand()</code>生成[0,1]范围内的随机数，然后变换到[-1,1]范围内。设<span class="math">\(X\)</span>服从[0,1]均匀分布，则<span class="math">\(2X-1\)</span>服从[-1,1]均匀分布。</p>
+<p>代码如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre></td><td class="code"><pre><span class="keyword">double</span> random_guassian_marsaglia_polar()
+{
+    <span class="keyword">static</span> <span class="keyword">double</span> V1, V2, S;
+    <span class="keyword">int</span> flag = <span class="number">0</span>;
+    <span class="keyword">double</span> X;
+    <span class="keyword">if</span>(flag == <span class="number">0</span>)
+    {
+	<span class="keyword">do</span>
+	{
+    	   <span class="keyword">double</span> U1 = (<span class="keyword">double</span>)rand() / RAND_MAX;
+    	   <span class="keyword">double</span> U2 = (<span class="keyword">double</span>)rand() / RAND_MAX;
+		 
+	   V1 = <span class="number">2</span> * U1 - <span class="number">1</span>;
+    	   V2 = <span class="number">2</span> * U2 - <span class="number">1</span>;
+    	   S  = V1 * V1 + V2 * V2;
+	}<span class="keyword">while</span>( S &gt;= <span class="number">1</span> || S ==<span class="number">0</span>);
+
+    	    
+	X = V1 * <span class="built_in">sqrt</span> (-<span class="number">2</span> * <span class="built_in">log</span>(S) / S);
+    }
+    <span class="keyword">else</span>
+    {
+	X = V2 * <span class="built_in">sqrt</span>(-<span class="number">2</span> * <span class="built_in">log</span>(S) / S);
+    }
+
+    flag = <span class="number">1</span> - flag;
+    <span class="keyword">return</span> X;
+}
+</pre></td></tr></table></figure></p>
+<h4 id="ziggurat算法">Ziggurat算法</h4>
+<p><a href="http://en.wikipedia.org/wiki/Ziggurat_algorithm" target="_blank" rel="external">Ziggurat算法</a>也是<a href="http://en.wikipedia.org/wiki/George_Marsaglia" target="_blank" rel="external">George Marsaglia</a>发明的一系列随机算法中的一个。OpenCV中产生服从高斯分布的随机数就是采用的这种方法。RNG类中提供<code>RNG::gaussian</code>返回一个随机数，它的函数声明如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">double</span> RNG::gaussian(<span class="keyword">double</span> sigma)
+</pre></td></tr></table></figure></p>
+<p>其中，<strong>sigma</strong>是方差，这里期望默认为0。</p>
+<p>此外，OpenCV还提供了<code>fill</code>，<code>randu</code>和<code>randn</code>用来生成填充一个数组的随机数。<code>randu</code>是生成服从均匀分布，<code>randn</code>是生成服从高斯分布，<code>fill</code>是二者都可，取决于里面的参数。</p>
+<h3 id="总结">总结</h3>
+<p>由于时间和精力有限，博客中提到的有些算法并没有深究其原理，仅仅做个简单的介绍。如果有需要，请自行查阅相关资料，网上的资料还是很丰富。而且目前几乎各种经典的随机数生成算法都有现成的实现，所以无需自己coding，而且也不建议自己coding，既费时，又不一定有好的效果和优化。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/27/generate-random-number/" data-id="x6bdnddun7pgo21c" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/27/generate-random-number/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/均匀分布/">均匀分布</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随机数/">随机数</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/高斯分布/">高斯分布</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/09/08/visual-tracking-a-benchmark/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          一个关于visual tracking的benchmark
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/08/17/texmacs-links-automaticlly-generate-content/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">TexMacs札记(IV) ——插入链接、图片、目录等内容</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2013/08/27/generate-random-number/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

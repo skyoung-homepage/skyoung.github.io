@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04） | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="自从切换到ubuntu系统后，就一直在寻找合适的C++开发环境。看了网上的一些介绍，大体就这么几个选择：Eclipse， CodeBolocks， Qt Creator。后来自己试用了一下CodeBlocks和Qt Creator，感觉这两个开发环境还是不错，打开速度都很快。但是由于CodeBlocks的Find declaration功能针对OpenCV老是不灵，这让我很不爽，所以果断换掉去尝试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04）">
+<meta property="og:url" content="http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="自从切换到ubuntu系统后，就一直在寻找合适的C++开发环境。看了网上的一些介绍，大体就这么几个选择：Eclipse， CodeBolocks， Qt Creator。后来自己试用了一下CodeBlocks和Qt Creator，感觉这两个开发环境还是不错，打开速度都很快。但是由于CodeBlocks的Find declaration功能针对OpenCV老是不灵，这让我很不爽，所以果断换掉去尝试">
+<meta property="og:image" content="/media/How-to/compiler.png">
+<meta property="og:image" content="/media/How-to/linker.png">
+<meta property="og:image" content="/media/How-to/addlib.png">
+<meta property="og:image" content="/media/How-to/package.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04）">
+<meta name="twitter:description" content="自从切换到ubuntu系统后，就一直在寻找合适的C++开发环境。看了网上的一些介绍，大体就这么几个选择：Eclipse， CodeBolocks， Qt Creator。后来自己试用了一下CodeBlocks和Qt Creator，感觉这两个开发环境还是不错，打开速度都很快。但是由于CodeBlocks的Find declaration功能针对OpenCV老是不灵，这让我很不爽，所以果断换掉去尝试">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-how-to-use-QtCreator-and-Codeblocks-with-OpenCV" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/" class="article-date">
+  <time datetime="2014-03-05T16:00:00.000Z" itemprop="datePublished">Mar 6 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>自从切换到ubuntu系统后，就一直在寻找合适的C++开发环境。看了网上的一些介绍，大体就这么几个选择：Eclipse， <a href="">CodeBolocks</a>， <a href="">Qt Creator</a>。后来自己试用了一下CodeBlocks和Qt Creator，感觉这两个开发环境还是不错，打开速度都很快。但是由于CodeBlocks的<code>Find declaration</code>功能针对OpenCV老是不灵，这让我很不爽，所以果断换掉去尝试Qt Creator。Qt Creator给人焕然一新的感觉，界面简洁，布局合理，常用的功能在左侧排列，不会给人杂乱的感觉。</p>
+<p>因为要开发OpenCV项目，所以首先需要知道开发环境配置第三方库的方法。虽然最后没有选择CodeBlocks，但是毕竟也摸索过一段时间，这里以OpenCV为实例一并介绍其如何配置第三方库。</p>
+<h3 id="codeblocks下配置opencv">CodeBlocks下配置OpenCV</h3>
+<p>CodeBlocks的安装主要可以参考<a href="http://www.codeblocks.org/downloads" target="_blank" rel="external">官网的教程</a>。主要两种方式，一是下载源代码，自己编译安装；再就是安装别人编译好的，对于ubuntu系统参考<a href="https://launchpad.net/~pasgui/+archive/ppa/" target="_blank" rel="external">这里</a>。把这个源加入自己的系统，即执行</p>
+<pre><code>sudo add-apt-repository ppa:pasgui/ppa</code></pre>
+<p>然后执行</p>
+<pre><code>sudo apt-get install codeblocks </code></pre>
+<p>这样 就可以CodeBlocks就安装好了。</p>
+<a id="more"></a>
+
+<p>关于CodeBlocks配置第三方库的方法，网上也有很多，无非是在配置include和lib路径，但这些过程实在是繁琐，这不是我想要的。因为ubuntu下有pkg-config工具，有了这个东西，配置OpenCV不再是麻烦事。OpenCV 的安装的时候，会生成一个<code>*.pc</code>文件，pkg-config通过这个文件就可以自动获取OpenCV的include和lib文件的位置，实现自动配置。具体的OpenCV安装方法可以参考我的另一篇博客<a href="http://blog.skyoung.org/2013/05/01/how-to-install-OpenCV-and-boost/" target="_blank" rel="external">ubuntu 12.04 LTS下安装OpenCV，Boost等常用库</a>。里面讲解了在OpenCV安装完成后，如何配置pkg-config的搜寻路径。只有pkg-config工具找到opencv的<code>*.pc</code>文件，才能获取到OpenCV的头文件和库的安装位置。</p>
+<p>CodeBlocks支持pkg-config工具，只需要在工程的<code>build options</code>配置相关参数即可，以下操作参考<a href="http://aravindev.blogspot.jp/2013/06/configuring-and-installing-opencv-using.html" target="_blank" rel="external">这里</a>。</p>
+<ol style="list-style-type: decimal">
+<li><p>依次找到<code>Compiler settings-&gt;Other options</code>，输入</p>
+<pre><code>`pkg-config --cflags opencv`</code></pre>
+<p>如下图所示，这个命令是配置OpenCV的include路径的。</p>
+<div class="figure">
+<img src="/media/How-to/compiler.png">
+</div></li>
+<li><p>依次找到<code>Liner settings-&gt;Other linker options</code>, 输入</p>
+<pre><code>`pkg-config --libs opencv`</code></pre>
+<p>如下图所示，这个命令是配置OpenCV的lib路径和连接的动态库。</p>
+<div class="figure">
+<img src="/media/How-to/linker.png">
+</div></li>
+</ol>
+<p><strong>注意:</strong> 这两个命令里面的<code>opencv</code>替换为你的<code>pkgconfig</code>文件下实际的文件名。</p>
+<h3 id="qt-creator下配置opencv">Qt Creator下配置OpenCV</h3>
+<p>Qt Creator的安装非常简单，取<a href="http://qt-project.org/downloads" target="_blank" rel="external">Qt官网</a>下载linux版本的文件，双击运行即可。注意需要设置文件属性为可执行文件，右键<code>属性-&gt;权限</code>里面的<code>允许作为程序执行文件</code>打钩，或者打开终端，输入相应的修改文件属性的命令。Qt Creator目前有个小问题是在调试的时候，提示“ptrace 不允许的操作”，解决这个问题可以参考这篇<a href="http://www.deder.at/wordpress/?p=307" target="_blank" rel="external">博客</a>。首先打开<code>/etc/sysctl.d/10-ptrace.conf</code>这个文件，</p>
+<pre><code>sudo gedit /etc/sysctl.d/10-ptrace.conf</code></pre>
+<p>然后把<code>kernel.yama.ptrace_scope = 1</code>改为<code>kernel.yama.ptrace_scope = 0</code>重启电脑即可。</p>
+<p>Qt的下配置OpenCV更为简单，只需添加一个地方即可。右键单击工程，选择<code>Add Library</code>,</p>
+<div class="figure">
+<img src="/media/How-to/addlib.png">
+</div>
+<p>选择<code>System package</code>,点击<code>next</code></p>
+<div class="figure">
+<img src="/media/How-to/package.png">
+</div>
+<p>输入<code>pkgconfig</code>文件下的<code>*.pc</code>文件名，注意不要输入文件后缀，文件名即可。</p>
+<p>就这么简单，这样OpenCV的配置就完了。</p>
+<h3 id="总结">总结</h3>
+<p>个人感觉，由于有了pkg-config这种工具，ubuntu下使用OpenCV是那么的方便。虽然windows下的vs也可以通过制作工程模板，来简化OpenCV工程的配置，但是总感觉似乎不如ubuntu下来的智能。其实，不光是OpenCV，其他第三方库，只要提供了<code>*.pc</code>配置文件，就可以使用pkg-config，这样使得第三方库的使用异常便捷。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/" data-id="xecle97atz7efw8j" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CodeBlocks/">CodeBlocks</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Qt-Creator/">Qt Creator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/03/26/OpenCV(III)-How-to-use-Mat/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OpenCV系列(三)：Mat详解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/02/28/OpenCV(II)-basic-structure-of-opencv/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">OpenCV系列(二)：基本数据结构</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

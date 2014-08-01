@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>OpenCV系列(一)：简介 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一直都想系统全面地学习一下OpenCV，但却迟迟懒于行动，虽然平时也用OpenCV的一些东西，但毕竟没有对其没有一个全面的把握。这次借此机会打算参考OpenCV手册系统地整理一下自己的学习心得。
+OpenCV主要模块
+OpenCV主要包括core，imgproc，video，cliab3d，feature2d，objdetect，highgui，gpu等几个模块，其中
+
+core 主要是图像的一些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV系列(一)：简介">
+<meta property="og:url" content="http://blog.skyoung.org/2014/01/10/OpenCV(I)-introduction/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="一直都想系统全面地学习一下OpenCV，但却迟迟懒于行动，虽然平时也用OpenCV的一些东西，但毕竟没有对其没有一个全面的把握。这次借此机会打算参考OpenCV手册系统地整理一下自己的学习心得。
+OpenCV主要模块
+OpenCV主要包括core，imgproc，video，cliab3d，feature2d，objdetect，highgui，gpu等几个模块，其中
+
+core 主要是图像的一些">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenCV系列(一)：简介">
+<meta name="twitter:description" content="一直都想系统全面地学习一下OpenCV，但却迟迟懒于行动，虽然平时也用OpenCV的一些东西，但毕竟没有对其没有一个全面的把握。这次借此机会打算参考OpenCV手册系统地整理一下自己的学习心得。
+OpenCV主要模块
+OpenCV主要包括core，imgproc，video，cliab3d，feature2d，objdetect，highgui，gpu等几个模块，其中
+
+core 主要是图像的一些">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OpenCV(I)-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/01/10/OpenCV(I)-introduction/" class="article-date">
+  <time datetime="2014-01-09T16:00:00.000Z" itemprop="datePublished">Jan 10 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenCV/">OpenCV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      OpenCV系列(一)：简介
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>一直都想系统全面地学习一下OpenCV，但却迟迟懒于行动，虽然平时也用OpenCV的一些东西，但毕竟没有对其没有一个全面的把握。这次借此机会打算参考OpenCV手册系统地整理一下自己的学习心得。</p>
+<h3 id="opencv主要模块">OpenCV主要模块</h3>
+<p>OpenCV主要包括core，imgproc，video，cliab3d，feature2d，objdetect，highgui，gpu等几个模块，其中</p>
+<ul>
+<li><strong>core</strong> 主要是图像的一些基本数据结构如Mat，Point，Rect等及其相应的操作;</li>
+<li><strong>imgproc</strong> 主要包括一些针对图像的基本处理，像线性或非线性的图像滤波，几何形变操作（如尺寸变化，仿射变换等）;</li>
+<li><strong>video</strong> 主要包括运动估计，背景差分法跟踪，以及一些其他目标跟踪算法;</li>
+<li><strong>calib3d</strong> 主要是多视角几何，单目相机和双目相机的参数标定，目标姿态估计，立体匹配和三维重建方面的算法;</li>
+<li><strong>feature2d</strong> 主要包括基于特征点的检测器，特征点的提取和匹配。objdetect主要包括检测目标或是特定的目标（像人脸，行人等）;</li>
+<li><strong>highgui</strong> 包括视频和图像的读写，以及一些简单的UI功能;</li>
+<li><strong>gpu</strong> 主要是一些视觉算法基于GPU加速的实现。 <a id="more"></a></li>
+</ul>
+<h3 id="opencv的命名空间cv">OpenCV的命名空间:cv</h3>
+<p>所有的OpenCV中的类和函数的都是定义在cv这个命名空间中的。所以在使用这些类和函数时，要在前面加上<code>cv::</code>或者在程序开始部分写上<code>using namespace cv</code></p>
+<p>目前OpenCV中有些函数名或是类的名和C++标准库中的名字是冲突的。所以为了解决这个问题，可以直接在函数或是类前面加入相应的命名标示符，比如：</p>
+<p><figure class="highlight c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>cv::Mat a(<span class="number">100</span>, <span class="number">100</span>, CV_32F);
+cv::randu(a, Scalar::all(<span class="number">1</span>), Scalar::all(<span class="built_in">std</span>::rand()));
+cv::<span class="built_in">log</span>(a, a);
+a /= <span class="built_in">std</span>::<span class="built_in">log</span>(<span class="number">2.</span>);
+</pre></td></tr></table></figure></p>
+<p>这里，<code>randu</code>和<code>log</code>在OpenCV和C++标准库中都有实现，所以为了区分，可以在前面加上相应的命名空间，当然如果两个函数的形参不同编译器也可以通过函数的参数个数或者参数类型实现区分，但是加上相应的命名空间可以避免很多潜在的隐患。</p>
+<h3 id="自动内存管理机制">自动内存管理机制</h3>
+<p>OpenCV的内存分配和释放是自动的。例如对于Mat类数据，他的内存释放时考虑到内存的共享，即若有其他指针指向同一片内存区域，则对应的Mat数据不会被释放。矩阵的赋值实际上并没有数据的拷贝，而只是被赋值指针指向赋值指针所指的区域，即共享同一个对象。而<code>Mat::clone</code>提供了Mat数据就的拷贝过程，相当于拷贝一份新的数据给别人。</p>
+<p>举个OpenCV手册中的例子如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre>Mat A(<span class="number">1000</span>, <span class="number">1000</span>, CV_64F);
+//建一个矩阵头B，B和A指向同一个对象，没有复制操作
+Mat B = A;
+//建一个矩阵头<span class="keyword">C</span>，指向B的第三排，也即A的第三排
+Mat <span class="keyword">C</span> = B.row(<span class="number">3</span>);
+//把B指向的对象，也即A的对象复制一份给<span class="keyword">D</span>
+Mat <span class="keyword">D</span> = B.clone();
+//把B指向的对象，也即A的对象的第<span class="number">5</span>排拷贝一份给<span class="keyword">C</span>，也即A的第三排
+B.row(<span class="number">5</span>).copyTo(<span class="keyword">C</span>);
+//A指向<span class="keyword">D</span>指向的对象，而A原来指向的对象被B和<span class="keyword">C</span>指向的对象不变
+A = <span class="keyword">D</span>;
+//此操作只是让B指向空，而A被<span class="keyword">C</span>指向的部分仍然存在
+B.release();
+//把<span class="keyword">C</span>的内容拷贝到<span class="keyword">C</span>，这样A被<span class="keyword">C</span>指向的部分就没有指针指向了，就会被自动释放掉了。
+<span class="keyword">C</span> = <span class="keyword">C</span>.clone();
+</pre></td></tr></table></figure></p>
+<p>我们知道C++ TR1中有个智能指针<code>std::shared_ptr</code>,它的作用和普通的指针没有什么不同，但是会记录有多少个<code>shared_ptr</code>共同指向一个对象，即引用计数，一旦最后一个这样的指针被销毁后，引用计数变为0时，这个对象就会自动被释放。同样OpenCV中的数据结构也具有类似的内存管理机制。而且对于普通的指针对象，OpenCV也提供了<code>Ptr&lt;&gt;</code>实现智能指针。</p>
+<h3 id="自动分配输出矩阵的内存">自动分配输出矩阵的内存</h3>
+<p>OpenCV不但可以自动释放内存，而且可以为函数中输出参数自动分配内存，比如输入一个<code>cv::Mat</code>类型的矩阵，其输出矩阵会自动分配一个和输入矩阵相同尺寸和类型的矩阵。例如： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="code"><pre><span class="id">#include</span> "cv<span class="class">.h</span>"
+<span class="id">#include</span> "highgui<span class="class">.h</span>"
+using namespace cv;
+
+int <span class="function">main(int, char**)</span>
+{
+   VideoCapture <span class="function">cap(<span class="number">0</span>)</span>;
+   <span class="function">if(!cap.<span class="function">isOpened()</span>)</span> return -1;
+
+   Mat <span class="tag">frame</span>, edges;
+   <span class="function">namedWindow(<span class="string">"edges"</span>,<span class="number">1</span>)</span>;
+   <span class="function">for(;;)</span>
+   {
+	cap &gt;&gt; <span class="tag">frame</span>;
+	<span class="function">cvtColor(frame, edges, CV_BGR2GRAY)</span>;
+	<span class="function">GaussianBlur(edges, edges, <span class="function">Size(<span class="number">7</span>,<span class="number">7</span>)</span>, <span class="number">1.5</span>, <span class="number">1.5</span>)</span>;
+	<span class="function">Canny(edges, edges, <span class="number">0</span>, <span class="number">30</span>, <span class="number">3</span>)</span>;
+	<span class="function">imshow(<span class="string">"edges"</span>, edges)</span>;
+	<span class="function">if(<span class="function">waitKey(<span class="number">30</span>)</span> &gt;= <span class="number">0</span>)</span> break;
+   }
+   return 0;
+}
+</pre></td></tr></table></figure></p>
+<p><code>frame</code>没有分配内存，但是当<code>cap&gt;&gt;frame</code>的时候，由于<code>cap</code>以及知道图像的尺寸和深度，会自动分配一个相应图像矩阵给<code>frame</code>。还有<code>cvtColor(frame, edges, CV_BGR2GRAY)</code>的时候，<code>edges</code>会自动分配一个和输入图像<code>frame</code>相同大小的图像，<code>channel</code>取决于<code>CV_BGR2GRAY</code>，所以是1。这里内存的分配只是在循环的第一次分配，后续只有在视频的大小发生变化的时候才重新分配。</p>
+<p>这个机制的关键在于<code>Mat</code>类自带的成员函数<code>Mat::create</code>。这个函数可以根据提供的类型和尺寸分配相应的内存，如果这个矩阵已经是指定的尺寸和类型了，就什么也不做，如果不是，则释放掉原来的内存（若存在的话，当然内存的释放服从上面提到的内存管理机制），分配新的内存。而因为OpenCV的函数会自动的为输出<code>Mat</code>调用<code>create</code>，所以才会有这个自动为输出矩阵分配内存的特性。</p>
+<p>但是目前仍然有些函数是不具有这个功能的，需要注意，比如<code>cv::mixChnnels, cv::RNG::fill</code>。</p>
+<h3 id="如何处理数据类型溢出">如何处理数据类型溢出</h3>
+<p>我们知道一个8位图像的像素值范围是[0,255],当我们为一个这样类型的的像素赋一个超过这个范围的数值时，就会发生溢出，这样就不是我们想要的结果。以8位无符号整型数据为例，实际在对一个矩阵元素<span class="math">\(I(x,y)\)</span>赋值<span class="math">\(r\)</span>的时候是进行了如下操作<span class="math">\[I(x,y)=\min(\max(round(r),0),255)\]</span> 但需要注意对于32位整型没有溢出处理机制。</p>
+<h3 id="矩阵元素的的数据类型">矩阵元素的的数据类型</h3>
+<p>OpenCV的矩阵元素的数据类型包括以下几种：</p>
+<ul>
+<li>8-bit unsigned integer (uchar)</li>
+<li>8-bit signed integer (char)</li>
+<li>16-bit unsigned integer (ushort)</li>
+<li>16-bit signed integer (short)</li>
+<li>32-bit signed integer (int)</li>
+<li>32-bit floating-point number (float)</li>
+<li>64-bit floating-point number (double)</li>
+</ul>
+<p>这些基本的数据类型分别表示为</p>
+<pre><code>enum { CV_8U=0, CV_8S=1, CV_16U=2, CV_16S=3, CV_32S=4, CV_32F=5, CV_64F=6 };</code></pre>
+<p>对于多通道，就是相应的在后面加上<code>C(n)</code>即可，例如</p>
+<pre><code>CV_8UC(1) == CV_8U CV_8UC(2) == CV_8UC2 ... //对于n=[1,4],可以去掉括号
+CV_16SC(5) CV_32FC(10) ...</code></pre>
+<p>通道的最大值由<code>CV_CN_MAX</code>定义，目前是512。</p>
+<p>不同的CV算法对图像的元素数据类型支持是有限制的，下面列出一下情况：</p>
+<ul>
+<li>人脸识别算法仅支持8位的灰度或彩色图像</li>
+<li>大部分机器学习算法和线性函数仅支持<code>float</code>类型的矩阵</li>
+<li>基本的函数，如<code>cv::add</code>,支持所有类型</li>
+<li>颜色空间转换的函数仅支持8为无符号，16无符号和32位<code>float</code></li>
+</ul>
+<h3 id="inputarray和outputarray">InputArray和OutputArray</h3>
+<p>许多OpenCV的函数一般的参数是<code>cv::Mat</code>类型，但有些时候为了更方便的直接传入<code>std::vector&lt;&gt;</code>（比如一个数组）或者是<code>Matx&lt;&gt;</code>。为了避免重复多个函数的API，函数的接口的形参类型中，输入参数变为<code>InputArray</code>，输出参数为<code>OutputArray</code>。这样的话，函数就不仅仅可以传入<code>Mat</code>类型的参数，还以可以传入<code>std::vector&lt;&gt;,Matx&lt;&gt;,Vect&lt;&gt;</code>或者<code>Scalar</code>类型参数。如果函数有个可选参数，如果你不想传入这个参数，可以传一个<code>noArray()</code>。</p>
+<h3 id="错误处理机制">错误处理机制</h3>
+<p>OpenCV错误处理机制是使用了类<code>cv::Exception</code>,它其实是派生的STL中的异常处理<code>std::exception</code>，简单使用方法如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">try</span>
+{
+    <span class="keyword">...</span> // call OpenCV
+}
+catch( cv::Exception& e )
+{
+    const char* err_msg = e.what();
+    std::cout &lt;&lt; <span class="string">"exception caught: "</span> &lt;&lt; err_msg &lt;&lt; std::endl;
+}
+</pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/01/10/OpenCV(I)-introduction/" data-id="ogik3bejzx4hvnw2" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/01/10/OpenCV(I)-introduction/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/02/28/OpenCV(II)-basic-structure-of-opencv/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OpenCV系列(二)：基本数据结构
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/09/08/visual-tracking-a-benchmark/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">一个关于visual tracking的benchmark</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2014/01/10/OpenCV(I)-introduction/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

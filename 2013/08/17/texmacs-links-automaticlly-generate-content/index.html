@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>TexMacs札记(IV) ——插入链接、图片、目录等内容 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="距上一次写关于TexMacs的博客已经有一段时间了，因为毕业的原因，自己在家休整了一段时间，最近终于空闲下时间继续TexMacs手册的撰写。这篇博客主要讲解如何插入链接，图片，目录，参考文献等内容。
+插入标签、参考
+这里标签、参考是指论文写作的时候常用的公式索引啊，或者章节索引之类的应用。像LaTex中一样，在公式或者章节处插入标签label，然后在索引的地方插入reference。注意这里标签的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TexMacs札记(IV) ——插入链接、图片、目录等内容">
+<meta property="og:url" content="http://blog.skyoung.org/2013/08/17/texmacs-links-automaticlly-generate-content/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="距上一次写关于TexMacs的博客已经有一段时间了，因为毕业的原因，自己在家休整了一段时间，最近终于空闲下时间继续TexMacs手册的撰写。这篇博客主要讲解如何插入链接，图片，目录，参考文献等内容。
+插入标签、参考
+这里标签、参考是指论文写作的时候常用的公式索引啊，或者章节索引之类的应用。像LaTex中一样，在公式或者章节处插入标签label，然后在索引的地方插入reference。注意这里标签的">
+<meta property="og:image" content="/media/TexMacs/link.png">
+<meta property="og:image" content="/media/TexMacs/label.png">
+<meta property="og:image" content="/media/TexMacs/link.png">
+<meta property="og:image" content="/media/TexMacs/ref.png">
+<meta property="og:image" content="/media/TexMacs/link.png">
+<meta property="og:image" content="/media/TexMacs/hyperlink.png">
+<meta property="og:image" content="/media/TexMacs/link.png">
+<meta property="og:image" content="/media/TexMacs/insert-image.png">
+<meta property="og:image" content="/media/TexMacs/table-content.png">
+<meta property="og:image" content="/media/TexMacs/link.png">
+<meta property="og:image" content="/media/TexMacs/link.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TexMacs札记(IV) ——插入链接、图片、目录等内容">
+<meta name="twitter:description" content="距上一次写关于TexMacs的博客已经有一段时间了，因为毕业的原因，自己在家休整了一段时间，最近终于空闲下时间继续TexMacs手册的撰写。这篇博客主要讲解如何插入链接，图片，目录，参考文献等内容。
+插入标签、参考
+这里标签、参考是指论文写作的时候常用的公式索引啊，或者章节索引之类的应用。像LaTex中一样，在公式或者章节处插入标签label，然后在索引的地方插入reference。注意这里标签的">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-texmacs-links-automaticlly-generate-content" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/17/texmacs-links-automaticlly-generate-content/" class="article-date">
+  <time datetime="2013-08-16T16:00:00.000Z" itemprop="datePublished">Aug 17 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TexMacs/">TexMacs</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      TexMacs札记(IV) ——插入链接、图片、目录等内容
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>距上一次写关于TexMacs的博客已经有一段时间了，因为毕业的原因，自己在家休整了一段时间，最近终于空闲下时间继续TexMacs手册的撰写。这篇博客主要讲解如何插入链接，图片，目录，参考文献等内容。</p>
+<h3 id="插入标签参考">插入标签、参考</h3>
+<p>这里标签、参考是指论文写作的时候常用的公式索引啊，或者章节索引之类的应用。像LaTex中一样，在公式或者章节处插入标签<code>label</code>，然后在索引的地方插入<code>reference</code>。注意这里标签的插入只能是在标题、公式、表格或者图片等处插入，而正文下插入label是不起作用的。具体插入方式：</p>
+<ul>
+<li><p>插入label：使用菜单栏<code>Insert-&gt;Link-&gt;Label</code>；也可以通过工具栏<img src="/media/TexMacs/link.png" class="inline" width="20" height="20">进行插入，或者直接输入<code>\label</code>按回车。最后按回车激活该操作。如下图所示,<code>|</code>后面的<strong>section1</strong>是label的名称，以便后面ref参考使用。<img src="/media/TexMacs/label.png"> </p></li>
+<li><p>插入reference：使用菜单栏<code>Insert-&gt;Link-&gt;Reference</code>；也可以通过工具栏<img src="/media/TexMacs/link.png" class="inline" width="20" height="20">进行插入，或者直接输入<code>\ref</code>按回车。最后按回车激活该操作。如下图所示，<code>|</code>后面输入要引用的label名称<br><img src="/media/TexMacs/ref.png"></p></li>
+</ul>
+<a id="more"></a>
+
+<h3 id="插入超链接">插入超链接</h3>
+<p>这个相对比较简单，就是通过菜单栏<code>Insert-&gt;Link-&gt;HyperLink</code>；也可以通过工具栏<img src="/media/TexMacs/link.png" class="inline" width="20" height="20">进行插入。如下图所示，后面有两个参数，第一个<code>|</code>后面是超链接的名称，第二个<code>|</code>是超链接的网址。最后按回车激活该操作。<br><img src="/media/TexMacs/hyperlink.png"></p>
+<h3 id="插入图片">插入图片</h3>
+<p>插入图片可以通过菜单栏<code>Insert-&gt;Image</code>实现,或者是工具栏<img src="/media/TexMacs/link.png" class="inline" width="20" height="20">进行插入。如下图所示，图片的大小以及位置可以通过弹出的对话框设置，目前支持的视频格式有ps、eps、tif、pdf、pdm、gif、ppm、xpm、以及fig，可惜不支持jpg。而且对于其他格式，我试了一下pdf和tif格式，发现老出现莫名的错误，看来TexMacs对图片的支持效果不好。<br><img src="/media/TexMacs/insert-image.png" width="600" height="600" title="插入图片" alt="插入图片"></p>
+<h3 id="自动生成目录">自动生成目录</h3>
+<p>这里插入目录和word的插入目录有点相似，只需要把光标放到你要插入目录的位置，然后通过菜单栏<code>Insert-&gt;Automatic-&gt;Table of contents</code>就可以插入目录，如下图所示。这里需要注意，因为TexMacs默认页面类型是<strong>papyrus</strong>，是没有页码的，需要先调整页面的类型，即<code>Document-&gt;Page-&gt;Type</code>修改为<strong>paper</strong>类型。当页码因为编辑发生变化时，可以通过<code>Document-&gt;Update-&gt;Table of contents</code>或者是<code>Document-&gt;Update-&gt;All</code>进行更新，这里注意，如果第一遍通过<code>Insert-&gt;Automatic-&gt;Table of contents</code>插入目录后没有反应，那就再通过<code>Document-&gt;Update-&gt;Table of contents</code>再 <strong>Update</strong> 一下就好。这里出了自动生成的内容都是类似的模式。包括自动生成图目录，表目录等。<br><img src="/media/TexMacs/table-content.png" width="600" height="600" title="生成目录" alt="生成目录"></p>
+<h3 id="插入参考文献">插入参考文献</h3>
+<p>TexMacs和Latex一样用的是<strong>bibtex</strong>来编译参考文献的。首先是按照Latex的要求编写<strong>.bib</strong>文件，然后在对应的文献引用处插入标号，即<code>Insert-&gt;Link-&gt;Citation</code>或者是插入隐形标号<code>Insert-&gt;Link-&gt;Invisible citation</code>。当然也可以通过工具栏<img src="/media/TexMacs/link.png" class="inline" width="20" height="20">进行插入。然后把光标放在你要生成参考文献的位置（一般是文章的末尾），通过菜单栏<code>Insert-&gt;Automatic-&gt;Bibliograpy</code>自动生成文献。当文献发生改变的时候，通过<code>Document-&gt;Updae-&gt;Bibliography</code>进行更新。此外，参考文献的格式是存放在 <strong>~/.TeXmacs/system/bib</strong> 下的。</p>
+<h3 id="插入索引术语表">插入索引、术语表</h3>
+<p>这个和插入目录是很相似的，这里只需要在需要索引的或者某个术语位置插入相应的标记，然后通过自动生成即可。索引的插入标记方法是：<code>Insert-&gt;Link-&gt;Index entry</code>，术语的插入标记的方法是<code>Insert-&gt;Link-&gt;Glossary</code>。或者通过工具栏<img src="/media/TexMacs/link.png" class="inline" width="20" height="20">进行插入。然后把光标放在需要插入索引或者是术语表的位置，通过菜单栏的<code>Insert-&gt;Automatic-&gt;Index/Glossary</code>进行插入。同样当发生改变时通过<code>Document-&gt;Updae-&gt;Index/Glossary/All</code>进行更新。</p>
+<h3 id="总结">总结</h3>
+<p>总的来说，TexMacs在这个部分做的和Latex还是很像的，只不过好多东西更图形化了，更直观了，有点像word那种感觉。到此为止TexMacs的基本功能已经算是介绍完了，当然TexMacs还有presentation的功能，但相比较微软的ppt，其效果相对就比较鸡肋了。个人觉得TexMacs的重点在于其对科学文献的撰写，其排版如Latex般优美，界面如word般友好。但是目前许多paper的写作模板还是以Latex居多，而利用TexMacs自己编写模板还是有点麻烦，所以权且把TexMacs作为一个记事本使用，或者是撰写文献的草稿。而且TexMacs也支持导出Latex，html，xml，bibtex，pdf等多种格式的文件，其使用范围还是很广的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/08/17/texmacs-links-automaticlly-generate-content/" data-id="m75a3rreezthokab" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/08/17/texmacs-links-automaticlly-generate-content/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TexMacs/">TexMacs</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/08/27/generate-random-number/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          几种生成随机数的方法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/08/15/connected-component-labeling/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">几种联通区域标记的算法介绍</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2013/08/17/texmacs-links-automaticlly-generate-content/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

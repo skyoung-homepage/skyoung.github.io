@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>如何使用ruhoh2.0.alpha搭建博客 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="我只能说我最近比较闲，所以没事就是瞎折腾，刚用Jekyll Bootstrap构建的博客，没玩两天，就对ruhoh又产生了兴趣。ruhoh是Jekyll Bootstrap的作者又重写的一个博客生成器，基于前几天对Jekyll Bootstrap的了解，来看这个ruhoh,感觉还是又很多相似之处的，特别是一些设置，主要感觉ruhoh好像是把代码搞得更整洁了，模块化更明显了，Jekyll Boots">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何使用ruhoh2.0.alpha搭建博客">
+<meta property="og:url" content="http://blog.skyoung.org/2013/04/24/how-to-use-ruhoh/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="我只能说我最近比较闲，所以没事就是瞎折腾，刚用Jekyll Bootstrap构建的博客，没玩两天，就对ruhoh又产生了兴趣。ruhoh是Jekyll Bootstrap的作者又重写的一个博客生成器，基于前几天对Jekyll Bootstrap的了解，来看这个ruhoh,感觉还是又很多相似之处的，特别是一些设置，主要感觉ruhoh好像是把代码搞得更整洁了，模块化更明显了，Jekyll Boots">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何使用ruhoh2.0.alpha搭建博客">
+<meta name="twitter:description" content="我只能说我最近比较闲，所以没事就是瞎折腾，刚用Jekyll Bootstrap构建的博客，没玩两天，就对ruhoh又产生了兴趣。ruhoh是Jekyll Bootstrap的作者又重写的一个博客生成器，基于前几天对Jekyll Bootstrap的了解，来看这个ruhoh,感觉还是又很多相似之处的，特别是一些设置，主要感觉ruhoh好像是把代码搞得更整洁了，模块化更明显了，Jekyll Boots">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-how-to-use-ruhoh" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/04/24/how-to-use-ruhoh/" class="article-date">
+  <time datetime="2013-04-23T16:00:00.000Z" itemprop="datePublished">Apr 24 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/How-to/">How to</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何使用ruhoh2.0.alpha搭建博客
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>我只能说我最近比较闲，所以没事就是瞎折腾，刚用Jekyll Bootstrap构建的博客，没玩两天，就对ruhoh又产生了兴趣。<a href="http://ruhoh.com/" target="_blank" rel="external">ruhoh</a>是Jekyll Bootstrap的作者又重写的一个博客生成器，基于前几天对Jekyll Bootstrap的了解，来看这个ruhoh,感觉还是又很多相似之处的，特别是一些设置，主要感觉ruhoh好像是把代码搞得更整洁了，模块化更明显了，Jekyll Bootstrap总给人很乱的感觉。当然ruhoh的还有很多其他的特点，总的感觉就是简单易用。而且较为美观。</p>
+<p>促使我改用ruhoh的还有一个原因就是Jekyll Bootstrap的首页的post预览是不带格式的，即像粗体，公式啥的直接是以文本的形式展现出来，让我感觉很不爽，本来想着改一下代码的，可惜自己能力实在有限，照葫芦画瓢弄了一阵没整出来，就想着直接换ruhoh算了，ruhoh提供一个叫summary的东西可以带格式的预览，而且新版的2.0.alpha提供了Posts Paginator功能，就是index页的翻页功能。</p>
+<a id="more"></a>
+
+<h3 id="具体安装方法">具体安装方法</h3>
+<p>我的系统是ubuntu12.04，主要的安装方法参考<a href="http://blog.coolaj86.com/" target="_blank" rel="external">coolaj86</a>的两篇博客：<a href="http://blog.coolaj86.com/articles/hosting-your-blog-on-ruhoh-com.html" target="_blank" rel="external">Getting started with ruhoh (static blog)</a>和<a href="http://blog.coolaj86.com/articles/hosting-your-blog-on-github-pages.html" target="_blank" rel="external">Hosting your blog on GitHub Pages</a>。github pages支持Jekyll但不支持ruhoh，所以ruhoh的理念就是用git作为代码管理，而用github的<a href="https://help.github.com/articles/post-receive-hooks" target="_blank" rel="external">WebHooks</a>功能关联http://post.ruhoh.com ，这样就可以由ruhoh提供源代码的解析任务，ruhoh1.x就是这样的，具体方法参考<a href="http://ruhoh.com/docs/1/publish/" target="_blank" rel="external">这里</a>。但是目前http://post.ruhoh.com 暂时不支持ruhoh.2.0.alpha。所以就只能先编译好源代码，然后上传到github上实现博客的构建。这也是<a href="http://blog.coolaj86.com/articles/hosting-your-blog-on-github-pages.html" target="_blank" rel="external">Hosting your blog on GitHub Pages</a>这篇博客解决的问题。</p>
+<p>首先，和ruhoh的官方要求一样，把源代码clone到本地，然后切换到2.0.alpha分支下，代码如下： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="variable">$ </span>cd ~
+<span class="variable">$ </span>git clone <span class="string">'git://github.com/ruhoh/blog.git'</span> <span class="string">'blog-v2'</span>
+<span class="variable">$ </span>cd blog-v2
+<span class="variable">$ </span>git checkout <span class="string">"2.0.alpha"</span>
+<span class="variable">$ </span>bundle install
+</pre></td></tr></table></figure></p>
+<p>注意这里，由于ruhoh的库里有三个分支（查看ruhoh的github库可以看到），分别是：master分支，1.0分支，2.0.alpha分支。其中，master下是 ruhohSpec v1.0；1.0分支下也是 ruhohSpec v1.0，但是从两个分支的readme中可以看出区别， master下的兼容 ruhoh gem 1.0.x.x，1.0下的兼容ruhoh gem v0.4.x。</p>
+<p>ruhoh运行需要ruby1.9.2以上版本的支持，这里简单介绍一下如何安装ruby1.9.3,其实这个网上也有很多教程，我这里记录下来以防以后链接失效，我参考的是<a href="http://blog.sina.com.cn/s/blog_565e192a01013xjp.html" target="_blank" rel="external">在ubuntu中安装ruby 1.9.3</a>这篇博客，具体方法如下：</p>
+<ol style="list-style-type: decimal">
+<li>安装 RVM： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>$ curl -L get<span class="preprocessor">.rvm</span><span class="preprocessor">.io</span> | bash -s stable
+</pre></td></tr></table></figure></li>
+<li>将 rvm 加入PATH ： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="variable">$ </span>source ~<span class="regexp">/.rvm/scripts</span><span class="regexp">/rvm</span>
+</pre></td></tr></table></figure></li>
+<li>查看需要安装的包： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="variable">$ </span>rvm requirements
+</pre></td></tr></table></figure></li>
+<li>安装上一步提示所需的包： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>$ sudo aptitude install build<span class="attribute">-essential</span> openssl libreadline6 libreadline6<span class="attribute">-dev</span> curl git<span class="attribute">-core</span> zlib1g zlib1g<span class="attribute">-dev</span> libssl<span class="attribute">-dev</span> libyaml<span class="attribute">-dev</span> libsqlite3<span class="attribute">-dev</span> sqlite3 libxml2<span class="attribute">-dev</span> libxslt<span class="attribute">-dev</span> autoconf libc6<span class="attribute">-dev</span> ncurses<span class="attribute">-dev</span> automake libtool bison subversion
+</pre></td></tr></table></figure></li>
+<li>安装 Ruby 1.9.3 ： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="variable">$ </span>rvm install <span class="number">1.9</span>.<span class="number">3</span>
+</pre></td></tr></table></figure></li>
+<li>替换 gem 的 source ： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>$ gem <span class="built_in">source</span> -r http://rubygems.org/;gem <span class="built_in">source</span> <span class="operator">-a</span> http://ruby.taobao.org
+</pre></td></tr></table></figure></li>
+<li>安装 Bundler： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>gem <span class="keyword">install</span> bundler
+</pre></td></tr></table></figure></li>
+</ol>
+<p>这里需要注意第2步中，source加入环境变量只是对当前终端起作用，当终端关闭重启后，就失效了。所以需要在<code>.bashrc</code>中加入第2步的代码，即 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="variable">$ </span>gedit ~<span class="regexp">/.bashrc</span>
+</pre></td></tr></table></figure></p>
+<p>加入 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="variable">$ </span>source ~<span class="regexp">/.rvm/scripts</span><span class="regexp">/rvm</span>
+</pre></td></tr></table></figure></p>
+<p>下面就是介绍如何进行本地预览，这个在官方网站上也有，即： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>$ bundle <span class="keyword">exec</span> rackup -p <span class="number">9292</span>
+</pre></td></tr></table></figure></p>
+<p>然后就可以在<http: localhost:9292="">上进行本地预览了，还可以先编译，编译好了到编译的文件夹下也可以本地预览，具体操作是： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="variable">$ </span>bundle exec ruhoh compile
+<span class="variable">$ </span>cd compiled
+<span class="variable">$ </span>python -m <span class="constant">SimpleHTTPServer</span> <span class="number">3000</span>
+</pre></td></tr></table></figure></http:></p>
+<p>然后在<http: localhost:3000="">下进行本地预览。</http:></p>
+<p>然后就是把源代码上传到github中，首先在github上注册一个账号，然后新建一个以<code>username.github.io</code>为名字的库（repository），这里<code>username</code>就是你的账号名。为什么这样命名呢，这个也只能说是“王八的屁股——规定”，github pages上说对于个人或是组织的主页建立就是要这样命名，而且要master分支下。而对项目的主页要放到相应项目的gh-pages分支下，具体可以参考<a href="https://help.github.com/articles/user-organization-and-project-pages" target="_blank" rel="external">这里</a>。</p>
+<p>正像前面所说，目前http://post.ruhoh.com 不支持2.0.alpha，所以只能通过先编译后上传才可以生成页面，这里先把源代码上传到那么这里上传<code>username.github.io</code>库的blog分支留作以后代码管理用，然后把编译好的文件上传到master分支用于生成页面。</p>
+<ol style="list-style-type: decimal">
+<li><p>如果你没有编译的话,执行下面代码编译源代码到compile文件中 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>$ bundle <span class="keyword">exec</span> ruhoh compile
+</pre></td></tr></table></figure></p></li>
+<li><p>忽略掉一些文件，.gitignore文件中存着忽略的文件名称，这里默认的应该已经包含compiled/*，保险起见，执行下面代码 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>$ <span class="built_in">echo</span> <span class="string">"compiled/*"</span> &gt;&gt; .gitignore
+$ <span class="built_in">echo</span> <span class="string">"*.lock"</span> &gt;&gt; .gitignore
+</pre></td></tr></table></figure></p></li>
+<li><p>新建一个分支blog，删除以前的origin，连接新的origin；把username换成自己的github账号名 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>$ git checkout -b blog
+$ git remote rm origin
+$ git remote <span class="keyword">add</span> origin https://github<span class="preprocessor">.com</span>/username/username<span class="preprocessor">.github</span><span class="preprocessor">.io</span><span class="preprocessor">.git</span>
+</pre></td></tr></table></figure></p></li>
+<li><p>添加到库中，并commit，并且push到库的blog分支下（push这一步不是必须的，只是用来存储源代码，目前post.ruhoh.com还不支持2.0.alpha）， <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="variable">$ </span>git add .
+<span class="variable">$ </span>git commit -m <span class="string">"first commit"</span>
+<span class="variable">$ </span>git push origin blog
+</pre></td></tr></table></figure></p></li>
+<li><p>把编译好的文件上传到master分支下，正如前面所说，目前的master分支下存着ruhohSpec v1.0，所以需要先把这个分支删除或者重命名。这里采用重命名的方式： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="variable">$ </span>git branch -m master masterold
+<span class="variable">$ </span>git checkout blog
+</pre></td></tr></table></figure></p></li>
+<li><p>建立新的分支master，删除所有的文件（.gitignoreg过的complie文件还在） <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="variable">$ </span>git checkout --orphan master
+<span class="variable">$ </span>git rm -rf .
+</pre></td></tr></table></figure></p></li>
+<li><p>忽略compiled文件，push到库 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="variable">$ </span>echo <span class="string">"compiled"</span> &gt;&gt; .gitignore
+<span class="variable">$ </span>git add .gitignore
+<span class="variable">$ </span>git commit -m <span class="string">"ignore the compiled directory"</span>
+<span class="variable">$ </span>git push origin -u master
+</pre></td></tr></table></figure></p></li>
+<li><p>更新你页面，以后你每次发博客，都要按此步骤，更新页面。 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="comment">#首先切换到blog分支</span>
+<span class="variable">$ </span>git checkout blog
+<span class="comment">#添加一些新的东西然后编译</span>
+<span class="variable">$ </span>git add .
+<span class="variable">$ </span>git commmit -m <span class="string">"new post"</span>
+<span class="variable">$ </span>ruhoh compile
+<span class="comment">#切换到master分支</span>
+<span class="variable">$ </span>git checkout master
+<span class="comment">#同步compiled的文件到改分支下</span>
+<span class="variable">$ </span>rsync -a compiled/ ./
+<span class="comment">#删除compiled文件</span>
+<span class="variable">$ </span>rm -rf compiled/
+<span class="variable">$ </span>git add .
+<span class="variable">$ </span>git commit -m <span class="string">"updated compiled site"</span>
+<span class="variable">$ </span>git push origin master
+</pre></td></tr></table></figure></p></li>
+</ol>
+<p>过大约十分钟，你就可以在https://username.github.io 下看到了。 以后每次更新页面只需要重复第8步就可以了，先切换到blog下添加新的post，然后编译，然后切换到master下进行推送即可。</p>
+<p>如果想用自己的域名，首先，设置DNS服务器，具体设置可以参考<a href="https://help.github.com/articles/setting-up-a-custom-domain-with-pages" target="_blank" rel="external">github pages help</a>；设置好DNS后，只需要在master分支下建个文件CNAME，填入域名即可，具体命令如下，其中YOUR_DOMAIN是指你申请的域名。 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="variable">$ </span>git checkout master
+<span class="variable">$ </span>echo <span class="string">"YOUR-DOMAIN"</span> &gt; <span class="constant">CNAME</span>
+<span class="variable">$ </span>git add <span class="constant">CNAME</span>
+<span class="variable">$ </span>git commit -m <span class="string">"hosting an empty blog on branch master"</span>
+<span class="variable">$ </span>git push origin -u master
+<span class="variable">$ </span>git checkout blog
+</pre></td></tr></table></figure></p>
+<p>如果写博客的时候有公式的需要，可以把ruhoh的markdown解析器改为kramdown，ruhoh默认的解析器是Redcarpet，具体设置可以参考<a href="http://ruhoh.com/docs/2/plugins/#toc_7" target="_blank" rel="external">ruhoh官网</a>，这里简单介绍下，并说一下我遇到的问题和解决方法。</p>
+<p>kramdown的设置是利用的ruhoh的plugins的功能，在plugins文件（如果没有，就建一个）构造如下文件结构 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="comment">|</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">plugins</span>
+    <span class="literal">-</span><span class="literal">-</span> <span class="comment">converters</span>
+       <span class="literal">-</span><span class="literal">-</span> <span class="comment">kramdown</span><span class="string">.</span><span class="comment">rb</span>
+</pre></td></tr></table></figure></p>
+<p>其中，kramdown.rb中输入一下内容： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">class</span> <span class="title">Ruhoh</span></span>
+    <span class="class"><span class="keyword">module</span> <span class="title">Converter</span></span>
+	<span class="class"><span class="keyword">module</span> <span class="title">Markdown</span></span>
+	   <span class="function"><span class="keyword">def</span> </span><span class="keyword">self</span>.extensions
+		[<span class="string">'.md'</span>, <span class="string">'.markdown'</span>]
+	   <span class="keyword">end</span>
+	   <span class="function"><span class="keyword">def</span> </span><span class="keyword">self</span>.convert(content)
+		<span class="keyword">require</span> <span class="string">'kramdown'</span>
+		<span class="constant">Kramdown::Document</span>.new(content).to_html
+	   <span class="keyword">end</span>
+	<span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></td></tr></table></figure></p>
+<p>我当时按照这个步骤做了，但是出现了问题，提示我kramdown.rb中的第8行<code>require 'kramdown'</code>找不到kramdown，我当时是在本地预览出错的，后来我发现是问题出在Gemfile上，Gemfile是用来指定我用到的gem的，虽然在我已经安装了kramdown，但我的Gemfile中没有指定kramdown，所以会出错。在Gemfile加入下面这行代码即可修复此问题。 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>gem <span class="string">'kramdown'</span>, <span class="string">"~&gt; 1.0"</span>
+</pre></td></tr></table></figure></p>
+<p>因为kramdown的公式渲染需要MathJax，所以也需要安装这个gem。而在服务器上使用需要在theme-&gt;twitter-&gt;layouts-&gt;default.html文件下加入一下代码： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>
+<span class="attribute">src</span>=<span class="value">"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"</span>&gt;</span><span class="javascript">
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+</pre></td></tr></table></figure></p>
+<p>剩下的一下设置基本在讲解Jekyll Bootstrap的那篇博客中有介绍，可以参考<a href="http://blog.skyoung.org/2013/04/21/it-is-the-first-step-that-is-troublesome/" target="_blank" rel="external">万事开头难——我的博客折腾记</a>.包括google分析，comment设置等。</p>
+<h3 id="总结">总结</h3>
+<p>又一次折腾的结束，等到http://post.ruhoh.com 支持ruhoh2.0后，ruhoh的构建就简单了，以上只是权宜之计。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/04/24/how-to-use-ruhoh/" data-id="hllegrw439wuo6kk" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/04/24/how-to-use-ruhoh/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kramdown/">kramdown</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ruhoh/">ruhoh</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/04/27/texmacs-how-to-input-math/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          TexMacs札记(II) ——输入数学公式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/04/22/texmacs-write-simple-document/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">TexMacs札记(I) ——编写简单的文档</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2013/04/24/how-to-use-ruhoh/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

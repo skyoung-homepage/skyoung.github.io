@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>Lucas-Kanade（LK）算法原理介绍及OpenCV代码实现分析 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Lucas-Kanade跟踪算法是视觉跟踪中一个很经典的基于点的逐帧跟踪算法。起初这个算法是用来求解stero matching1的，后来经过Carlo Tomasi2和Jianbo Shi3等人的发展渐趋成熟。Jianbo Shi提出了一种筛选跟踪点特征的方法，使得特征的跟踪更可靠。Jean-Yves Bouguet4详细阐述了如何采用金字塔方式实现LK算法以处理两帧之间特征点位移较大的情况。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lucas-Kanade（LK）算法原理介绍及OpenCV代码实现分析">
+<meta property="og:url" content="http://blog.skyoung.org/2014/04/13/Lucas-Kanade-Tracker/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="Lucas-Kanade跟踪算法是视觉跟踪中一个很经典的基于点的逐帧跟踪算法。起初这个算法是用来求解stero matching1的，后来经过Carlo Tomasi2和Jianbo Shi3等人的发展渐趋成熟。Jianbo Shi提出了一种筛选跟踪点特征的方法，使得特征的跟踪更可靠。Jean-Yves Bouguet4详细阐述了如何采用金字塔方式实现LK算法以处理两帧之间特征点位移较大的情况。">
+<meta property="og:image" content="/media/Computer-Vision/pyrDown.png">
+<meta property="og:image" content="/media/Computer-Vision/order.png">
+<meta property="og:image" content="/media/Computer-Vision/subpixel.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lucas-Kanade（LK）算法原理介绍及OpenCV代码实现分析">
+<meta name="twitter:description" content="Lucas-Kanade跟踪算法是视觉跟踪中一个很经典的基于点的逐帧跟踪算法。起初这个算法是用来求解stero matching1的，后来经过Carlo Tomasi2和Jianbo Shi3等人的发展渐趋成熟。Jianbo Shi提出了一种筛选跟踪点特征的方法，使得特征的跟踪更可靠。Jean-Yves Bouguet4详细阐述了如何采用金字塔方式实现LK算法以处理两帧之间特征点位移较大的情况。">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Lucas-Kanade-Tracker" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/04/13/Lucas-Kanade-Tracker/" class="article-date">
+  <time datetime="2014-04-12T16:00:00.000Z" itemprop="datePublished">Apr 13 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Computer-Vision/">Computer Vision</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Lucas-Kanade（LK）算法原理介绍及OpenCV代码实现分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题阐述"><span class="toc-text">问题阐述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标准lk算法"><span class="toc-text">标准LK算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#图像金字塔跟踪"><span class="toc-text">图像金字塔跟踪</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#opencv代码实现分析"><span class="toc-text">OpenCV代码实现分析</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#图像金字塔的构建"><span class="toc-text">图像金字塔的构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#图像梯度图的计算"><span class="toc-text">图像梯度图的计算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#标准lk算法的迭代"><span class="toc-text">标准LK算法的迭代</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#尾声"><span class="toc-text">尾声</span></a></li></ol>
+		</div>
+		
+
+        <p>Lucas-Kanade跟踪算法是视觉跟踪中一个很经典的基于点的逐帧跟踪算法。起初这个算法是用来求解stero matching<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>的，后来经过Carlo Tomasi<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>和Jianbo Shi<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>等人的发展渐趋成熟。Jianbo Shi提出了一种筛选跟踪点特征的方法，使得特征的跟踪更可靠。Jean-Yves Bouguet<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>详细阐述了如何采用金字塔方式实现LK算法以处理两帧之间特征点位移较大的情况。</p>
+<h3 id="问题阐述">问题阐述</h3>
+<p>首先我们来看一下我们要解决的问题是什么？LK算法是基于特征点的跟踪，而这里的特征点就是每个点对应的一个小窗口图像块，LK所要解决的是求解连续两帧图像相同特征点的位移问题。这里我们假设<span class="math">\(I\)</span>和<span class="math">\(J\)</span>为连续两帧图像，其<span class="math">\((x,y)\)</span>点的灰度值分别对应<span class="math">\(I(x,y), J(x,y)\)</span>。设<span class="math">\(\mathbf{u}=[u_x,u_y]^T\)</span>是图像<span class="math">\(I\)</span>上一点，LK算法的目标是在图像<span class="math">\(J\)</span>找到一点<span class="math">\(\mathbf{v}= \mathbf{u} + \mathbf{d} = [u_x+d_x,u_y+d_y]^T\)</span>使得点<span class="math">\(I(\mathbf{u})\)</span>和点<span class="math">\(J(\mathbf{v})\)</span>是同一个位置。为了求解这样的点，LK求解这两个点对应的小窗口内像素的相似度。设<span class="math">\(\omega_x\)</span>和<span class="math">\(\omega_y\)</span>分别是点左右扩展的窗口范围，这样我们可以定义如下residual function为</p>
+<p><span class="math">\[\epsilon(\mathbf{d})=\epsilon(d_x,d_y)=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(I(x,y)-J(x+d_x,y+d_y))^2\]</span></p>
+<p>窗口大小为<span class="math">\((2\omega_x+1)\times (2\omega_y+1)\)</span>,通常情况下<span class="math">\(\omega_x\)</span>和<span class="math">\(\omega_y\)</span>的值为2,3,4,5,6,7。</p>
+<a id="more"></a>
+
+<h3 id="标准lk算法">标准LK算法</h3>
+<p>针对上述最优化问题，求解方法是求解<span class="math">\(\epsilon(\mathbf{d})\)</span>关于向量<span class="math">\(\mathbf{d}\)</span>的偏导使其等于0,即</p>
+<p><span class="math">\[\frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}}|_{\mathbf{d}=\mathbf{d}_{opt}}=\begin{bmatrix}
+0 &amp; 0
+\end{bmatrix}\]</span></p>
+<p>这样可以推到出其偏导结果：</p>
+<p><span class="math">\[
+\begin{equation}
+\begin{split} 
+\frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}}&amp;=-2\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(I(x,y)-J(x+d_x,y+d_y))\frac{\partial J(x+d_x,y+d_y)}{\partial \mathbf{d}} \\
+&amp;=-2\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(I(x,y)-J(x+d_x,y+d_y))\begin{bmatrix}\frac{\partial J}{\partial x} &amp; \frac{\partial J}{\partial y}\end{bmatrix}
+\end{split}
+\end{equation}
+\]</span></p>
+<p>利用泰勒级数展开<span class="math">\(J(x+d_x,y+d_y)\)</span>得,</p>
+<p><span class="math">\[
+\begin{equation}
+\begin{split} 
+J(x+d_x,y+d_y) &amp;= J(x,y)+ ( d_x\frac{\partial}{\partial x}+d_y\frac{\partial}{\partial y} )J(x,y)
++ \frac{1}{2!}( d_x\frac{\partial}{\partial x}+d_y\frac{\partial}{\partial y} )^2J(x,y)+... \\
+&amp;\approx J(x,y)+ ( d_x\frac{\partial}{\partial x}+d_y\frac{\partial}{\partial y} )J(x,y) \\
+&amp;\approx J(x,y)+ \begin{bmatrix}\frac{\partial J}{\partial x} &amp; \frac{\partial J}{\partial y} \end{bmatrix}\mathbf{d}
+\end{split}
+\end{equation}
+\]</span></p>
+<p>这样得出residual function为，</p>
+<p><span class="math">\[
+\begin{equation}
+\begin{split} 
+\frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}} \approx -2\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(I(x,y)-J(x,y) - \begin{bmatrix}\frac{\partial J}{\partial x} &amp; \frac{\partial J}{\partial y} \end{bmatrix}\mathbf{d})\begin{bmatrix}\frac{\partial J}{\partial x} &amp; \frac{\partial J}{\partial y}\end{bmatrix}
+\end{split}
+\end{equation}
+\]</span></p>
+<p>这里关于图像<span class="math">\(J(x,y)\)</span>的偏导可以通过求解<span class="math">\(I(x,y)\)</span>的偏导近似计算。设 <span class="math">\[\triangledown I=\begin{bmatrix}I_x\\ I_y\end{bmatrix}=\begin{bmatrix}\frac{\partial J}{\partial x} &amp; \frac{\partial J}{\partial y}\end{bmatrix}^T\]</span>, <span class="math">\[\delta I=I(x,y)-J(x,y)\]</span> 这样residual function变为 <span class="math">\[
+\begin{equation}
+\begin{split} 
+\frac{1}{2}\frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}} &amp;\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\triangledown I^T\mathbf{d}-\delta I)\triangledown I^T \\
+&amp;\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\triangledown I^T\mathbf{d}\triangledown I^T-\delta I\triangledown I^T)
+\end{split}
+\end{equation}
+\]</span></p>
+<p>等式两边取倒置 <span class="math">\[
+\begin{equation}
+\begin{split} 
+\frac{1}{2} \left [ \frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}} \right ]^T &amp;\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\triangledown I\mathbf{d}^T \triangledown I-\delta I \triangledown I) \\
+&amp;\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\triangledown I \triangledown I^T \mathbf{d}-\delta I  \triangledown I) \\
+&amp;\approx \sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(\begin{bmatrix}
+I^2_x &amp; I_{x}I_{y}\\ 
+I_{x}I_{y} &amp; I^2_y
+\end{bmatrix} \mathbf{d}-\begin{bmatrix}
+\delta II_x\\ 
+\delta II_y
+\end{bmatrix})
+\end{split}
+\end{equation}
+\]</span></p>
+<p>我们用简单符号替代其中的两个部分，分别设 <span class="math">\[
+\begin{align}
+G&amp;=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}\begin{bmatrix}
+I^2_x &amp; I_{x}I_{y}\\ 
+I_{x}I_{y} &amp; I^2_y
+\end{bmatrix} \\
+\mathbf{b}&amp;=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y} \begin{bmatrix}
+\delta II_x\\ 
+\delta II_y
+\end{bmatrix}
+\end{align}
+\]</span></p>
+<p>现在residual function变成了，</p>
+<p><span class="math">\[
+\frac{1}{2} \left [ \frac{\partial \epsilon (\mathbf{d})}{\partial \mathbf{d}} \right ]^T 
+\approx G \mathbf{d}-\mathbf{b}
+\]</span></p>
+<p>使上式等于0,得出位移<span class="math">\(\mathbf{d}\)</span>为，</p>
+<p><span class="math">\[\mathbf{d}=G^{-1}\mathbf{b}\]</span></p>
+<p>这里必须保证<span class="math">\(G\)</span>是可逆的，也就是保证图像<span class="math">\(I(x,y)\)</span>在<span class="math">\(x\)</span>和<span class="math">\(y\)</span>方向上的梯度值必须不是0。</p>
+<p>以上便是基本的LK算法的推导过程，具体实现的时候需要多次的迭代才能得到一个较准确的点的位移矢量，类似<a href="http://zh.wikipedia.org/wiki/%E7%89%9B%E9%A1%BF%E6%B3%95" target="_blank" rel="external">牛顿-拉弗森方法</a>（Newton-Raphson method）的迭代过程，这是一个逐渐趋近最优值的过程。下面详细介绍迭代的过程，针对第<span class="math">\(k(k\geqslant 1)\)</span>次迭代：</p>
+<p>设第<span class="math">\(k-1\)</span>次迭代的位移<span class="math">\(\mathbf{d}^{k-1}=[d_x^{k-1},d_y^{k-1}]\)</span>，则我们利用第<span class="math">\(k-1\)</span>次迭代的位移作为第<span class="math">\(k\)</span>次迭代位移的初始化值，即当前次迭代的<span class="math">\(J(x,y)\)</span>变为</p>
+<p><span class="math">\[J(x,y) = J(x+d_x^{k-1},y+d_y^{k-1})\]</span></p>
+<p>residual function变为 <span class="math">\[\epsilon(\mathbf{d})=\epsilon(d_x,d_y)=\sum_{x=u_x-\omega_x}^{u_x+\omega_x}\sum_{y=u_y-\omega_y}^{u_y+\omega_y}(I(x,y)-J(x+d_x^k,y+d_y^k))^2\]</span></p>
+<p>通过一次标准的LK算法，得出第<span class="math">\(k\)</span>次的位移</p>
+<p><span class="math">\[\mathbf{d}^k = G^{-1}\mathbf{b}_k\]</span></p>
+<p>这里我们发现每次迭代中，G是不变的，通过<span class="math">\(I(x,y)\)</span>计算，唯一变化的是<span class="math">\(\mathbf{b}\)</span>，每次迭代图像<span class="math">\(J(x,y)\)</span>对应的窗口都会向所要求的位置点靠近一点点（即上一次迭代的位移作为初始化），而<span class="math">\(\mathbf{b}\)</span>的计算与<span class="math">\(J(x,y)\)</span>有关，所以每次迭代都会发生变化，这样每次迭代需要计算的就只有<span class="math">\(\mathbf{b}\)</span>。</p>
+<p>假设进行了K次迭代后收敛，最终位移的结果为 <span class="math">\[\mathbf{d} = \sum_{k=1}^{K}\mathbf{d}^k\]</span></p>
+<p>对于第一次迭代其对应的初始化位移为： <span class="math">\[\mathbf{d}^0 = \begin{bmatrix}0 &amp; 0\end{bmatrix}^T\]</span></p>
+<p>但是上述推导的一个基本假设是点特征的位移是很小的，这样才能满足泰勒展开式中只保留前两项的近似操作。而为了能处理较大的位移情况，则需要基于图像金字塔在不同分辨率的图层下进行跟踪。</p>
+<h3 id="图像金字塔跟踪">图像金字塔跟踪</h3>
+<p>首先举一个简单的例子，比如知道一个点前后两幅图像的位移为16个像素，这么大的位移直接使用标准LK算法是很难计算出来结果的，而如果在图像分辨率降低到原来一半后，其位移就变为8个像素，再降低一半，则为4个像素，如果金字塔的层数是3,则在最底层，点的位移只有两个像素，这样就满足了小位移的假设。这样首先在最底层进行标准LK算法，得出一个位移后乘以2作为上一层的初始位移，再进行标准LK算法，以此类推，最终得到点的位移。</p>
+<p>设图像金字塔层数为<span class="math">\(L =0,1,2...L_m\)</span>,跟踪是从图像金字塔的最底层<span class="math">\(L_m\)</span>开始的，对于图像从第<span class="math">\(L+1\)</span>层到<span class="math">\(L\)</span>层的跟踪流程，和标准LK算法的迭代有点类似，第<span class="math">\(L\)</span>层的初始化位置是基于第<span class="math">\(L+1\)</span>层计算出来的。</p>
+<p>设<span class="math">\(\mathbf{g}^L=\begin{bmatrix}g_x^L &amp; g_y^L\end{bmatrix}^T\)</span>是第<span class="math">\(L\)</span>层的初始化位移，它是通过第<span class="math">\(L+1\)</span>层的位移计算得到的。这样第<span class="math">\(L\)</span>层的residual function就变成了</p>
+<p><span class="math">\[\epsilon^L(\mathbf{d}^L)=\epsilon(d_x^L,d_y^L)=\sum_{x=u_x^L-\omega_x}^{u_x^L+\omega_x}\sum_{x=u_y^L-\omega_y}^{u_y^L+\omega_y}(I^L(x,y)-J^L(x+g_x^L+d_x^L,y+g_y^L+d_y^L))^2\]</span></p>
+<p>从上式可以看出，第<span class="math">\(L\)</span>层的<span class="math">\(J^L(x,y)\)</span>由于有了<span class="math">\(\mathbf{g}^L\)</span>作为初始化位置使得要求解的位移<span class="math">\(\mathbf{d}^L\)</span>变得很小，也就很适合用标准的LK算法计算了。</p>
+<p><span class="math">\(\mathbf{g}^L\)</span>的计算是通过第<span class="math">\(L+1\)</span>层的位移和初始化位置计算的，</p>
+<p><span class="math">\[\mathbf{g}^L = 2(\mathbf{g}^{L+1} + \mathbf{d}^{L+1} )\]</span></p>
+<p>对于最底层的初始化位置设为， <span class="math">\[\mathbf{g}^{L_m} = \begin{bmatrix}0 &amp; 0 \end{bmatrix}^T\]</span></p>
+<p>最后得出点的位移为， <span class="math">\[\mathbf{d}^0 = \mathbf{g}^0 + \mathbf{d}^0\]</span></p>
+<p>图像金字塔的构建是通过首先对上一层图像进行去边缘滤波，然后下采样得到的，具体的实现参考下面<a href="#图像金字塔的构建">章节</a>。</p>
+<h3 id="opencv代码实现分析">OpenCV代码实现分析</h3>
+<p>这个算法的实现主要分为三个重要的部分：图像金字塔的构建，图像梯度图的计算，标准LK算法的迭代。</p>
+<h4 id="图像金字塔的构建">图像金字塔的构建</h4>
+<p>OpenCV是通过下采样和去边缘滤波器两个流程生成的多分辨率的图像金字塔，当然为了程序的优化，这两个流程是同时进行的。滤波器采用的kernel是 <span class="math">\[\frac{1}{256}\begin{bmatrix}
+1 &amp; 4 &amp; 6 &amp; 4 &amp; 1\\ 
+4 &amp; 16 &amp; 24 &amp; 16 &amp;4 \\ 
+6 &amp;  24&amp; 36 &amp; 24 &amp; 6\\ 
+4 &amp; 16 &amp; 24 &amp; 16 &amp; 4\\ 
+1 &amp; 4 &amp; 6 &amp; 4 &amp; 1
+\end{bmatrix}
+\]</span></p>
+<p>程序实现的核心函数是</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">void</span> pyrDown(InputArray src, OutputArray dst, <span class="keyword">const</span> Size& dstsize=Size(), <span class="keyword">int</span> borderType=BORDER_DEFAULT )
+</pre></td></tr></table></figure></p>
+<p>其OpenCV的源代码如下（OpenCV-2.4.8/video/pyramids.cpp/line:187）。这个函数实现的大体思路是以<strong>目标图像</strong>的长宽为基准同时实现对<strong>源图像</strong>的去边缘滤波以及下采样操作。因为图像在滤波后还要做下采样，如果这两步骤是分开做的话，前面滤波到的像素就会额外计算了一半下采样后根本不需要的像素，浪费了计算，所以这里仅仅是滤波了下采样中保留下来的像素。</p>
+<p>滤波器的实现最直接的想法就是每次计算所有窗口里面的像素值然后求均值，但这样做会重复计算前后两行重叠的部分像素和，代码效率并不高，实际上代码中的实现是首先计算每一个像素对应的前后两行的行和，然后存储下这5个行和，每行所有像素计算完所有5个行和并存储好后，再用一个for循环求和每个像素的5个行和，这样就可以避免重复计算前后两行重复的行和而提高了效率。如下图所示，中间红色像素对应窗口为1-5行，蓝色像素对应窗口为2-6行，其中其中2-5行的和都是重复的，不需要重复计算。</p>
+<p><img src="/media/Computer-Vision/pyrDown.png" title="pyrDown实现示意图" alt="pyrDown实现示意图"></p>
+<p>这里有几个需要解释的地方：</p>
+<p>第一，代码第54行的for循环实现的是求解每个元素对应的各个行和。这里它采用了一种循环存取机制。例如，当计算目标图像第k行像素（即源图像第2k行像素）时，其需要求解的行和分别是对应源图像上的2k-2，2k-1，2k，2k+1，2k+2行，这时假设内存中是按照顺序方式存储的，当计算目标图像k+1行像素（即源图像第2k+2行像素）时，我们只需要再计算2k+3和2k+4的<strong>行和</strong>并且存储在本来存储2k-2和2k-1行的<strong>行和</strong>的内存中，这样的计算和存储开销是最小的。这样说可能有点抽象，如下图所示，左边是计算目标图像第k行像素时，数组中5个元素存储的内容，右边是计算目标图像k+1行像素存储的内容，仅仅是把原来存储2k-2和2k-1行的元素替换成新计算出来的2k+3和2k+4行的行和，这样在访问这些行和时，顺序就会发生一定的变化，由左边的1,2,3,4,5变成右边的4,5,1,2,3。这样在计算k+2行像素时，只需把原来存储2k-2和2k-1的内存替换为2k+3和2k+4的行和即可，然后依次类推。查看程序第57行<code>WT* row = buf + ((sy - sy0) % PD_SZ)*bufstep;</code>，采用的就是这种循环存储方法。那这样在取这些存在数组中的行和是，顺序也是对应的顺序，因为每个行和要乘以的权重不一，自然顺序不能错。顺序的计算方法查看程序第122行<code>rows[k] = buf + ((y*2 - PD_SZ/2 + k - sy0) % PD_SZ)*bufstep;</code></p>
+<p><img src="/media/Computer-Vision/order.png" title="存储示意图" alt="存储示意图"></p>
+<p>第二，程序在处理边缘问题是采用了<code>borderInterpolate</code>这个函数，主要涉及对称边缘图像或直接复制边缘图像等方式添加虚拟边缘。当<code>boderType = BORDER_REPLICATE</code>时，是简单的复制边缘图像，当<code>boderType = BORDER_REFLECT</code>时，就是以边缘为中心对称复制边缘里层的图像。而pyrDown采用的就是这种边缘处理方式。</p>
+<p><figure class="highlight cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+</pre></td><td class="code"><pre><span class="keyword">template</span>&lt;<span class="keyword">class</span> CastOp, <span class="keyword">class</span> VecOp&gt; <span class="keyword">void</span>
+pyrDown_( <span class="keyword">const</span> Mat& _src, Mat& _dst, <span class="keyword">int</span> borderType )
+{
+    <span class="comment">//滤波器的窗口大小</span>
+    <span class="keyword">const</span> <span class="keyword">int</span> PD_SZ = <span class="number">5</span>;
+    <span class="keyword">typedef</span> <span class="keyword">typename</span> CastOp::type1 WT;
+    <span class="keyword">typedef</span> <span class="keyword">typename</span> CastOp::rtype T;
+
+    CV_Assert( !_src.empty() );
+    Size ssize = _src.size(), dsize = _dst.size();
+    <span class="keyword">int</span> cn = _src.channels();
+    <span class="keyword">int</span> bufstep = (<span class="keyword">int</span>)alignSize(dsize.width*cn, <span class="number">16</span>);
+    AutoBuffer&lt;WT&gt; _buf(bufstep*PD_SZ + <span class="number">16</span>);
+    WT* buf = alignPtr((WT*)_buf, <span class="number">16</span>);
+    <span class="comment">//处理左右边界</span>
+    <span class="keyword">int</span> tabL[CV_CN_MAX*(PD_SZ+<span class="number">2</span>)], tabR[CV_CN_MAX*(PD_SZ+<span class="number">2</span>)];
+    AutoBuffer&lt;<span class="keyword">int</span>&gt; _tabM(dsize.width*cn);
+    <span class="keyword">int</span>* tabM = _tabM;
+    <span class="comment">//存储PD_SZ行的和，用于第二次循环列的求和</span>
+    WT* rows[PD_SZ];
+    CastOp castOp;
+    VecOp vecOp;
+
+    CV_Assert( <span class="built_in">std</span>::<span class="built_in">abs</span>(dsize.width*<span class="number">2</span> - ssize.width) &lt;= <span class="number">2</span> &&
+               <span class="built_in">std</span>::<span class="built_in">abs</span>(dsize.height*<span class="number">2</span> - ssize.height) &lt;= <span class="number">2</span> );
+    <span class="keyword">int</span> k, x, sy0 = -PD_SZ/<span class="number">2</span>, sy = sy0, width0 = <span class="built_in">std</span>::min((ssize.width-PD_SZ/<span class="number">2</span>-<span class="number">1</span>)/<span class="number">2</span> + <span class="number">1</span>, dsize.width);
+
+    <span class="keyword">for</span>( x = <span class="number">0</span>; x &lt;= PD_SZ+<span class="number">1</span>; x++ )
+    {
+        <span class="keyword">int</span> sx0 = borderInterpolate(x - PD_SZ/<span class="number">2</span>, ssize.width, borderType)*cn;
+        <span class="keyword">int</span> sx1 = borderInterpolate(x + width0*<span class="number">2</span> - PD_SZ/<span class="number">2</span>, ssize.width, borderType)*cn;
+        <span class="keyword">for</span>( k = <span class="number">0</span>; k &lt; cn; k++ )
+        {
+            tabL[x*cn + k] = sx0 + k;
+            tabR[x*cn + k] = sx1 + k;
+        }
+    }
+
+    ssize.width *= cn;
+    dsize.width *= cn;
+    width0 *= cn;
+
+    <span class="keyword">for</span>( x = <span class="number">0</span>; x &lt; dsize.width; x++ )
+        tabM[x] = (x/cn)*<span class="number">2</span>*cn + x % cn;
+    
+    <span class="comment">//基于目标图像的高度</span>
+    <span class="keyword">for</span>( <span class="keyword">int</span> y = <span class="number">0</span>; y &lt; dsize.height; y++ )
+    {
+        T* dst = (T*)(_dst.data + _dst.step*y);
+        WT *row0, *row1, *row2, *row3, *row4;
+
+        <span class="comment">// fill the ring buffer (horizontal convolution and decimation)</span>
+        <span class="comment">//水平方向求解各个行和</span>
+        <span class="keyword">for</span>( ; sy &lt;= y*<span class="number">2</span> + <span class="number">2</span>; sy++ )
+        {
+            <span class="comment">//循环存储行和</span>
+            WT* row = buf + ((sy - sy0) % PD_SZ)*bufstep;
+            <span class="keyword">int</span> _sy = borderInterpolate(sy, ssize.height, borderType);
+            <span class="keyword">const</span> T* src = (<span class="keyword">const</span> T*)(_src.data + _src.step*_sy);
+            <span class="keyword">int</span> limit = cn;
+            <span class="keyword">const</span> <span class="keyword">int</span>* tab = tabL;
+
+            <span class="keyword">for</span>( x = <span class="number">0</span>;;)
+            {
+                <span class="keyword">for</span>( ; x &lt; limit; x++ )
+                {
+                    row[x] = src[tab[x+cn*<span class="number">2</span>]]*<span class="number">6</span> + (src[tab[x+cn]] + src[tab[x+cn*<span class="number">3</span>]])*<span class="number">4</span> +
+                        src[tab[x]] + src[tab[x+cn*<span class="number">4</span>]];
+                }
+
+                <span class="keyword">if</span>( x == dsize.width )
+                    <span class="keyword">break</span>;
+
+                <span class="keyword">if</span>( cn == <span class="number">1</span> )
+                {
+                    <span class="keyword">for</span>( ; x &lt; width0; x++ )
+                        row[x] = src[x*<span class="number">2</span>]*<span class="number">6</span> + (src[x*<span class="number">2</span> - <span class="number">1</span>] + src[x*<span class="number">2</span> + <span class="number">1</span>])*<span class="number">4</span> +
+                            src[x*<span class="number">2</span> - <span class="number">2</span>] + src[x*<span class="number">2</span> + <span class="number">2</span>];
+                }
+                <span class="keyword">else</span> <span class="keyword">if</span>( cn == <span class="number">3</span> )
+                {
+                    <span class="keyword">for</span>( ; x &lt; width0; x += <span class="number">3</span> )
+                    {
+                        <span class="keyword">const</span> T* s = src + x*<span class="number">2</span>;
+                        WT t0 = s[<span class="number">0</span>]*<span class="number">6</span> + (s[-<span class="number">3</span>] + s[<span class="number">3</span>])*<span class="number">4</span> + s[-<span class="number">6</span>] + s[<span class="number">6</span>];
+                        WT t1 = s[<span class="number">1</span>]*<span class="number">6</span> + (s[-<span class="number">2</span>] + s[<span class="number">4</span>])*<span class="number">4</span> + s[-<span class="number">5</span>] + s[<span class="number">7</span>];
+                        WT t2 = s[<span class="number">2</span>]*<span class="number">6</span> + (s[-<span class="number">1</span>] + s[<span class="number">5</span>])*<span class="number">4</span> + s[-<span class="number">4</span>] + s[<span class="number">8</span>];
+                        row[x] = t0; row[x+<span class="number">1</span>] = t1; row[x+<span class="number">2</span>] = t2;
+                    }
+                }
+                <span class="keyword">else</span> <span class="keyword">if</span>( cn == <span class="number">4</span> )
+                {
+                    <span class="keyword">for</span>( ; x &lt; width0; x += <span class="number">4</span> )
+                    {
+                        <span class="keyword">const</span> T* s = src + x*<span class="number">2</span>;
+                        WT t0 = s[<span class="number">0</span>]*<span class="number">6</span> + (s[-<span class="number">4</span>] + s[<span class="number">4</span>])*<span class="number">4</span> + s[-<span class="number">8</span>] + s[<span class="number">8</span>];
+                        WT t1 = s[<span class="number">1</span>]*<span class="number">6</span> + (s[-<span class="number">3</span>] + s[<span class="number">5</span>])*<span class="number">4</span> + s[-<span class="number">7</span>] + s[<span class="number">9</span>];
+                        row[x] = t0; row[x+<span class="number">1</span>] = t1;
+                        t0 = s[<span class="number">2</span>]*<span class="number">6</span> + (s[-<span class="number">2</span>] + s[<span class="number">6</span>])*<span class="number">4</span> + s[-<span class="number">6</span>] + s[<span class="number">10</span>];
+                        t1 = s[<span class="number">3</span>]*<span class="number">6</span> + (s[-<span class="number">1</span>] + s[<span class="number">7</span>])*<span class="number">4</span> + s[-<span class="number">5</span>] + s[<span class="number">11</span>];
+                        row[x+<span class="number">2</span>] = t0; row[x+<span class="number">3</span>] = t1;
+                    }
+                }
+                <span class="keyword">else</span>
+                {
+                    <span class="keyword">for</span>( ; x &lt; width0; x++ )
+                    {
+                        <span class="keyword">int</span> sx = tabM[x];
+                        row[x] = src[sx]*<span class="number">6</span> + (src[sx - cn] + src[sx + cn])*<span class="number">4</span> +
+                            src[sx - cn*<span class="number">2</span>] + src[sx + cn*<span class="number">2</span>];
+                    }
+                }
+
+                limit = dsize.width;
+                tab = tabR - x;
+            }
+        }
+
+        <span class="comment">// do vertical convolution and decimation and write the result to the destination image</span>
+        <span class="comment">//循环取得各个行和的指针</span>
+        <span class="keyword">for</span>( k = <span class="number">0</span>; k &lt; PD_SZ; k++ )
+            rows[k] = buf + ((y*<span class="number">2</span> - PD_SZ/<span class="number">2</span> + k - sy0) % PD_SZ)*bufstep;
+        row0 = rows[<span class="number">0</span>]; row1 = rows[<span class="number">1</span>]; row2 = rows[<span class="number">2</span>]; row3 = rows[<span class="number">3</span>]; row4 = rows[<span class="number">4</span>];
+
+        x = vecOp(rows, dst, (<span class="keyword">int</span>)_dst.step, dsize.width);
+        <span class="comment">//每一行结束的位置，把该行所有像素点的滤波结果求解出来</span>
+        <span class="keyword">for</span>( ; x &lt; dsize.width; x++ )
+            dst[x] = castOp(row2[x]*<span class="number">6</span> + (row1[x] + row3[x])*<span class="number">4</span> + row0[x] + row4[x]);
+    }
+}
+</pre></td></tr></table></figure></p>
+<h4 id="图像梯度图的计算">图像梯度图的计算</h4>
+<p>图像梯度的实现也要设计到窗口计算问题，所以和上面提到的方法有类似的地方，也是先计算行和，再计算列和。程序采用了Sharr算子进行梯度的计算，x方向的梯度图算子是 <span class="math">\[
+\begin{bmatrix}
+-3 &amp; 0 &amp; 3 \\ 
+-10 &amp; 0 &amp; 10 \\ 
+-3 &amp; 0 &amp; 3
+\end{bmatrix}
+\]</span> y方向的梯度算子是 <span class="math">\[
+\begin{bmatrix}
+-3 &amp; -10 &amp; -3 \\ 
+0 &amp; 0 &amp; 0 \\ 
+3 &amp; 10 &amp; 3
+\end{bmatrix}
+\]</span></p>
+<p>OpenCV详细代码如下，注意这里程序计算出的x和y方向的梯度值分别存放在了一个双通道的目标图像中，每个通道占用一个方向的梯度值。</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+</pre></td><td class="code"><pre><span class="keyword">static</span> <span class="keyword">void</span> calcSharrDeriv(<span class="keyword">const</span> cv::Mat& src, cv::Mat& dst)
+{
+    <span class="keyword">using</span> namespace cv;
+    <span class="keyword">using</span> cv::detail::deriv_type;
+    <span class="keyword">int</span> rows = src.rows, cols = src.cols, cn = src.channels(), colsn = cols*cn, depth = src.depth();
+    CV_Assert(depth == CV_8U);
+    dst.create(rows, cols, CV_MAKETYPE(DataType&lt;deriv_type&gt;::depth, cn*<span class="number">2</span>));
+
+<span class="preprocessor">#ifdef HAVE_TEGRA_OPTIMIZATION</span>
+    <span class="keyword">if</span> (tegra::calcSharrDeriv(src, dst))
+        <span class="keyword">return</span>;
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+
+    <span class="keyword">int</span> x, y, delta = (<span class="keyword">int</span>)alignSize((cols + <span class="number">2</span>)*cn, <span class="number">16</span>);
+    AutoBuffer&lt;deriv_type&gt; _tempBuf(delta*<span class="number">2</span> + <span class="number">64</span>);
+    deriv_type *trow0 = alignPtr(_tempBuf + cn, <span class="number">16</span>), *trow1 = alignPtr(trow0 + delta, <span class="number">16</span>);
+
+<span class="preprocessor">#<span class="keyword">if</span> CV_SSE2</span>
+    __m128i z = _mm_setzero_si128(), c3 = _mm_set1_epi16(<span class="number">3</span>), c10 = _mm_set1_epi16(<span class="number">10</span>);
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+
+    <span class="keyword">for</span>( y = <span class="number">0</span>; y &lt; rows; y++ )
+    {
+        <span class="keyword">const</span> uchar* srow0 = src.ptr&lt;uchar&gt;(y &gt; <span class="number">0</span> ? y-<span class="number">1</span> : rows &gt; <span class="number">1</span> ? <span class="number">1</span> : <span class="number">0</span>);
+        <span class="keyword">const</span> uchar* srow1 = src.ptr&lt;uchar&gt;(y);
+        <span class="keyword">const</span> uchar* srow2 = src.ptr&lt;uchar&gt;(y &lt; rows-<span class="number">1</span> ? y+<span class="number">1</span> : rows &gt; <span class="number">1</span> ? rows-<span class="number">2</span> : <span class="number">0</span>);
+        deriv_type* drow = dst.ptr&lt;deriv_type&gt;(y);
+
+        <span class="comment">// do vertical convolution</span>
+        x = <span class="number">0</span>;
+<span class="preprocessor">#<span class="keyword">if</span> CV_SSE2</span>
+        <span class="keyword">for</span>( ; x &lt;= colsn - <span class="number">8</span>; x += <span class="number">8</span> )
+        {
+            __m128i s0 = _mm_unpacklo_epi8(_mm_loadl_epi64((<span class="keyword">const</span> __m128i*)(srow0 + x)), z);
+            __m128i s1 = _mm_unpacklo_epi8(_mm_loadl_epi64((<span class="keyword">const</span> __m128i*)(srow1 + x)), z);
+            __m128i s2 = _mm_unpacklo_epi8(_mm_loadl_epi64((<span class="keyword">const</span> __m128i*)(srow2 + x)), z);
+            __m128i t0 = _mm_add_epi16(_mm_mullo_epi16(_mm_add_epi16(s0, s2), c3), _mm_mullo_epi16(s1, c10));
+            __m128i t1 = _mm_sub_epi16(s2, s0);
+            _mm_store_si128((__m128i*)(trow0 + x), t0);
+            _mm_store_si128((__m128i*)(trow1 + x), t1);
+        }
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+        <span class="keyword">for</span>( ; x &lt; colsn; x++ )
+        {
+            <span class="keyword">int</span> t0 = (srow0[x] + srow2[x])*<span class="number">3</span> + srow1[x]*<span class="number">10</span>;
+            <span class="keyword">int</span> t1 = srow2[x] - srow0[x];
+            trow0[x] = (deriv_type)t0;
+            trow1[x] = (deriv_type)t1;
+        }
+
+        <span class="comment">// make border</span>
+        <span class="keyword">int</span> x0 = (cols &gt; <span class="number">1</span> ? <span class="number">1</span> : <span class="number">0</span>)*cn, x1 = (cols &gt; <span class="number">1</span> ? cols-<span class="number">2</span> : <span class="number">0</span>)*cn;
+        <span class="keyword">for</span>( <span class="keyword">int</span> k = <span class="number">0</span>; k &lt; cn; k++ )
+        {
+            trow0[-cn + k] = trow0[x0 + k]; trow0[colsn + k] = trow0[x1 + k];
+            trow1[-cn + k] = trow1[x0 + k]; trow1[colsn + k] = trow1[x1 + k];
+        }
+
+        <span class="comment">// do horizontal convolution, interleave the results and store them to dst</span>
+        x = <span class="number">0</span>;
+<span class="preprocessor">#<span class="keyword">if</span> CV_SSE2</span>
+        <span class="keyword">for</span>( ; x &lt;= colsn - <span class="number">8</span>; x += <span class="number">8</span> )
+        {
+            __m128i s0 = _mm_loadu_si128((<span class="keyword">const</span> __m128i*)(trow0 + x - cn));
+            __m128i s1 = _mm_loadu_si128((<span class="keyword">const</span> __m128i*)(trow0 + x + cn));
+            __m128i s2 = _mm_loadu_si128((<span class="keyword">const</span> __m128i*)(trow1 + x - cn));
+            __m128i s3 = _mm_load_si128((<span class="keyword">const</span> __m128i*)(trow1 + x));
+            __m128i s4 = _mm_loadu_si128((<span class="keyword">const</span> __m128i*)(trow1 + x + cn));
+
+            __m128i t0 = _mm_sub_epi16(s1, s0);
+            __m128i t1 = _mm_add_epi16(_mm_mullo_epi16(_mm_add_epi16(s2, s4), c3), _mm_mullo_epi16(s3, c10));
+            __m128i t2 = _mm_unpacklo_epi16(t0, t1);
+            t0 = _mm_unpackhi_epi16(t0, t1);
+            <span class="comment">// this can probably be replaced with aligned stores if we aligned dst properly.</span>
+            _mm_storeu_si128((__m128i*)(drow + x*<span class="number">2</span>), t2);
+            _mm_storeu_si128((__m128i*)(drow + x*<span class="number">2</span> + <span class="number">8</span>), t0);
+        }
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+        <span class="keyword">for</span>( ; x &lt; colsn; x++ )
+        {
+            deriv_type t0 = (deriv_type)(trow0[x+cn] - trow0[x-cn]);
+            deriv_type t1 = (deriv_type)((trow1[x+cn] + trow1[x-cn])*<span class="number">3</span> + trow1[x]*<span class="number">10</span>);
+            drow[x*<span class="number">2</span>] = t0; drow[x*<span class="number">2</span>+<span class="number">1</span>] = t1;
+        }
+    }
+}
+</pre></td></tr></table></figure></p>
+<h4 id="标准lk算法的迭代">标准LK算法的迭代</h4>
+<p>这个部分的实现需要注意的地方主要是subpixel的计算，因为每次计算出的位移都很小，考虑到计算的精度，必须的精确到小数位，所以需要注意如何计算一个小数位置的像素值，这个就和线性插值是类似的。如下图所示，小数位置的像素值是有四个相邻像素拟合出来的。设中间蓝色像素点的坐标为<span class="math">\((x_{sub},y_{sub})\)</span>，四周四个整数位置的像素点自分别为<span class="math">\((x_0,y_0),(x_0,y_1),(x_1,y_0),(x_1,y_1)\)</span>，中间蓝色像素离其他四个像素水平和垂直方向上的像素距离分别为<span class="math">\(w_{00},w_{01},w_{10},w_{11}\)</span>,如图中所标。</p>
+<p><img src="/media/Computer-Vision/subpixel.png" width="300" height="300" title="subpixel的计算" alt="subpxiel的计算"></p>
+<p>subpxiel的计算公式为 <span class="math">\[
+I(x_{sub},y_{sub})=w_{11}w_{01}I(x_0,y_0)+w_{10}w_{01}I(x_0,y_1)+w_{11}w_{00}I(x_1,y_0)+w_{10}w_{00}I(x_1,y_1)
+\]</span></p>
+<p>在计算权重<span class="math">\(w_{i,j}\)</span>的时候，为了避免浮点计算，会对<span class="math">\(w_{i,j}\)</span>乘以一定的倍数使用整数运算。用的subpixel的地方主要有两个地方，一个是在计算矩阵<span class="math">\(G\)</span>的时候，需要取梯度图的值，但是点的位置不一定是整数，所以一定要使用subpixel取值；还有一个地方是计算<span class="math">\(b\)</span>的时候，因为要取前后两幅图像的像素值，而这两个点的位置也不一定是整数，所以也要用到subpixel。考虑到这部分的OpenCV代码比较长，而理解相对没有那么困难，这里就不再贴出，仅列出上面需要注意的地方，需要的可以参考<code>oepncv2.4.8/video/lkpramid.cpp/line:159-483</code></p>
+<h3 id="尾声">尾声</h3>
+<p>LK算法的实现除了以上所讲的OpenCV的实现外，还有几个其他的版本，分别是由Stan Birchfield实现的版本<a href="http://www.ces.clemson.edu/~stb/klt/" target="_blank" rel="external">KLT</a>，速率相比OpenCV慢一些；一个GPU加速实现的版本<a href="http://cs.unc.edu/~ssinha/Research/GPU_KLT/" target="_blank" rel="external">GPU KLT</a>；一个Matlab实现的版本<a href="http://www.ri.cmu.edu/research_project_detail.html?project_id=515&amp;menu_id=261" target="_blank" rel="external">Matlab KLT</a>以及一个Java实现的版本<a href="http://boofcv.org/index.php?title=Applet_Feature_Tracking" target="_blank" rel="external">Java KLT</a>。</p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Bruce D. Lucas and Takeo Kanade. <em><strong>An Iterative Image Registration Technique with an Application to Stereo Vision</strong></em>. International Joint Conference on Artificial Intelligence, pages 674-679, 1981.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Carlo Tomasi and Takeo Kanade. <em><strong>Detection and Tracking of Point Features</strong></em>. Carnegie Mellon University Technical Report CMU-CS-91-132, April 1991.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Jianbo Shi and Carlo Tomasi. <em><strong>Good Features to Track</strong></em>. IEEE Conference on Computer Vision and Pattern Recognition, pages 593-600, 1994.<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>Jean-Yves Bouguet. <em><strong>Pyramidal Implementation of the Lucas Kanade Feature Tracker</strong></em>.<a href="#fnref4">↩</a></p></li>
+</ol>
+</div>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/04/13/Lucas-Kanade-Tracker/" data-id="5z95dse78i6gikw2" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/04/13/Lucas-Kanade-Tracker/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tracking/">Tracking</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/04/25/write-and-read-xml-yml-file/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          OpenCV读取XML/YML文件的方法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/03/26/OpenCV(III)-How-to-use-Mat/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">OpenCV系列(三)：Mat详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2014/04/13/Lucas-Kanade-Tracker/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>

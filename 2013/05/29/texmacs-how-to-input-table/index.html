@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>TexMacs札记(III) ——输入表格 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="好久没有更新博客了，月初去德国开了个会议，回来后又赶上毕业答辩，折腾了许久，然后就是毕业后的各种表格的填写，搞得我头都大了。今天终于搞得差不多了，闲下来继续关于TexMacs的讲解。这一讲主要说一下TexMacs表格的输入方法。
+有框无框表格的输入
+表格输入是通过Insert-&gt;Table进行插入的，可以先插入一个带标题的表格，这里分为两种一种是大标题，一种是小标题，分别是Insert-&g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TexMacs札记(III) ——输入表格">
+<meta property="og:url" content="http://blog.skyoung.org/2013/05/29/texmacs-how-to-input-table/">
+<meta property="og:site_name" content="Skyoung">
+<meta property="og:description" content="好久没有更新博客了，月初去德国开了个会议，回来后又赶上毕业答辩，折腾了许久，然后就是毕业后的各种表格的填写，搞得我头都大了。今天终于搞得差不多了，闲下来继续关于TexMacs的讲解。这一讲主要说一下TexMacs表格的输入方法。
+有框无框表格的输入
+表格输入是通过Insert-&gt;Table进行插入的，可以先插入一个带标题的表格，这里分为两种一种是大标题，一种是小标题，分别是Insert-&g">
+<meta property="og:image" content="/media/TexMacs/table1.png">
+<meta property="og:image" content="/media/TexMacs/table2.png">
+<meta property="og:image" content="/media/TexMacs/matrix.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TexMacs札记(III) ——输入表格">
+<meta name="twitter:description" content="好久没有更新博客了，月初去德国开了个会议，回来后又赶上毕业答辩，折腾了许久，然后就是毕业后的各种表格的填写，搞得我头都大了。今天终于搞得差不多了，闲下来继续关于TexMacs的讲解。这一讲主要说一下TexMacs表格的输入方法。
+有框无框表格的输入
+表格输入是通过Insert-&gt;Table进行插入的，可以先插入一个带标题的表格，这里分为两种一种是大标题，一种是小标题，分别是Insert-&g">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Stay true to yourself and it will make sense in the end.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+	<a class="main-nav-link" href="http://www.skyoung.org"  target="_blank" rel="external">About</a>
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form>
+  <input type="text" id="st-search-input" class="st-search-input" />
+</form>
+<script type="text/javascript">
+var Swiftype = window.Swiftype || {};
+  (function() {
+    Swiftype.key = 'MKPDLsfbtVmMgHAfqZu2';
+
+    /** DO NOT EDIT BELOW THIS LINE **/
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = "//s.swiftypecdn.com/embed.js";
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  }());
+</script>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-texmacs-how-to-input-table" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/05/29/texmacs-how-to-input-table/" class="article-date">
+  <time datetime="2013-05-28T16:00:00.000Z" itemprop="datePublished">May 29 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/TexMacs/">TexMacs</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      TexMacs札记(III) ——输入表格
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+
+        <p>好久没有更新博客了，月初去德国开了个会议，回来后又赶上毕业答辩，折腾了许久，然后就是毕业后的各种表格的填写，搞得我头都大了。今天终于搞得差不多了，闲下来继续关于TexMacs的讲解。这一讲主要说一下TexMacs表格的输入方法。</p>
+<h4 id="有框无框表格的输入">有框无框表格的输入</h4>
+<p>表格输入是通过<code>Insert-&gt;Table</code>进行插入的，可以先插入一个带标题的表格，这里分为两种一种是大标题，一种是小标题，分别是<code>Insert-&gt;Table-&gt;Big table</code>和<code>Insert-&gt;Table-&gt;Small table</code>。然后可以在这种带标题的方框内插入普通的表格，这里分为有框和无框两种，每一种又分为居中和普通的两种，有框称为<code>block</code>，无框的是<code>tabular</code>。</p>
+<div class="figure">
+<img src="/media/TexMacs/table1.png" title="图 1">
+</div>
+<a id="more"></a>
+
+<p>如上图所示，列出了各种表格的示意图。</p>
+<ul>
+<li>table 1.是无框普通小标题，插入方式：<code>Insert-&gt;Table-&gt;Plain tabular</code>;</li>
+<li>table 2.是无框居中小标题，插入方式：<code>Insert-&gt;Table-&gt;Centered tabular</code>;</li>
+<li>table 3.是有框普通小标题，插入方式：<code>Insert-&gt;Table-&gt;Plain block</code>;</li>
+<li>table 4.是有框居中小标题，插入方式：<code>Insert-&gt;Table-&gt;Centered block</code>;</li>
+<li>table 5.是大标题。</li>
+<li>这里注意，以上带标题的表格首先需要插入一个<code>Big table</code>或者<code>Small table</code>，然后按照上述方式插入各种类型的插入各种格式的表格。</li>
+</ul>
+<h4 id="矩阵行列式的输入">矩阵行列式的输入</h4>
+<p>除此之外，table还可以结合公式输入矩阵，行列式，大括号选择以及普通的堆叠，如下图所示。</p>
+<div class="figure">
+<img src="/media/TexMacs/table2.png" title="图 2">
+</div>
+<p>首先通过<code>Insert-&gt;Mathematics-&gt;Formula</code>使输入模式为公式状态，然后点击<code>Insert-&gt;Table</code>下拉列表进行选择</p>
+<ul>
+<li>table 6.是矩阵输入，插入方式：<code>Insert-&gt;Table-&gt;Matrix</code>,通过工具栏<img src="/media/TexMacs/matrix.png">进行增加或缩减矩阵中元素的个数；</li>
+<li>table 7.是行列式输入，插入方式： <code>Insert-&gt;Table-&gt;Determinant</code>，元素个数的增减方法同上；</li>
+<li>table 8.是选择的输入，插入方法：<code>Insert-&gt;Table-&gt;Choice</code>，元素个数的增减方法同上；</li>
+<li>table 9.是堆叠的输入方法，插入方法：<code>Insert-&gt;Table-&gt;Stack</code>，它和table 2.的不同在于每个元素的间隔是不能改变的。</li>
+</ul>
+<p>以上便是对表格输入基本的介绍，更多的功能可以参考TexMacs手册-<a href="http://www.texmacs.org/tmweb/manual/webman-table.en.html" target="_blank" rel="external">Tabular material</a>。但是需要注意这个手册有些内容更新不及时，需要择优参考。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2013/05/29/texmacs-how-to-input-table/" data-id="f5so8ng4vnxabgdo" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2013/05/29/texmacs-how-to-input-table/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TexMacs/">TexMacs</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/08/07/an-introduction-of-hough-tranform/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          浅析霍夫变换检测直线
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/05/01/how-to-install-OpenCV-and-boost/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ubuntu 12.04 LTS下安装OpenCV，Boost等常用库</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+           <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer-Vision/">Computer Vision</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How-to/">How to</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic-Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected-Component-Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough-Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/LaTex/" style="font-size: 10.00px;">LaTex</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Mouse-Control/" style="font-size: 10.00px;">Mouse Control</a><a href="/tags/Online-Visual-Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt-Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 16.67px;">TexMacs</a><a href="/tags/Tracking/" style="font-size: 10.00px;">Tracking</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union-find/" style="font-size: 10.00px;">Union find</a><a href="/tags/XML-YML/" style="font-size: 10.00px;">XML YML</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/hexo/" style="font-size: 10.00px;">hexo</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/matrix-operation/" style="font-size: 10.00px;">matrix operation</a><a href="/tags/pkg-config/" style="font-size: 10.00px;">pkg-config</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/texlive/" style="font-size: 10.00px;">texlive</a><a href="/tags/texmaker/" style="font-size: 10.00px;">texmaker</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/获取文件名/" style="font-size: 10.00px;">获取文件名</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07">July 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/07/31/OpenCV(IV)-operations-on-arrays/">OpenCV系列(四)：矩阵操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/21/how-to-install-texlive/">ubuntu14.04安装TexLive2014</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/11/several-tips-of-using-hexo/">使用hexo构建博客时几个需要注意的地方</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/01/how-to-track-mouse/">如何用OpenCV跟踪鼠标操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/30/get-file-names-in-directory/">利用Boost获取文件夹下所有文件的文件名</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a class="main-nav-link" href="http://blog.skyoung.org" title="About" target="_blank" rel="external">About</a>
+</nav>
+
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2013/05/29/texmacs-how-to-input-table/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+  </div>
+</body>
+</html>
