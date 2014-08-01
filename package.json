@@ -3,9 +3,10 @@
   "version": "2.7.1",
   "private": true,
   "dependencies": {
+    "hexo-generator-sitemap": "^0.2.0",
     "hexo-renderer-ejs": "*",
-    "hexo-renderer-stylus": "*",
     "hexo-renderer-marked": "*",
-    "hexo-renderer-pandoc": "0.0.8"
+    "hexo-renderer-pandoc": "0.0.8",
+    "hexo-renderer-stylus": "*"
   }
 }
